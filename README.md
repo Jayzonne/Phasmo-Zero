@@ -2,7 +2,7 @@
 
 **The no-evidence journal for Phasmophobia.** Tick what the ghost does, cross out what it doesn't, and impossible ghosts get crossed out automatically — just like the in-game journal, but built for games with 0 evidence (or very little).
 
-**Live page:** https://jayzonne.github.io/phasmo-zero/
+**Live page:** https://Jayzonne.github.io/Phasmo-Zero/
 
 ## Features
 
