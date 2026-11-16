@@ -19,7 +19,7 @@
 --uvbg:light-dark(#efe8ff,#221c3a);--red:light-dark(#c4271c,#ff5a4e)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Atkinson Hyperlegible",system-ui,"Noto Sans","PingFang SC","Malgun Gothic",sans-serif;overflow-x:clip}
 h1,h2,h3,.gn{font-family:Kalam,"Comic Sans MS",cursive;font-weight:700}
 h1{font-size:clamp(30px,4vw,44px);line-height:1.05;margin:0;text-wrap:balance}
 h2{font-size:26px;line-height:1.1;margin:0 0 10px}
@@ -80,6 +80,13 @@ details[open]>summary::after{content:"−"}
 .row.off{opacity:.42}.row.off b{font-weight:400}.why2{font-style:italic}
 .seg button:disabled{cursor:not-allowed;background:transparent}
 .sbox.alloff h4{color:var(--mute)}
+.langpick{position:fixed;top:10px;right:10px;z-index:50;display:flex;align-items:center;gap:6px;background:var(--uv);color:#fff;border-radius:999px;padding:4px 6px 4px 12px;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;min-height:44px}
+.langpick svg{width:20px;height:20px;flex:none}
+.langpick .lcode{font-weight:700;font-size:14px;letter-spacing:.02em}
+.langpick select{font:inherit;font-size:15px;color:#fff;background:rgba(255,255,255,.16);border:0;border-radius:999px;padding:6px 10px;min-height:34px;cursor:pointer}
+.langpick select option{color:#1b1a24;background:#fff}
+.langpick:focus-within{outline:3px solid light-dark(#d9ccff,#3a2c6b);outline-offset:2px}
+.wrap{padding-top:max(60px,clamp(16px,3vw,32px))}
 .setp{margin-bottom:18px;padding:4px 18px 14px;--rd:light-dark(#a8443b,#d4837a);border:2px solid var(--rd);background:light-dark(#fcf1ef,#22171a)}
 .setp>summary h3{color:var(--rd)}.setp .fs{color:light-dark(#7d4a44,#c9a39e)}
 .setp .fld span,.setp .eqt{color:light-dark(#7d4a44,#c9a39e)}
@@ -139,6 +146,7 @@ details[open]>summary::after{content:"−"}
 </style>
 </head>
 <body>
+<label class="langpick" for="lng"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.6 2.8 2.6 15.2 0 18M12 3c-2.6 2.8-2.6 15.2 0 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="lcode" id="lcode">FR</span><select id="lng"></select></label>
 <div class="wrap">
   <div class="top">
     <div>
@@ -146,8 +154,8 @@ details[open]>summary::after{content:"−"}
       <p><b data-i="tag"></b> <span data-i="intro"></span></p>
     </div>
     <div class="tools">
-      <label class="sw lng"><span data-i="lang"></span><select id="lng"></select></label>
-      <label class="sw"><input type="checkbox" id="mim"> <span data-i="mim"></span></label>
+            <label class="sw"><input type="checkbox" id="mim"> <span data-i="mim"></span></label>
+      <label class="sw"><input type="checkbox" id="hideoff"> <span data-i="hideOff"></span></label>
       <button id="reset" class="pri" data-i="reset"></button>
     </div>
   </div>
@@ -184,17 +192,17 @@ const G=[
 {id:0,fr:"Esprit",en:"Spirit",t:"Encens, puis chrono : aucune chasse avant 180 s (90 s pour les autres, 60 s pour le Démon). Répète 2 ou 3 fois.",b:"Aucun autre signe : vitesse et comportement normaux.",c:"Ombre (test de présence), Démon (60 s)."},
 {id:1,fr:"Spectre",en:"Wraith",t:"Passe sur du sel sans le déranger. Il faut prouver le passage : chasse, événement fantôme ou détecteur juste derrière la ligne. Pas de crucifix ni d'encens avant le test.",b:"Téléportation : un EMF aux pieds d'un joueur, loin de sa pièce, sans aucune interaction.",c:"Gallu enragée (elle écrase toujours le premier tas), Mimic."},
 {id:2,fr:"Fantôme",en:"Phantom",t:"Photo pendant un événement fantôme : il disparaît aussitôt et n'apparaît pas sur la photo.",b:"Presque toujours invisible pendant les chasses.",c:"Obake (reste sur la photo)."},
-{id:3,fr:"Poltergeist",en:"Poltergeist",t:"Fais un tas d'une dizaine d'objets dans sa pièce : il en projette plusieurs d'un coup.",b:"Lance des objets presque en continu pendant les chasses.",c:"Les Jumeaux (deux interactions à deux endroits), Deildegast."},
+{id:3,fr:"Poltergeist",en:"Poltergeist",t:"Fais un tas d'une dizaine d'objets dans sa pièce : il en projette plusieurs d'un coup.",b:"Lance des objets presque en continu pendant les chasses. En chasse, il tente de projeter un objet autour de lui toutes les 0,5 s.",c:"Les Jumeaux (deux interactions à deux endroits), Deildegast."},
 {id:4,fr:"Banshee",en:"Banshee",t:"Micro parabolique : cri aigu caractéristique. À plusieurs, en chasse, elle ignore un joueur visible qui n'est pas sa cible.",b:"Toujours féminine. Ne change jamais de pièce, mais se promène loin pour suivre sa cible.",c:"Kormos (ignore tous les joueurs immobiles), Goryo."},
 {id:5,fr:"Djinn",en:"Jinn",t:"Disjoncteur allumé : quand il te voit à plus de 3 m, il passe d'un coup à 2,5 m/s, puis ralentit près de toi. Disjoncteur coupé : vitesse normale.",b:"Ne coupe jamais le disjoncteur lui-même.",c:"Raiju : coupe le disjoncteur et garde ton électronique allumée."},
 {id:6,fr:"Cauchemar",en:"Mare",t:"Allume une lumière : il l'éteint parfois une ou deux secondes après. Il ne rallume jamais une lumière.",b:"Quitte sa pièce, ou en change, quand la lumière y est allumée.",c:"Goryo (reste dans sa pièce même allumée)."},
 {id:7,fr:"Revenant",en:"Revenant",t:"Caché, silencieux, électronique éteinte : pas très lents (1 m/s), puis 3 m/s d'un coup quand il te repère.",b:"Quand il te perd, il fonce jusqu'à ta dernière position, puis redevient lent.",c:"Thaye âgé, Hantu au chaud, Kormos, Deildegast."},
-{id:8,fr:"Ombre",en:"Shade",t:"Reste dans la même pièce qu'elle : elle ne peut pas lancer de chasse et interagit très peu.",b:"Très discrète, plus active quand vous êtes loin.",c:"Esprit (encens 180 s), Obambo calme, Goryo."},
-{id:9,fr:"Démon",en:"Demon",t:"Encens, puis chrono : une chasse est possible dès 60 s (90 s pour les autres).",b:"Le crucifix agit sur lui 50 % plus loin.",c:"Onryo (flammes), Thaye jeune, Gallu, Obambo agressif."},
+{id:8,fr:"Ombre",en:"Shade",t:"Reste dans la même pièce qu'elle : elle ne peut pas lancer de chasse et interagit très peu.",b:"Très discrète, plus active quand vous êtes loin. Au cercle d'invocation ou à la boîte à musique, elle n'apparaît qu'en ombre.",c:"Esprit (encens 180 s), Obambo calme, Goryo."},
+{id:9,fr:"Démon",en:"Demon",t:"Encens, puis chrono : une chasse est possible dès 60 s (90 s pour les autres).",b:"Le crucifix agit sur lui 50 % plus loin. Peut rechasser 20 s après la fin d'une chasse (25 s pour les autres).",c:"Onryo (flammes), Thaye jeune, Gallu, Obambo agressif."},
 {id:10,fr:"Yurei",en:"Yurei",t:"Encens dans sa pièce : il y reste bloqué 90 s. Mets du sel et des détecteurs aux sorties.",b:"Seul à fermer la porte d'entrée hors chasse ET hors événement fantôme.",c:"Goryo (peut sortir pendant les 90 s), Ombre."},
-{id:11,fr:"Oni",en:"Oni",t:"Ne fait jamais l'événement brume.",b:"Très visible pendant les chasses, très actif près des joueurs.",c:"Kormos (pas de brume non plus, mais jamais d'événement de poursuite)."},
+{id:11,fr:"Oni",en:"Oni",t:"Ne fait jamais l'événement brume.",b:"Très visible pendant les chasses, très actif près des joueurs. Visible environ 60 % du temps en chasse (environ 30 % pour les autres).",c:"Kormos (pas de brume non plus, mais jamais d'événement de poursuite)."},
 {id:12,fr:"Yokai",en:"Yokai",t:"En chasse, il n'entend ta voix qu'à environ 2,5 m : caché à 4 ou 5 m, parle, il ne vient pas vers toi.",b:"Hors chasse, parler près de lui le rend plus agressif.",c:"Kormos (réagit aux pas, pas à la voix)."},
-{id:13,fr:"Hantu",en:"Hantu",t:"Vitesse liée à la température : lent au chaud (environ 1,4 m/s), rapide au froid (environ 2,7 m/s). N'accélère pas en te voyant.",b:"Disjoncteur coupé : souffle froid visible pendant la chasse.",c:"Revenant, Obambo calme."},
+{id:13,fr:"Hantu",en:"Hantu",t:"Vitesse liée à la température : lent au chaud (environ 1,4 m/s), rapide au froid (environ 2,7 m/s). N'accélère pas en te voyant.",b:"Disjoncteur coupé : souffle froid visible pendant la chasse. Ne rallume jamais le disjoncteur.",c:"Revenant, Obambo calme."},
 {id:14,fr:"Goryo",en:"Goryo",t:"Ne fait que de courtes promenades : des détecteurs à plus de 4 m de sa pièce ne sonnent jamais hors chasse ni événement. Ne change jamais de pièce.",b:"Pas de test à 100 % sans preuves : on le garde quand tout le reste est éliminé.",c:"Banshee, Yurei, Ombre."},
 {id:15,fr:"Myling",en:"Myling",t:"Lampe allumée en chasse : elle clignote avant que tu entendes ses pas (audibles à environ 12 m au lieu de 20 m).",b:"Fait plus de bruits au micro parabolique.",c:"Raiju (accélère près de l'électronique), Revenant."},
 {id:16,fr:"Onryo",en:"Onryo",t:"Bougie allumée et crucifix côte à côte : il souffle la bougie au lieu de chasser, le crucifix ne brûle pas. Après la 3e flamme soufflée, il chasse.",b:"Rallume la bougie à chaque fois pour suivre le compte.",c:"Démon (chasse souvent, la flamme ne l'arrête pas)."},
@@ -227,7 +235,7 @@ const C=[
 {k:"ev_dots",t:"D.O.T.S.",o:[1,2,4,10,11,12,14,18,22,23,27,29,30],n:{e:[1,2,4,10,11,12,14,18,22,23,27,29,30]},m:1}
 ]},
 {c:"Vitesse et chasse",l:[
-{k:"los",t:"Accélère peu à peu quand il me voit",s:"Montée progressive en ligne de vue.",e:[7,13,22,23,30],n:{o:[7,13,22,23,28,30]}},
+{k:"los",t:"Accélère peu à peu quand il me voit",s:"Montée progressive en ligne de vue.",e:[7,13,22,23,30],n:{o:[5,7,13,22,23,26,28,30]}},
 {k:"norm",t:"Vitesse normale sans me voir, toute la chasse",s:"Comme ta marche, sans changement.",e:[7,22],z:[21],n:{e:[0,1,2,3,4,5,6,8,9,10,11,12,14,15,16,19]}},
 {k:"slow",t:"Nettement plus lent que la normale sans me voir",s:"Plus lent que ta marche.",o:[7,13,17,22,23,25,26,27,29,30],nz:[21],n:{e:[7]}},
 {k:"fast",t:"Nettement plus rapide que la normale sans me voir",o:[7,13,17,18,21,22,23,25,26,27,28,30],n:{e:[22],z:[21]}},
@@ -237,79 +245,86 @@ const C=[
 {k:"vary",t:"Vitesse différente d'une chasse à l'autre",s:"Sans changement de température ni d'électronique.",o:[17,21,23,25,27,30]},
 {k:"cold",t:"Plus rapide dans les pièces froides, lent au chaud",o:[13],n:{e:[13]}},
 {k:"breath",t:"Souffle froid visible en chasse",s:"Disjoncteur coupé.",o:[13],n:{e:[13]}},
+{k:"twop",t:"A poursuivi deux joueurs différents pendant la même chasse",s:"Tout le monde dans la maison.",e:[4]},
 {k:"jinn",t:"Fonce à 2,5 m/s en me voyant de loin, courant allumé",o:[5,18],n:{e:[5]}},
-{k:"ign",t:"M'a ignoré, immobile et visible à plus de 5 m",o:[4,28],n:{e:[28]}},
+{k:"ign",t:"M'a ignoré, immobile et visible à plus de 5 m",s:"Silencieux, électronique éteinte.",o:[4,28],n:{e:[28]}},
 {k:"steps",t:"Accélère vers le bruit de mes pas ou quand je cours",h:[28,26]},
-{k:"hide",t:"La chasse s'est arrêtée net quand il m'a atteint caché",s:"Cachette officielle. Barré : il m'a tué dans la cachette.",o:[29],n:{e:[29]}},
+{k:"hide",t:"La chasse s'est arrêtée net quand il m'a atteint caché",s:"Cachette officielle. Non : il m'a tué dans la cachette.",o:[29],n:{e:[29]}},
 {k:"nograce",t:"Chasse sans période de grâce, droit sur ma cachette",o:[29]},
-{k:"found",t:"M'a trouvé directement alors que j'étais caché",s:"Sans t'avoir vu entrer.",h:[22,29]},
+{k:"found",t:"Me trouve à chaque chasse, même caché et immobile",s:"Comme s'il savait toujours où tu es.",h:[22,29]},
 {k:"losfast",t:"Accélère très vite en me voyant, plus que d'habitude",h:[29,21]}
 ]},
 {c:"Lumières et courant",l:[
 {k:"lighton",t:"A allumé une lumière",s:"Lampe ou interrupteur, hors chasse.",e:[6]},
 {k:"instoff",t:"Éteint une lumière une ou deux secondes après que je l'ai allumée",h:[6]},
 {k:"leave",t:"Quitte sa pièce quand la lumière y est allumée",h:[6]},
-{k:"fuse",t:"A coupé le disjoncteur lui-même",s:"Pas une surcharge de lumières.",e:[5]}
+{k:"fuse",t:"A coupé le disjoncteur lui-même",s:"Pas une surcharge de lumières.",e:[5]},
+{k:"fuseon",t:"A rallumé le disjoncteur lui-même",e:[13]}
 ]},
 {c:"Événements et apparence",l:[
 {k:"mist",t:"Événement brume",e:[11,28],n:{h:[11,28]}},
 {k:"chase",t:"Événement de poursuite",s:"Il te suit, les portes se ferment.",e:[28],n:{h:[28]}},
-{k:"photo",t:"Disparaît quand je le photographie en événement",s:"Barré : il est resté visible sur la photo.",o:[2],n:{e:[2]}},
+{k:"photo",t:"Disparaît quand je le photographie en événement",s:"Non : il est resté visible sur la photo.",o:[2],n:{e:[2]}},
+{k:"shadow",t:"N'apparaît qu'en ombre au cercle d'invocation ou à la boîte à musique",s:"Non : l'entité est apparue en entier.",o:[8],n:{e:[8]}},
 {k:"shape",t:"Change d'apparence pendant une chasse",o:[19]},
-{k:"vis",t:"Très visible en chasse, clignote peu",h:[11]},
+{k:"six",t:"Empreinte à 6 doigts",s:"À la lampe UV, quand les empreintes font partie des preuves de la partie.",o:[19]},
+{k:"vis",t:"Très visible en chasse, clignote peu",h:[11,22]},
 {k:"invis",t:"Presque invisible en chasse",h:[2]},
 {k:"male",t:"Le journal indique une entité masculine",e:[4,26]},
 {k:"scream",t:"Cri aigu au micro parabolique",o:[4]},
-{k:"target",t:"Vise toujours le même joueur",s:"Barré : il s'en prend à plusieurs joueurs.",h:[4],n:{e:[4]}}
+{k:"target",t:"Vise toujours le même joueur",s:"Non : il s'en prend à plusieurs joueurs.",h:[4],n:{e:[4]}}
 ]},
 {c:"Sel, portes et déplacements",l:[
-{k:"salt",t:"Marche dans le sel",s:"Barré : passage prouvé sur le sel, tas intact.",e:[1],n:{o:[1,25]}},
-{k:"salt3",t:"Le sel de niveau III le ralentit en chasse",e:[1],n:{o:[1]}},
+{k:"salt",t:"Marche dans le sel",s:"Non : passage prouvé sur le sel, tas intact.",e:[1],n:{o:[1,25]}},
+{k:"salt3",t:"Le sel de niveau III le ralentit en chasse",e:[1],n:{o:[1,25]}},
 {k:"tp",t:"EMF aux pieds d'un joueur loin de sa pièce, sans interaction",h:[1]},
 {k:"door",t:"Ferme la porte d'entrée hors chasse et hors événement",o:[10]},
+{k:"door2",t:"A laissé une porte entrouverte",s:"Hors chasse : une porte poussée de quelques degrés seulement. Le Yurei ouvre ou ferme toujours une porte en entier.",e:[10]},
 {k:"far",t:"Déclenche un détecteur à plus de 4 m de sa pièce",s:"Hors chasse et hors événement.",e:[14],n:{h:[14]}},
 {k:"room",t:"A changé de pièce favorite",e:[4,14]},
 {k:"same",t:"A lancé une chasse alors que j'étais dans sa pièce, avec lui",e:[8]},
-{k:"shy",t:"Rien ne bouge quand je suis dans sa pièce",h:[8]},
+{k:"shy",t:"Rien ne bouge quand je suis dans sa pièce",s:"Reste plusieurs minutes avec lui dans sa pièce.",h:[8]},
 {k:"two",t:"Deux interactions presque en même temps à deux endroits",h:[17]}
 ]},
 {c:"Encens, crucifix et flammes",l:[
 {k:"i60",t:"Chasse entre 60 et 90 s après l'encens",o:[9]},
 {k:"i90",t:"Chasse entre 90 et 180 s après l'encens",e:[0]},
 {k:"i180",t:"Aucune chasse pendant 180 s après l'encens, plusieurs fois",h:[0]},
-{k:"iout",t:"Sort de sa pièce dans les 90 s après l'encens",s:"Sel écrasé ou détecteur, hors événement. Barré : resté bloqué 90 s.",e:[10],n:{h:[10,14]}},
+{k:"iout",t:"Sort de sa pièce dans les 90 s après l'encens",s:"Sel écrasé ou détecteur, hors événement. Non : resté bloqué 90 s.",e:[10],n:{h:[10,14]}},
 {k:"blind",t:"Aveuglé par l'encens bien plus longtemps que d'habitude",s:"En chasse.",o:[21],n:{e:[21]}},
 {k:"rage",t:"Plus rapide après un crucifix, de l'encens ou du sel",o:[25],n:{e:[25]}},
 {k:"crux",t:"Crucifix brûlé plus loin que sa portée normale",o:[9]},
-{k:"flame",t:"Souffle une flamme au lieu de chasser",s:"Barré : il a chassé avec une flamme allumée tout près.",o:[16],n:{e:[16]}},
+{k:"flame",t:"Souffle une flamme au lieu de chasser",s:"Non : il a chassé avec une flamme allumée tout près.",o:[16],n:{e:[16]}},
 {k:"cruxfl",t:"Crucifix brûlé alors qu'une flamme était allumée tout près",e:[16]},
 {k:"third",t:"Chasse juste après la 3e flamme soufflée",h:[16]}
 ]},
 {c:"Sons et électronique",l:[
-{k:"lamp",t:"Ma lampe clignote avant que j'entende ses pas en chasse",s:"Barré : ses pas entendus d'abord.",o:[15],n:{e:[15]}},
+{k:"lamp",t:"Ma lampe clignote avant que j'entende ses pas en chasse",s:"Non : ses pas entendus d'abord.",o:[15],n:{e:[15]}},
 {k:"elec",t:"Plus rapide en passant près d'électronique allumée",o:[18],n:{e:[18]}},
 {k:"voice",t:"N'a pas réagi à ma voix à 4 ou 5 m en chasse",h:[12,28]}
 ]},
 {c:"Objets et temps",l:[
-{k:"multi",t:"Projette plusieurs objets d'un coup",o:[3]},
+{k:"polthunt",t:"En chasse, projette sans arrêt les objets autour de lui",s:"Non : il est passé près d'objets plusieurs secondes sans rien lancer.",o:[3],n:{e:[3]}},
+{k:"cooldown",t:"Rechasse moins de 25 s après la fin de la chasse précédente",o:[9]},
+{k:"multi",t:"Projette plusieurs objets d'un coup",s:"Fais un tas d'une dizaine d'objets dans sa pièce.",o:[3]},
 {k:"objslow",t:"Plus lent après qu'on a déplacé beaucoup d'objets",o:[30],n:{e:[30]}},
-{k:"age",t:"Ralentit au fil de la partie, sans déplacer d'objets",s:"Barré : resté longtemps près de lui, toujours aussi rapide.",o:[23],n:{e:[23]}},
+{k:"age",t:"Ralentit au fil de la partie, sans déplacer d'objets",s:"Non : resté longtemps près de lui, toujours aussi rapide.",o:[23],n:{e:[23]}},
 {k:"cycle",t:"Activité et vitesse qui alternent toutes les 2 min",s:"Calé sur la première ouverture de la porte.",o:[27],n:{e:[27]}}
 ]},
 {c:"Le Mimic",l:[
-{k:"orb",t:"Orbe visible à la caméra (partie à 0 preuve)",s:"Barré : aucun orbe après une longue observation.",o:[20],m:1,n:{e:[20]}}
+{k:"orb",t:"Orbe visible à la caméra (partie à 0 preuve)",s:"Non : aucun orbe après une longue observation.",o:[20],m:1,n:{e:[20]}}
 ]},
 {c:"Seuils de chasse",sane:1,l:[
 {k:"th50",t:"A chassé au-dessus de 50 % de santé moyenne",o:[4,6,9,12,16,18,23,25,26,27,28]},
-{k:"th35",t:"Aucune chasse avant 35 % de santé moyenne",h:[8,22,27]}
+{k:"th35",t:"Aucune chasse avant 35 % de santé moyenne",s:"Non : il a chassé au-dessus de 35 %."}
 ]}
 ];
 
 const I={
-fr:{u:{tag:"Le journal sans preuves.",intro:"Comme dans le jeu : coche ce qu'il fait, barre ce qu'il ne fait pas. Les entités impossibles se barrent. Les tests simples sont sous le journal. Clique sur une entité pour la barrer à la main.",
+fr:{u:{hideOff:"Masquer les choix grisés",rNoEv:"Impossible à 0 preuve : pas d'empreintes.",noSimple:"Plus aucun test simple ne concerne les entités restantes.",tag:"Le journal sans preuves.",intro:"Réponds Oui ou Non à ce que tu observes : les entités impossibles se barrent dans le journal. Les tests simples sont sous le journal. Clique sur une entité pour la barrer à la main.",
 mim:"Le Mimic copie tout",reset:"Nouvelle partie",settings:"Paramètres de la partie",searchLbl:"Chercher un signe",searchPh:"lumière, brume, vitesse, sel…",
 poss1:"entité possible",possN:"entités possibles",findPh:"Trouver le nom en anglais : Jumeaux, Wraith…",findHelp:"Tape un nom en français ou en anglais.",noMatch:"Aucune entité ne correspond.",none24:"None, ce n'est pas une entité.",
-simpleH:"Tests simples",simpleP:"Un objet à poser ou à utiliser. Réponds Oui ou Non ; clique à nouveau pour effacer. Les tests devenus inutiles sont grisés, en bas de chaque groupe.",
+simpleH:"Tests simples",simpleP:"Les tests à faire avec un objet ou une mise en place. Réponds Oui ou Non ; clique à nouveau pour effacer. Seuls les tests qui concernent encore une entité possible apparaissent.",
 greyed:n=>n+" test"+(n>1?"s":"")+" grisé"+(n>1?"s":"")+" : inutile"+(n>1?"s":"")+" ou impossible"+(n>1?"s":"")+" avec tes paramètres.",
 testsH:"Tests pour départager",testsN:n=>"Tests pour départager les "+n+" restantes",testLb:"Test : ",confuse:"À ne pas confondre avec :",empty:"Décoche une case pour retrouver des entités.",
 note:"Valeurs à jour de novembre 2026 (Deildegast incluse). Vitesse normale : 1,7 m/s, montée à environ 2,8 m/s quand l'entité te voit. « Garde » = seules ces entités restent, toutes les autres sont barrées ; « Exclut » = barre celles listées.",
@@ -323,15 +338,15 @@ iZero:"Santé mentale bloquée à 0 % : les seuils de chasse sont masqués, et l
 eq:{sel:"Sel",encens:"Encens",crucifix:"Crucifix",bougie:"Bougie et briquet",photo:"Appareil photo",micro:"Micro parabolique",detect:"Détecteurs de mouvement",camera:"Caméra vidéo"},
 fam:{P:["Preuves","Les preuves classiques, quand ta partie en donne."],H:["Hors chasse","Ce que tu remarques pendant l'enquête, sans chasse en cours."],C:["En chasse","Sa vitesse, son apparence, ce que tu entends. Plus risqué."],D:["Sur la durée","À confirmer sur plusieurs minutes ou plusieurs chasses."]}},
 
-en:{u:{tag:"The no-evidence journal.",intro:"Just like in the game: tick what it does, cross out what it doesn't. Impossible ghosts get crossed out. Simple tests are below the journal. Click a ghost to cross it out by hand.",
+en:{u:{hideOff:"Hide greyed-out choices",rNoEv:"Impossible with 0 evidence: no prints.",noSimple:"No simple test concerns the remaining ghosts anymore.",tag:"The no-evidence journal.",intro:"Answer Yes or No to what you observe: impossible ghosts get crossed out in the journal. Simple tests are below the journal. Click a ghost to cross it out by hand.",
 mim:"The Mimic copies everything",reset:"New game",settings:"Game settings",searchLbl:"Search a sign",searchPh:"light, mist, speed, salt…",
 poss1:"possible ghost",possN:"possible ghosts",findPh:"Find a name: Twins, Esprit…",findHelp:"Type a name in English or French.",noMatch:"No ghost matches.",none24:"None, not a ghost.",
-simpleH:"Simple tests",simpleP:"An item to place or use. Answer Yes or No; click again to clear. Tests that became useless are greyed out at the bottom of each group.",
+simpleH:"Simple tests",simpleP:"Tests to run with an item or a setup. Answer Yes or No; click again to clear. Only tests that still concern a possible ghost are shown.",
 greyed:n=>n+" test"+(n>1?"s":"")+" greyed out: useless or impossible with your settings.",
 testsH:"Tests to tell them apart",testsN:n=>"Tests to tell the "+n+" remaining apart",testLb:"Test: ",confuse:"Don't confuse with:",empty:"Untick a box to bring ghosts back.",
 note:"Values as of November 2026 (Deildegast included). Normal speed: 1.7 m/s, up to about 2.8 m/s when the ghost sees you. “Keeps” = only these ghosts remain, all others are crossed out; “Rules out” = crosses out the listed ones.",
 v1:x=>"Only one left: "+x+". Check with its test before you lock it in.",v0:"No ghost left: one of your answers is probably wrong.",
-leg1:"1 click: it does it",leg2:"2 clicks: it doesn't",leg3:"3 clicks: clear",yes:"Yes",no:"No",chk:"Ticked:",strk:"Crossed:",keep:"keeps",excl:"rules out",
+leg1:"1 click: it does it",leg2:"2 clicks: it doesn't",leg3:"3 clicks: clear",yes:"Yes",no:"No",chk:"Ticked:",strk:"No:",keep:"keeps",excl:"rules out",
 useless:"Useless: only concerns ghosts already crossed out.",evfull:n=>"You already have your "+n+" piece"+(n>1?"s":"")+" of evidence out of "+n+".",answers:n=>n+" answer"+(n>1?"s":""),signs:n=>n+" signs",
 manual:"Crossed out by hand",notdo:"Doesn't: ",clickStrike:"Click to cross out",rFuse:"Impossible: fuse box broken.",rSolo:"Impossible in solo.",rEv:"Not usable when evidence is given.",rMiss:"You're missing: ",or:" or ",and:" and ",
 lang:"Language",lStart:"Starting sanity",lPills:"Sanity pills",oNone:"None",oYes:"Yes",lDrain:"Sanity drain",oSlow:"Slow",oNormal:"Normal",oFast:"Fast",lEv:"Evidence given",lFuse:"Fuse box",oFuseOk:"Working",oFuseBroken:"Broken, no power",lPl:"Players",oSolo:"Solo",oGroup:"Group",eqTitle:"Available equipment",
@@ -340,35 +355,35 @@ iZero:"Sanity locked at 0%: hunt thresholds are hidden and the Moroi is always f
 eq:{sel:"Salt",encens:"Incense",crucifix:"Crucifix",bougie:"Candle and lighter",photo:"Photo camera",micro:"Parabolic microphone",detect:"Motion sensors",camera:"Video camera"},
 fam:{P:["Evidence","The classic evidence, when your game gives some."],H:["Outside hunts","What you notice while investigating, with no hunt going on."],C:["During hunts","Its speed, its look, what you hear. Riskier."],D:["Over time","To confirm over several minutes or several hunts."]},
 cat:["Evidence","Speed and hunts","Lights and power","Events and appearance","Salt, doors and movement","Incense, crucifix and flames","Sounds and electronics","Objects and time","The Mimic","Hunt thresholds"],
-s:{ev_emf:["EMF level 5"],ev_sb:["Spirit Box"],ev_uv:["Fingerprints (UV)"],ev_orb:["Ghost orb","The Mimic always shows them, even though it's not one of its evidences."],ev_wr:["Ghost writing"],ev_fr:["Freezing temperatures"],ev_dots:["D.O.T.S."],
+s:{twop:["Chased two different players in the same hunt","Everyone inside the house."],fuseon:["Turned the fuse box back on itself"],shadow:["Only appears as a shadow at the summoning circle or music box","No: the ghost appeared in full."],polthunt:["During hunts, keeps throwing the objects around it","No: it passed near objects for several seconds without throwing anything."],cooldown:["Hunts again less than 25 s after the previous hunt ended"],door2:["Left a door ajar","Outside hunts: a door pushed only a few degrees. The Yurei always opens or closes a door fully."],six:["6-finger print","With the UV light, when fingerprints are part of the game's evidence."],ev_emf:["EMF level 5"],ev_sb:["Spirit Box"],ev_uv:["Fingerprints (UV)"],ev_orb:["Ghost orb","The Mimic always shows them, even though it's not one of its evidences."],ev_wr:["Ghost writing"],ev_fr:["Freezing temperatures"],ev_dots:["D.O.T.S."],
 los:["Speeds up gradually when it sees me","Gradual increase with line of sight."],norm:["Normal speed without seeing me, the whole hunt","Like your walking speed, no change."],slow:["Clearly slower than normal without seeing me","Slower than your walk."],fast:["Clearly faster than normal without seeing me"],
 jump:["Goes from very slow to very fast in one go","Instant jump when it spots you."],brake:["Slows down clearly as it gets close to me"],still:["Its speed changes when I stand still or move again","Within 10 m of it."],vary:["Different speed from one hunt to the next","Without any change in temperature or electronics."],
-cold:["Faster in cold rooms, slow in warm ones"],breath:["Cold breath visible during hunts","Fuse box off."],jinn:["Rushes at 2.5 m/s when it sees me from afar, power on"],ign:["Ignored me while I stood still and visible more than 5 m away"],steps:["Speeds up toward my footsteps or when I run"],
-hide:["The hunt stopped dead when it reached me in hiding","Official hiding spot. Crossed: it killed me in the hiding spot."],nograce:["Hunt with no grace period, straight to my hiding spot"],found:["Found me right away while I was hiding","Without seeing you go in."],losfast:["Speeds up very fast when it sees me, more than usual"],
+cold:["Faster in cold rooms, slow in warm ones"],breath:["Cold breath visible during hunts","Fuse box off."],jinn:["Rushes at 2.5 m/s when it sees me from afar, power on"],ign:["Ignored me while I stood still and visible more than 5 m away","Silent, electronics off."],steps:["Speeds up toward my footsteps or when I run"],
+hide:["The hunt stopped dead when it reached me in hiding","Official hiding spot. No: it killed me in the hiding spot."],nograce:["Hunt with no grace period, straight to my hiding spot"],found:["Finds me every hunt, even hidden and still","As if it always knew where you are."],losfast:["Speeds up very fast when it sees me, more than usual"],
 lighton:["Turned a light on","Lamp or switch, outside hunts."],instoff:["Turns a light off one or two seconds after I turned it on"],leave:["Leaves its room when the light there is on"],fuse:["Turned the fuse box off itself","Not a light overload."],
-mist:["Mist event"],chase:["Chase event","It follows you, doors close."],photo:["Vanishes when I photograph it during an event","Crossed: it stayed visible on the photo."],shape:["Changes appearance during a hunt"],vis:["Very visible during hunts, rarely flickers"],invis:["Almost invisible during hunts"],
-male:["The journal shows a male ghost"],scream:["High-pitched scream on the parabolic microphone"],target:["Always goes after the same player","Crossed: it goes after several players."],
-salt:["Steps in salt","Crossed: proven walk over salt, pile untouched."],salt3:["Tier III salt slows it during hunts"],tp:["EMF at a player's feet far from its room, with no interaction"],door:["Closes the front door outside hunts and events"],
-far:["Triggers a sensor more than 4 m from its room","Outside hunts and events."],room:["Changed favourite room"],same:["Started a hunt while I was in its room with it"],shy:["Nothing moves when I'm in its room"],two:["Two interactions almost at once in two places"],
-i60:["Hunt between 60 and 90 s after incense"],i90:["Hunt between 90 and 180 s after incense"],i180:["No hunt for 180 s after incense, several times"],iout:["Leaves its room within 90 s after incense","Salt crushed or sensor, outside events. Crossed: stayed stuck for 90 s."],
-blind:["Blinded by incense much longer than usual","During hunts."],rage:["Faster after a crucifix, incense or salt"],crux:["Crucifix burned further than its normal range"],flame:["Blows out a flame instead of hunting","Crossed: it hunted with a lit flame right next to it."],
-cruxfl:["Crucifix burned while a flame was lit right next to it"],third:["Hunt right after the 3rd flame blown out"],lamp:["My flashlight flickers before I hear its steps during hunts","Crossed: steps heard first."],elec:["Faster when passing near active electronics"],voice:["Didn't react to my voice at 4 or 5 m during a hunt"],
-multi:["Throws several objects at once"],objslow:["Slower after we moved many objects"],age:["Slows down as the game goes on, without moving objects","Crossed: stayed near it for a long time, still just as fast."],cycle:["Activity and speed alternating every 2 min","Timed from the first time the door was opened."],
-orb:["Orb visible on camera (0-evidence game)","Crossed: no orb after a long watch."],th50:["Hunted above 50% average sanity"],th35:["No hunt before 35% average sanity"]},
+mist:["Mist event"],chase:["Chase event","It follows you, doors close."],photo:["Vanishes when I photograph it during an event","No: it stayed visible on the photo."],shape:["Changes appearance during a hunt"],vis:["Very visible during hunts, rarely flickers"],invis:["Almost invisible during hunts"],
+male:["The journal shows a male ghost"],scream:["High-pitched scream on the parabolic microphone"],target:["Always goes after the same player","No: it goes after several players."],
+salt:["Steps in salt","No: proven walk over salt, pile untouched."],salt3:["Tier III salt slows it during hunts"],tp:["EMF at a player's feet far from its room, with no interaction"],door:["Closes the front door outside hunts and events"],
+far:["Triggers a sensor more than 4 m from its room","Outside hunts and events."],room:["Changed favourite room"],same:["Started a hunt while I was in its room with it"],shy:["Nothing moves when I'm in its room","Stay several minutes with it in its room."],two:["Two interactions almost at once in two places"],
+i60:["Hunt between 60 and 90 s after incense"],i90:["Hunt between 90 and 180 s after incense"],i180:["No hunt for 180 s after incense, several times"],iout:["Leaves its room within 90 s after incense","Salt crushed or sensor, outside events. No: stayed stuck for 90 s."],
+blind:["Blinded by incense much longer than usual","During hunts."],rage:["Faster after a crucifix, incense or salt"],crux:["Crucifix burned further than its normal range"],flame:["Blows out a flame instead of hunting","No: it hunted with a lit flame right next to it."],
+cruxfl:["Crucifix burned while a flame was lit right next to it"],third:["Hunt right after the 3rd flame blown out"],lamp:["My flashlight flickers before I hear its steps during hunts","No: steps heard first."],elec:["Faster when passing near active electronics"],voice:["Didn't react to my voice at 4 or 5 m during a hunt"],
+multi:["Throws several objects at once","Make a pile of about ten objects in its room."],objslow:["Slower after we moved many objects"],age:["Slows down as the game goes on, without moving objects","No: stayed near it for a long time, still just as fast."],cycle:["Activity and speed alternating every 2 min","Timed from the first time the door was opened."],
+orb:["Orb visible on camera (0-evidence game)","No: no orb after a long watch."],th50:["Hunted above 50% average sanity"],th35:["No hunt before 35% average sanity","No: it hunted above 35%."]},
 g:{0:["Incense, then timer: no hunt before 180 s (90 s for the others, 60 s for the Demon). Repeat 2 or 3 times.","No other sign: normal speed and behaviour.","Shade (presence test), Demon (60 s)."],
 1:["Walks over salt without disturbing it. Prove the walk: hunt, ghost event or sensor right behind the line. No crucifix or incense before the test.","Teleport: EMF at a player's feet, far from its room, with no interaction.","Enraged Gallu (always crushes the first pile), Mimic."],
 2:["Photo during a ghost event: it vanishes at once and doesn't show on the photo.","Almost always invisible during hunts.","Obake (stays on the photo)."],
-3:["Make a pile of about ten objects in its room: it throws several at once.","Throws objects almost non-stop during hunts.","The Twins (two interactions in two places), Deildegast."],
+3:["Make a pile of about ten objects in its room: it throws several at once.","Throws objects almost non-stop during hunts. During hunts it tries to throw an item near it every 0.5 s.","The Twins (two interactions in two places), Deildegast."],
 4:["Parabolic microphone: distinctive high-pitched scream. In a group, during a hunt, it ignores a visible player who isn't its target.","Always female. Never changes room but roams far to follow its target.","Kormos (ignores all still players), Goryo."],
 5:["Fuse box on: when it sees you more than 3 m away, it jumps to 2.5 m/s, then slows near you. Fuse box off: normal speed.","Never turns the fuse box off itself.","Raiju: turn the fuse box off and keep your electronics on."],
 6:["Turn a light on: it sometimes turns it off one or two seconds later. It never turns a light on.","Leaves or changes room when the light there is on.","Goryo (stays in its room even when lit)."],
 7:["Hidden, silent, electronics off: very slow steps (1 m/s), then 3 m/s in one go when it spots you.","When it loses you, it rushes to your last position, then slows down again.","Old Thaye, Hantu in warm rooms, Kormos, Deildegast."],
-8:["Stay in the same room as it: it can't start a hunt and barely interacts.","Very shy, more active when you're far away.","Spirit (incense 180 s), calm Obambo, Goryo."],
-9:["Incense, then timer: a hunt is possible from 60 s (90 s for the others).","The crucifix works on it 50% further.","Onryo (flames), young Thaye, Gallu, aggressive Obambo."],
+8:["Stay in the same room as it: it can't start a hunt and barely interacts.","Very shy, more active when you're far away. At the summoning circle or music box, it only appears as a shadow.","Spirit (incense 180 s), calm Obambo, Goryo."],
+9:["Incense, then timer: a hunt is possible from 60 s (90 s for the others).","The crucifix works on it 50% further. Can hunt again 20 s after a hunt ends (25 s for others).","Onryo (flames), young Thaye, Gallu, aggressive Obambo."],
 10:["Incense in its room: it stays stuck there for 90 s. Put salt and sensors at the exits.","Only ghost that closes the front door outside hunts AND outside ghost events.","Goryo (can leave during the 90 s), Shade."],
-11:["Never does the mist event.","Very visible during hunts, very active near players.","Kormos (no mist either, but never a chase event)."],
+11:["Never does the mist event.","Very visible during hunts, very active near players. Visible about 60% of the time during hunts (about 30% for others).","Kormos (no mist either, but never a chase event)."],
 12:["During hunts it only hears your voice at about 2.5 m: hidden 4 or 5 m away, talk, it doesn't come to you.","Outside hunts, talking near it makes it more aggressive.","Kormos (reacts to steps, not voice)."],
-13:["Speed tied to temperature: slow in warm rooms (about 1.4 m/s), fast in cold ones (about 2.7 m/s). Doesn't speed up when it sees you.","Fuse box off: cold breath visible during hunts.","Revenant, calm Obambo."],
+13:["Speed tied to temperature: slow in warm rooms (about 1.4 m/s), fast in cold ones (about 2.7 m/s). Doesn't speed up when it sees you.","Fuse box off: cold breath visible during hunts. Never turns the fuse box back on.","Revenant, calm Obambo."],
 14:["Only does short roams: sensors more than 4 m from its room never trigger outside hunts or events. Never changes room.","No 100% test without evidence: keep it when everything else is ruled out.","Banshee, Yurei, Shade."],
 15:["Flashlight on during a hunt: it flickers before you hear its steps (heard at about 12 m instead of 20 m).","Makes more sounds on the parabolic microphone.","Raiju (speeds up near electronics), Revenant."],
 16:["Lit candle and crucifix side by side: it blows out the candle instead of hunting, the crucifix doesn't burn. After the 3rd flame blown out, it hunts.","Relight the candle each time to keep count.","Demon (hunts often, the flame doesn't stop it)."],
@@ -386,15 +401,15 @@ g:{0:["Incense, then timer: no hunt before 180 s (90 s for the others, 60 s for 
 29:["Slow base speed (about 1.53 m/s). When it sees you, it speeds up faster than any other ghost (about 2.53 m/s in 9 s). If it reaches you in an official hiding spot, the hunt stops dead.","The next hunt starts with no grace period, straight to your hiding spot.","The Twins (slow speed), Moroi."],
 30:["3 m/s at the start of each hunt, minus 0.1 m/s for each different house object moved before the hunt (minimum 0.4). Doesn't speed up when it sees you.","The count resets after each hunt or burned crucifix.","Revenant, Deogen, Thaye, Moroi."]}},
 
-de:{u:{tag:"Das Journal ohne Beweise.",intro:"Wie im Spiel: Hake ab, was es tut, streiche, was es nicht tut. Unmögliche Geister werden durchgestrichen. Die einfachen Tests stehen unter dem Journal. Klicke auf einen Geist, um ihn von Hand zu streichen.",
+de:{u:{hideOff:"Ausgegraute Optionen ausblenden",rNoEv:"Bei 0 Beweisen unmöglich: keine Abdrücke.",noSimple:"Kein einfacher Test betrifft noch die übrigen Geister.",tag:"Das Journal ohne Beweise.",intro:"Antworte Ja oder Nein auf das, was du beobachtest: Unmögliche Geister werden im Journal gestrichen. Die einfachen Tests stehen unter dem Journal. Klicke auf einen Geist, um ihn von Hand zu streichen.",
 mim:"Der Mimic kopiert alles",reset:"Neues Spiel",settings:"Spieleinstellungen",searchLbl:"Zeichen suchen",searchPh:"Licht, Nebel, Tempo, Salz…",
 poss1:"möglicher Geist",possN:"mögliche Geister",findPh:"Namen finden: Twins, Esprit…",findHelp:"Gib einen Namen auf Englisch oder Französisch ein.",noMatch:"Kein Geist passt.",none24:"None, kein Geist.",
-simpleH:"Einfache Tests",simpleP:"Ein Gegenstand zum Platzieren oder Benutzen. Antworte Ja oder Nein; nochmal klicken zum Löschen. Nutzlos gewordene Tests sind ausgegraut, unten in jeder Gruppe.",
+simpleH:"Einfache Tests",simpleP:"Tests mit einem Gegenstand oder Aufbau. Antworte Ja oder Nein; nochmal klicken zum Löschen. Es erscheinen nur Tests, die noch einen möglichen Geist betreffen.",
 greyed:n=>n+" Test"+(n>1?"s":"")+" ausgegraut: nutzlos oder mit deinen Einstellungen unmöglich.",
 testsH:"Tests zum Unterscheiden",testsN:n=>"Tests zum Unterscheiden der "+n+" übrigen",testLb:"Test: ",confuse:"Nicht verwechseln mit:",empty:"Entferne einen Haken, um Geister zurückzuholen.",
 note:"Stand November 2026 (inklusive Deildegast). Normales Tempo: 1,7 m/s, bis etwa 2,8 m/s, wenn der Geist dich sieht. „Behält“ = nur diese Geister bleiben, alle anderen werden gestrichen; „Schließt aus“ = streicht die genannten.",
 v1:x=>"Nur noch einer übrig: "+x+". Prüfe ihn mit seinem Test, bevor du ihn einträgst.",v0:"Kein Geist mehr möglich: Eine deiner Antworten ist wohl falsch.",
-leg1:"1 Klick: tut es",leg2:"2 Klicks: tut es nicht",leg3:"3 Klicks: löschen",yes:"Ja",no:"Nein",chk:"Abgehakt:",strk:"Gestrichen:",keep:"behält",excl:"schließt aus",
+leg1:"1 Klick: tut es",leg2:"2 Klicks: tut es nicht",leg3:"3 Klicks: löschen",yes:"Ja",no:"Nein",chk:"Abgehakt:",strk:"Nein:",keep:"behält",excl:"schließt aus",
 useless:"Nutzlos: betrifft nur bereits gestrichene Geister.",evfull:n=>"Du hast schon deine "+n+" von "+n+" Beweisen.",answers:n=>n+" Antwort"+(n>1?"en":""),signs:n=>n+" Zeichen",
 manual:"Von Hand gestrichen",notdo:"Tut es nicht: ",clickStrike:"Klicken zum Streichen",rFuse:"Unmöglich: Sicherungskasten kaputt.",rSolo:"Allein unmöglich.",rEv:"Nicht nutzbar, wenn Beweise gegeben werden.",rMiss:"Dir fehlt: ",or:" oder ",and:" und ",
 lang:"Sprache",lStart:"Start-Verstand",lPills:"Verstandspillen",oNone:"Keine",oYes:"Ja",lDrain:"Verstandsverlust",oSlow:"Langsam",oNormal:"Normal",oFast:"Schnell",lEv:"Gegebene Beweise",lFuse:"Sicherungskasten",oFuseOk:"Funktioniert",oFuseBroken:"Kaputt, kein Strom",lPl:"Spieler",oSolo:"Allein",oGroup:"Gruppe",eqTitle:"Verfügbare Ausrüstung",
@@ -403,35 +418,35 @@ iZero:"Verstand fest bei 0 %: Jagdschwellen sind ausgeblendet, der Moroi ist imm
 eq:{sel:"Salz",encens:"Räucherstäbchen",crucifix:"Kruzifix",bougie:"Kerze und Feuerzeug",photo:"Fotokamera",micro:"Parabolmikrofon",detect:"Bewegungsmelder",camera:"Videokamera"},
 fam:{P:["Beweise","Die klassischen Beweise, wenn dein Spiel welche gibt."],H:["Außerhalb der Jagd","Was dir bei der Untersuchung auffällt, ohne laufende Jagd."],C:["Während der Jagd","Tempo, Aussehen, was du hörst. Riskanter."],D:["Über die Zeit","Über mehrere Minuten oder Jagden bestätigen."]},
 cat:["Beweise","Tempo und Jagd","Licht und Strom","Ereignisse und Aussehen","Salz, Türen und Bewegung","Räucherwerk, Kruzifix und Flammen","Geräusche und Elektronik","Gegenstände und Zeit","Der Mimic","Jagdschwellen"],
-s:{ev_emf:["EMF Stufe 5"],ev_sb:["Spirit Box"],ev_uv:["Fingerabdrücke (UV)"],ev_orb:["Geisterorb","Der Mimic zeigt sie immer, obwohl es keiner seiner Beweise ist."],ev_wr:["Geisterschrift"],ev_fr:["Eiskalte Temperaturen"],ev_dots:["D.O.T.S."],
+s:{twop:["Hat in derselben Jagd zwei verschiedene Spieler verfolgt","Alle im Haus."],fuseon:["Hat den Sicherungskasten selbst wieder eingeschaltet"],shadow:["Erscheint am Beschwörungskreis oder bei der Spieluhr nur als Schatten","Nein: Der Geist erschien vollständig."],polthunt:["Wirft bei der Jagd ständig Gegenstände um sich","Nein: Er ging mehrere Sekunden an Gegenständen vorbei, ohne etwas zu werfen."],cooldown:["Jagt weniger als 25 s nach dem Ende der vorherigen Jagd erneut"],door2:["Hat eine Tür angelehnt gelassen","Außerhalb der Jagd: eine Tür nur ein paar Grad bewegt. Der Yurei öffnet oder schließt eine Tür immer ganz."],six:["Abdruck mit 6 Fingern","Mit der UV-Lampe, wenn Fingerabdrücke zu den Beweisen der Runde gehören."],ev_emf:["EMF Stufe 5"],ev_sb:["Spirit Box"],ev_uv:["Fingerabdrücke (UV)"],ev_orb:["Geisterorb","Der Mimic zeigt sie immer, obwohl es keiner seiner Beweise ist."],ev_wr:["Geisterschrift"],ev_fr:["Eiskalte Temperaturen"],ev_dots:["D.O.T.S."],
 los:["Wird allmählich schneller, wenn er mich sieht","Langsamer Anstieg bei Sichtkontakt."],norm:["Normales Tempo ohne mich zu sehen, die ganze Jagd","Wie dein Gehtempo, ohne Änderung."],slow:["Deutlich langsamer als normal, ohne mich zu sehen","Langsamer als dein Gehen."],fast:["Deutlich schneller als normal, ohne mich zu sehen"],
 jump:["Wechselt schlagartig von sehr langsam zu sehr schnell","Sofortiger Sprung, wenn er dich entdeckt."],brake:["Wird deutlich langsamer, wenn er mir nahe kommt"],still:["Sein Tempo ändert sich, wenn ich stehen bleibe oder losgehe","Innerhalb von 10 m."],vary:["Anderes Tempo von Jagd zu Jagd","Ohne Änderung von Temperatur oder Elektronik."],
-cold:["Schneller in kalten Räumen, langsam in warmen"],breath:["Kalter Atem während der Jagd sichtbar","Sicherungskasten aus."],jinn:["Rast mit 2,5 m/s los, wenn er mich von weitem sieht, Strom an"],ign:["Hat mich ignoriert, still und sichtbar auf mehr als 5 m"],steps:["Wird schneller zu meinen Schritten hin oder wenn ich renne"],
-hide:["Die Jagd endete sofort, als er mich im Versteck erreichte","Offizielles Versteck. Gestrichen: Er hat mich im Versteck getötet."],nograce:["Jagd ohne Schonfrist, direkt zu meinem Versteck"],found:["Hat mich sofort gefunden, obwohl ich versteckt war","Ohne dich hineingehen zu sehen."],losfast:["Wird sehr schnell schneller, wenn er mich sieht, mehr als üblich"],
+cold:["Schneller in kalten Räumen, langsam in warmen"],breath:["Kalter Atem während der Jagd sichtbar","Sicherungskasten aus."],jinn:["Rast mit 2,5 m/s los, wenn er mich von weitem sieht, Strom an"],ign:["Hat mich ignoriert, still und sichtbar auf mehr als 5 m","Leise, Elektronik aus."],steps:["Wird schneller zu meinen Schritten hin oder wenn ich renne"],
+hide:["Die Jagd endete sofort, als er mich im Versteck erreichte","Offizielles Versteck. Nein: Er hat mich im Versteck getötet."],nograce:["Jagd ohne Schonfrist, direkt zu meinem Versteck"],found:["Findet mich bei jeder Jagd, auch versteckt und still","Als wüsste er immer, wo du bist."],losfast:["Wird sehr schnell schneller, wenn er mich sieht, mehr als üblich"],
 lighton:["Hat ein Licht eingeschaltet","Lampe oder Schalter, außerhalb der Jagd."],instoff:["Schaltet ein Licht ein bis zwei Sekunden nach mir wieder aus"],leave:["Verlässt seinen Raum, wenn dort Licht an ist"],fuse:["Hat den Sicherungskasten selbst ausgeschaltet","Keine Überlastung durch Lichter."],
-mist:["Nebel-Ereignis"],chase:["Verfolgungs-Ereignis","Er folgt dir, Türen schließen sich."],photo:["Verschwindet, wenn ich ihn beim Ereignis fotografiere","Gestrichen: blieb auf dem Foto sichtbar."],shape:["Ändert sein Aussehen während der Jagd"],vis:["Sehr sichtbar während der Jagd, flackert kaum"],invis:["Fast unsichtbar während der Jagd"],
-male:["Das Journal zeigt einen männlichen Geist"],scream:["Hoher Schrei im Parabolmikrofon"],target:["Geht immer auf denselben Spieler los","Gestrichen: geht auf mehrere Spieler los."],
-salt:["Tritt ins Salz","Gestrichen: Gang übers Salz bewiesen, Haufen unberührt."],salt3:["Salz Stufe III bremst ihn während der Jagd"],tp:["EMF an den Füßen eines Spielers weit weg von seinem Raum, ohne Interaktion"],door:["Schließt die Haustür außerhalb von Jagd und Ereignis"],
-far:["Löst einen Melder mehr als 4 m von seinem Raum aus","Außerhalb von Jagd und Ereignis."],room:["Hat den Lieblingsraum gewechselt"],same:["Hat eine Jagd gestartet, während ich mit ihm in seinem Raum war"],shy:["Nichts bewegt sich, wenn ich in seinem Raum bin"],two:["Zwei Interaktionen fast gleichzeitig an zwei Orten"],
-i60:["Jagd 60 bis 90 s nach dem Räuchern"],i90:["Jagd 90 bis 180 s nach dem Räuchern"],i180:["Keine Jagd für 180 s nach dem Räuchern, mehrmals"],iout:["Verlässt seinen Raum innerhalb von 90 s nach dem Räuchern","Salz zertreten oder Melder, außerhalb von Ereignissen. Gestrichen: 90 s festgehalten."],
-blind:["Viel länger als üblich vom Räucherwerk geblendet","Während der Jagd."],rage:["Schneller nach Kruzifix, Räucherwerk oder Salz"],crux:["Kruzifix weiter als normal verbrannt"],flame:["Bläst eine Flamme aus, statt zu jagen","Gestrichen: hat mit brennender Flamme direkt daneben gejagt."],
-cruxfl:["Kruzifix verbrannt, obwohl direkt daneben eine Flamme brannte"],third:["Jagd direkt nach der 3. ausgeblasenen Flamme"],lamp:["Meine Taschenlampe flackert, bevor ich seine Schritte höre","Gestrichen: Schritte zuerst gehört."],elec:["Schneller in der Nähe eingeschalteter Elektronik"],voice:["Reagierte bei der Jagd nicht auf meine Stimme aus 4 oder 5 m"],
-multi:["Wirft mehrere Gegenstände auf einmal"],objslow:["Langsamer, nachdem wir viele Gegenstände bewegt haben"],age:["Wird im Lauf des Spiels langsamer, ohne Gegenstände zu bewegen","Gestrichen: lange bei ihm geblieben, immer noch gleich schnell."],cycle:["Aktivität und Tempo wechseln alle 2 Min.","Ab dem ersten Öffnen der Tür gemessen."],
-orb:["Orb auf der Kamera sichtbar (Spiel mit 0 Beweisen)","Gestrichen: kein Orb nach langer Beobachtung."],th50:["Hat über 50 % Durchschnittsverstand gejagt"],th35:["Keine Jagd vor 35 % Durchschnittsverstand"]},
+mist:["Nebel-Ereignis"],chase:["Verfolgungs-Ereignis","Er folgt dir, Türen schließen sich."],photo:["Verschwindet, wenn ich ihn beim Ereignis fotografiere","Nein: blieb auf dem Foto sichtbar."],shape:["Ändert sein Aussehen während der Jagd"],vis:["Sehr sichtbar während der Jagd, flackert kaum"],invis:["Fast unsichtbar während der Jagd"],
+male:["Das Journal zeigt einen männlichen Geist"],scream:["Hoher Schrei im Parabolmikrofon"],target:["Geht immer auf denselben Spieler los","Nein: geht auf mehrere Spieler los."],
+salt:["Tritt ins Salz","Nein: Gang übers Salz bewiesen, Haufen unberührt."],salt3:["Salz Stufe III bremst ihn während der Jagd"],tp:["EMF an den Füßen eines Spielers weit weg von seinem Raum, ohne Interaktion"],door:["Schließt die Haustür außerhalb von Jagd und Ereignis"],
+far:["Löst einen Melder mehr als 4 m von seinem Raum aus","Außerhalb von Jagd und Ereignis."],room:["Hat den Lieblingsraum gewechselt"],same:["Hat eine Jagd gestartet, während ich mit ihm in seinem Raum war"],shy:["Nichts bewegt sich, wenn ich in seinem Raum bin","Bleib ein paar Minuten mit ihm in seinem Raum."],two:["Zwei Interaktionen fast gleichzeitig an zwei Orten"],
+i60:["Jagd 60 bis 90 s nach dem Räuchern"],i90:["Jagd 90 bis 180 s nach dem Räuchern"],i180:["Keine Jagd für 180 s nach dem Räuchern, mehrmals"],iout:["Verlässt seinen Raum innerhalb von 90 s nach dem Räuchern","Salz zertreten oder Melder, außerhalb von Ereignissen. Nein: 90 s festgehalten."],
+blind:["Viel länger als üblich vom Räucherwerk geblendet","Während der Jagd."],rage:["Schneller nach Kruzifix, Räucherwerk oder Salz"],crux:["Kruzifix weiter als normal verbrannt"],flame:["Bläst eine Flamme aus, statt zu jagen","Nein: hat mit brennender Flamme direkt daneben gejagt."],
+cruxfl:["Kruzifix verbrannt, obwohl direkt daneben eine Flamme brannte"],third:["Jagd direkt nach der 3. ausgeblasenen Flamme"],lamp:["Meine Taschenlampe flackert, bevor ich seine Schritte höre","Nein: Schritte zuerst gehört."],elec:["Schneller in der Nähe eingeschalteter Elektronik"],voice:["Reagierte bei der Jagd nicht auf meine Stimme aus 4 oder 5 m"],
+multi:["Wirft mehrere Gegenstände auf einmal","Mach einen Haufen aus etwa zehn Gegenständen in seinem Raum."],objslow:["Langsamer, nachdem wir viele Gegenstände bewegt haben"],age:["Wird im Lauf des Spiels langsamer, ohne Gegenstände zu bewegen","Nein: lange bei ihm geblieben, immer noch gleich schnell."],cycle:["Aktivität und Tempo wechseln alle 2 Min.","Ab dem ersten Öffnen der Tür gemessen."],
+orb:["Orb auf der Kamera sichtbar (Spiel mit 0 Beweisen)","Nein: kein Orb nach langer Beobachtung."],th50:["Hat über 50 % Durchschnittsverstand gejagt"],th35:["Keine Jagd vor 35 % Durchschnittsverstand","Nein: Er hat über 35 % gejagt."]},
 g:{0:["Räuchern, dann Timer: keine Jagd vor 180 s (90 s bei den anderen, 60 s beim Demon). 2- bis 3-mal wiederholen.","Kein anderes Zeichen: normales Tempo und Verhalten.","Shade (Anwesenheitstest), Demon (60 s)."],
 1:["Geht über Salz, ohne es zu stören. Beweise den Gang: Jagd, Geisterereignis oder Melder direkt hinter der Linie. Vorher kein Kruzifix und kein Räucherwerk.","Teleport: EMF an den Füßen eines Spielers, weit weg von seinem Raum, ohne Interaktion.","Wütende Gallu (zertritt immer den ersten Haufen), Mimic."],
 2:["Foto während eines Geisterereignisses: Er verschwindet sofort und ist nicht auf dem Foto.","Während der Jagd fast immer unsichtbar.","Obake (bleibt auf dem Foto)."],
-3:["Mach einen Haufen aus etwa zehn Gegenständen in seinem Raum: Er wirft mehrere auf einmal.","Wirft während der Jagd fast ständig Gegenstände.","The Twins (zwei Interaktionen an zwei Orten), Deildegast."],
+3:["Mach einen Haufen aus etwa zehn Gegenständen in seinem Raum: Er wirft mehrere auf einmal.","Wirft während der Jagd fast ständig Gegenstände. Bei der Jagd versucht er alle 0,5 s, einen Gegenstand in seiner Nähe zu werfen.","The Twins (zwei Interaktionen an zwei Orten), Deildegast."],
 4:["Parabolmikrofon: typischer hoher Schrei. In der Gruppe ignoriert sie bei der Jagd einen sichtbaren Spieler, der nicht ihr Ziel ist.","Immer weiblich. Wechselt nie den Raum, wandert aber weit zu ihrem Ziel.","Kormos (ignoriert alle stillstehenden Spieler), Goryo."],
 5:["Sicherungskasten an: Sieht er dich auf mehr als 3 m, springt er auf 2,5 m/s und wird bei dir langsamer. Sicherungskasten aus: normales Tempo.","Schaltet den Sicherungskasten nie selbst aus.","Raiju: Sicherungskasten aus, Elektronik an lassen."],
 6:["Mach ein Licht an: Er schaltet es manchmal ein bis zwei Sekunden später aus. Er schaltet nie ein Licht ein.","Verlässt oder wechselt den Raum, wenn dort Licht an ist.","Goryo (bleibt auch bei Licht in seinem Raum)."],
 7:["Versteckt, leise, Elektronik aus: sehr langsame Schritte (1 m/s), dann schlagartig 3 m/s, wenn er dich entdeckt.","Verliert er dich, rast er zu deiner letzten Position und wird dann wieder langsam.","Alter Thaye, Hantu im Warmen, Kormos, Deildegast."],
-8:["Bleib mit ihr im selben Raum: Sie kann keine Jagd starten und interagiert kaum.","Sehr scheu, aktiver, wenn ihr weit weg seid.","Spirit (Räucherwerk 180 s), ruhiger Obambo, Goryo."],
-9:["Räuchern, dann Timer: Jagd schon ab 60 s möglich (90 s bei den anderen).","Das Kruzifix wirkt auf ihn 50 % weiter.","Onryo (Flammen), junger Thaye, Gallu, aggressiver Obambo."],
+8:["Bleib mit ihr im selben Raum: Sie kann keine Jagd starten und interagiert kaum.","Sehr scheu, aktiver, wenn ihr weit weg seid. Am Beschwörungskreis oder bei der Spieluhr erscheint sie nur als Schatten.","Spirit (Räucherwerk 180 s), ruhiger Obambo, Goryo."],
+9:["Räuchern, dann Timer: Jagd schon ab 60 s möglich (90 s bei den anderen).","Das Kruzifix wirkt auf ihn 50 % weiter. Kann 20 s nach Jagdende erneut jagen (25 s bei anderen).","Onryo (Flammen), junger Thaye, Gallu, aggressiver Obambo."],
 10:["Räuchern in seinem Raum: Er bleibt dort 90 s gefangen. Salz und Melder an die Ausgänge.","Einziger, der die Haustür außerhalb von Jagd UND Ereignis schließt.","Goryo (kann in den 90 s raus), Shade."],
-11:["Macht nie das Nebel-Ereignis.","Während der Jagd sehr sichtbar, sehr aktiv bei Spielern.","Kormos (auch kein Nebel, aber nie ein Verfolgungs-Ereignis)."],
+11:["Macht nie das Nebel-Ereignis.","Während der Jagd sehr sichtbar, sehr aktiv bei Spielern. Bei der Jagd etwa 60 % der Zeit sichtbar (etwa 30 % bei anderen).","Kormos (auch kein Nebel, aber nie ein Verfolgungs-Ereignis)."],
 12:["Hört deine Stimme bei der Jagd nur auf etwa 2,5 m: versteckt in 4 bis 5 m reden, er kommt nicht zu dir.","Außerhalb der Jagd macht ihn Reden in seiner Nähe aggressiver.","Kormos (reagiert auf Schritte, nicht auf Stimme)."],
-13:["Tempo hängt von der Temperatur ab: langsam im Warmen (etwa 1,4 m/s), schnell im Kalten (etwa 2,7 m/s). Wird nicht schneller, wenn er dich sieht.","Sicherungskasten aus: kalter Atem während der Jagd sichtbar.","Revenant, ruhiger Obambo."],
+13:["Tempo hängt von der Temperatur ab: langsam im Warmen (etwa 1,4 m/s), schnell im Kalten (etwa 2,7 m/s). Wird nicht schneller, wenn er dich sieht.","Sicherungskasten aus: kalter Atem während der Jagd sichtbar. Schaltet den Sicherungskasten nie wieder ein.","Revenant, ruhiger Obambo."],
 14:["Macht nur kurze Streifzüge: Melder mehr als 4 m von seinem Raum lösen außerhalb von Jagd und Ereignis nie aus. Wechselt nie den Raum.","Ohne Beweise kein 100-%-Test: Er bleibt übrig, wenn alles andere ausgeschlossen ist.","Banshee, Yurei, Shade."],
 15:["Taschenlampe bei der Jagd an: Sie flackert, bevor du seine Schritte hörst (hörbar auf etwa 12 m statt 20 m).","Macht mehr Geräusche im Parabolmikrofon.","Raiju (schneller bei Elektronik), Revenant."],
 16:["Brennende Kerze und Kruzifix nebeneinander: Er bläst die Kerze aus, statt zu jagen, das Kruzifix brennt nicht. Nach der 3. ausgeblasenen Flamme jagt er.","Kerze jedes Mal neu anzünden, um mitzuzählen.","Demon (jagt oft, die Flamme stoppt ihn nicht)."],
@@ -449,15 +464,15 @@ g:{0:["Räuchern, dann Timer: keine Jagd vor 180 s (90 s bei den anderen, 60 s b
 29:["Langsames Grundtempo (etwa 1,53 m/s). Sieht er dich, wird er schneller als jeder andere Geist (etwa 2,53 m/s in 9 s). Erreicht er dich in einem offiziellen Versteck, endet die Jagd sofort.","Die nächste Jagd beginnt ohne Schonfrist, direkt zu deinem Versteck.","The Twins (langsames Tempo), Moroi."],
 30:["3 m/s zu Beginn jeder Jagd, minus 0,1 m/s für jeden verschiedenen Hausgegenstand, der vor der Jagd bewegt wurde (mindestens 0,4). Wird nicht schneller, wenn er dich sieht.","Der Zähler wird nach jeder Jagd oder jedem verbrannten Kruzifix zurückgesetzt.","Revenant, Deogen, Thaye, Moroi."]}},
 
-it:{u:{tag:"Il diario senza prove.",intro:"Come nel gioco: spunta quello che fa, barra quello che non fa. Le entità impossibili vengono barrate. I test semplici sono sotto il diario. Clicca su un'entità per barrarla a mano.",
+it:{u:{hideOff:"Nascondi le scelte in grigio",rNoEv:"Impossibile con 0 prove: niente impronte.",noSimple:"Nessun test semplice riguarda più le entità rimaste.",tag:"Il diario senza prove.",intro:"Rispondi Sì o No a quello che osservi: le entità impossibili vengono barrate nel diario. I test semplici sono sotto il diario. Clicca su un'entità per barrarla a mano.",
 mim:"Il Mimic copia tutto",reset:"Nuova partita",settings:"Impostazioni della partita",searchLbl:"Cerca un segno",searchPh:"luce, nebbia, velocità, sale…",
 poss1:"entità possibile",possN:"entità possibili",findPh:"Trova un nome: Twins, Esprit…",findHelp:"Scrivi un nome in inglese o in francese.",noMatch:"Nessuna entità corrisponde.",none24:"None, non è un'entità.",
-simpleH:"Test semplici",simpleP:"Un oggetto da posare o usare. Rispondi Sì o No; clicca di nuovo per cancellare. I test diventati inutili sono in grigio, in fondo a ogni gruppo.",
+simpleH:"Test semplici",simpleP:"Test da fare con un oggetto o una preparazione. Rispondi Sì o No; clicca di nuovo per cancellare. Compaiono solo i test che riguardano ancora un'entità possibile.",
 greyed:n=>n+" test in grigio: inutili o impossibili con le tue impostazioni.",
 testsH:"Test per distinguerle",testsN:n=>"Test per distinguere le "+n+" rimaste",testLb:"Test: ",confuse:"Da non confondere con:",empty:"Togli una spunta per ritrovare delle entità.",
 note:"Valori aggiornati a novembre 2026 (Deildegast inclusa). Velocità normale: 1,7 m/s, fino a circa 2,8 m/s quando l'entità ti vede. «Tiene» = restano solo queste entità, tutte le altre vengono barrate; «Esclude» = barra quelle elencate.",
 v1:x=>"Ne resta solo una: "+x+". Verificala con il suo test prima di confermare.",v0:"Nessuna entità possibile: una risposta è probabilmente sbagliata.",
-leg1:"1 clic: lo fa",leg2:"2 clic: non lo fa",leg3:"3 clic: cancella",yes:"Sì",no:"No",chk:"Spuntato:",strk:"Barrato:",keep:"tiene",excl:"esclude",
+leg1:"1 clic: lo fa",leg2:"2 clic: non lo fa",leg3:"3 clic: cancella",yes:"Sì",no:"No",chk:"Spuntato:",strk:"No:",keep:"tiene",excl:"esclude",
 useless:"Inutile: riguarda solo entità già barrate.",evfull:n=>"Hai già le tue "+n+" prove su "+n+".",answers:n=>n+" rispost"+(n>1?"e":"a"),signs:n=>n+" segni",
 manual:"Barrata a mano",notdo:"Non lo fa: ",clickStrike:"Clicca per barrare",rFuse:"Impossibile: quadro elettrico rotto.",rSolo:"Impossibile da solo.",rEv:"Non utilizzabile quando le prove sono attive.",rMiss:"Ti manca: ",or:" o ",and:" e ",
 lang:"Lingua",lStart:"Sanità mentale iniziale",lPills:"Pillole di sanità",oNone:"Nessuna",oYes:"Sì",lDrain:"Perdita di sanità",oSlow:"Lenta",oNormal:"Normale",oFast:"Rapida",lEv:"Prove date",lFuse:"Quadro elettrico",oFuseOk:"Funziona",oFuseBroken:"Rotto, niente corrente",lPl:"Giocatori",oSolo:"Da solo",oGroup:"In gruppo",eqTitle:"Equipaggiamento disponibile",
@@ -466,35 +481,35 @@ iZero:"Sanità bloccata a 0%: le soglie di caccia sono nascoste e il Moroi è se
 eq:{sel:"Sale",encens:"Incenso",crucifix:"Crocifisso",bougie:"Candela e accendino",photo:"Macchina fotografica",micro:"Microfono parabolico",detect:"Sensori di movimento",camera:"Videocamera"},
 fam:{P:["Prove","Le prove classiche, quando la tua partita ne dà."],H:["Fuori caccia","Quello che noti durante l'indagine, senza caccia in corso."],C:["Durante la caccia","Velocità, aspetto, quello che senti. Più rischioso."],D:["Nel tempo","Da confermare su più minuti o più cacce."]},
 cat:["Prove","Velocità e caccia","Luci e corrente","Eventi e aspetto","Sale, porte e spostamenti","Incenso, crocifisso e fiamme","Suoni ed elettronica","Oggetti e tempo","Il Mimic","Soglie di caccia"],
-s:{ev_emf:["EMF livello 5"],ev_sb:["Spirit Box"],ev_uv:["Impronte (UV)"],ev_orb:["Orbe fantasma","Il Mimic li mostra sempre, anche se non è una delle sue prove."],ev_wr:["Scrittura fantasma"],ev_fr:["Temperature gelide"],ev_dots:["D.O.T.S."],
+s:{twop:["Ha inseguito due giocatori diversi nella stessa caccia","Tutti dentro la casa."],fuseon:["Ha riacceso il quadro elettrico da sola"],shadow:["Appare solo come ombra al cerchio di evocazione o al carillon","No: l'entità è apparsa per intero."],polthunt:["In caccia lancia di continuo gli oggetti intorno a sé","No: è passata vicino a oggetti per diversi secondi senza lanciare nulla."],cooldown:["Caccia di nuovo meno di 25 s dopo la fine della caccia precedente"],door2:["Ha lasciato una porta socchiusa","Fuori caccia: una porta spostata solo di pochi gradi. Lo Yurei apre o chiude sempre una porta del tutto."],six:["Impronta a 6 dita","Con la torcia UV, quando le impronte fanno parte delle prove della partita."],ev_emf:["EMF livello 5"],ev_sb:["Spirit Box"],ev_uv:["Impronte (UV)"],ev_orb:["Orbe fantasma","Il Mimic li mostra sempre, anche se non è una delle sue prove."],ev_wr:["Scrittura fantasma"],ev_fr:["Temperature gelide"],ev_dots:["D.O.T.S."],
 los:["Accelera pian piano quando mi vede","Aumento graduale in linea di vista."],norm:["Velocità normale senza vedermi, per tutta la caccia","Come la tua camminata, senza cambiamenti."],slow:["Nettamente più lenta del normale senza vedermi","Più lenta della tua camminata."],fast:["Nettamente più veloce del normale senza vedermi"],
 jump:["Passa di colpo da lentissima a velocissima","Salto istantaneo quando ti individua."],brake:["Rallenta nettamente quando si avvicina a me"],still:["La sua velocità cambia quando mi fermo o riparto","Entro 10 m da lei."],vary:["Velocità diversa da una caccia all'altra","Senza cambi di temperatura o di elettronica."],
-cold:["Più veloce nelle stanze fredde, lenta in quelle calde"],breath:["Respiro freddo visibile durante la caccia","Quadro elettrico spento."],jinn:["Scatta a 2,5 m/s vedendomi da lontano, corrente accesa"],ign:["Mi ha ignorato, fermo e visibile a più di 5 m"],steps:["Accelera verso il rumore dei miei passi o quando corro"],
-hide:["La caccia si è fermata di colpo quando mi ha raggiunto nascosto","Nascondiglio ufficiale. Barrato: mi ha ucciso nel nascondiglio."],nograce:["Caccia senza periodo di grazia, dritta al mio nascondiglio"],found:["Mi ha trovato subito mentre ero nascosto","Senza averti visto entrare."],losfast:["Accelera molto in fretta quando mi vede, più del solito"],
+cold:["Più veloce nelle stanze fredde, lenta in quelle calde"],breath:["Respiro freddo visibile durante la caccia","Quadro elettrico spento."],jinn:["Scatta a 2,5 m/s vedendomi da lontano, corrente accesa"],ign:["Mi ha ignorato, fermo e visibile a più di 5 m","In silenzio, elettronica spenta."],steps:["Accelera verso il rumore dei miei passi o quando corro"],
+hide:["La caccia si è fermata di colpo quando mi ha raggiunto nascosto","Nascondiglio ufficiale. No: mi ha ucciso nel nascondiglio."],nograce:["Caccia senza periodo di grazia, dritta al mio nascondiglio"],found:["Mi trova a ogni caccia, anche nascosto e fermo","Come se sapesse sempre dove sei."],losfast:["Accelera molto in fretta quando mi vede, più del solito"],
 lighton:["Ha acceso una luce","Lampada o interruttore, fuori caccia."],instoff:["Spegne una luce uno o due secondi dopo che l'ho accesa"],leave:["Lascia la sua stanza quando la luce è accesa"],fuse:["Ha spento il quadro elettrico da sola","Non un sovraccarico di luci."],
-mist:["Evento nebbia"],chase:["Evento inseguimento","Ti segue, le porte si chiudono."],photo:["Sparisce quando la fotografo durante un evento","Barrato: è rimasta visibile nella foto."],shape:["Cambia aspetto durante la caccia"],vis:["Molto visibile durante la caccia, lampeggia poco"],invis:["Quasi invisibile durante la caccia"],
-male:["Il diario indica un'entità maschile"],scream:["Urlo acuto al microfono parabolico"],target:["Punta sempre lo stesso giocatore","Barrato: se la prende con più giocatori."],
-salt:["Calpesta il sale","Barrato: passaggio sul sale provato, mucchio intatto."],salt3:["Il sale di livello III la rallenta durante la caccia"],tp:["EMF ai piedi di un giocatore lontano dalla sua stanza, senza interazione"],door:["Chiude la porta d'ingresso fuori caccia e fuori evento"],
-far:["Attiva un sensore a più di 4 m dalla sua stanza","Fuori caccia e fuori evento."],room:["Ha cambiato stanza preferita"],same:["Ha iniziato una caccia mentre ero nella sua stanza con lei"],shy:["Non si muove niente quando sono nella sua stanza"],two:["Due interazioni quasi insieme in due posti"],
-i60:["Caccia tra 60 e 90 s dopo l'incenso"],i90:["Caccia tra 90 e 180 s dopo l'incenso"],i180:["Nessuna caccia per 180 s dopo l'incenso, più volte"],iout:["Esce dalla sua stanza entro 90 s dall'incenso","Sale calpestato o sensore, fuori evento. Barrato: rimasta bloccata 90 s."],
-blind:["Accecata dall'incenso molto più a lungo del solito","Durante la caccia."],rage:["Più veloce dopo crocifisso, incenso o sale"],crux:["Crocifisso bruciato oltre la sua portata normale"],flame:["Spegne una fiamma invece di cacciare","Barrato: ha cacciato con una fiamma accesa lì vicino."],
-cruxfl:["Crocifisso bruciato mentre una fiamma era accesa lì vicino"],third:["Caccia subito dopo la 3ª fiamma spenta"],lamp:["La mia torcia lampeggia prima che senta i suoi passi","Barrato: passi sentiti prima."],elec:["Più veloce passando vicino a elettronica accesa"],voice:["Non ha reagito alla mia voce a 4 o 5 m durante la caccia"],
-multi:["Lancia più oggetti in una volta"],objslow:["Più lenta dopo che abbiamo spostato molti oggetti"],age:["Rallenta col passare della partita, senza spostare oggetti","Barrato: rimasto a lungo vicino, sempre veloce."],cycle:["Attività e velocità che si alternano ogni 2 min","Contato dalla prima apertura della porta."],
-orb:["Orbe visibile in videocamera (partita a 0 prove)","Barrato: nessun orbe dopo una lunga osservazione."],th50:["Ha cacciato sopra il 50% di sanità media"],th35:["Nessuna caccia prima del 35% di sanità media"]},
+mist:["Evento nebbia"],chase:["Evento inseguimento","Ti segue, le porte si chiudono."],photo:["Sparisce quando la fotografo durante un evento","No: è rimasta visibile nella foto."],shape:["Cambia aspetto durante la caccia"],vis:["Molto visibile durante la caccia, lampeggia poco"],invis:["Quasi invisibile durante la caccia"],
+male:["Il diario indica un'entità maschile"],scream:["Urlo acuto al microfono parabolico"],target:["Punta sempre lo stesso giocatore","No: se la prende con più giocatori."],
+salt:["Calpesta il sale","No: passaggio sul sale provato, mucchio intatto."],salt3:["Il sale di livello III la rallenta durante la caccia"],tp:["EMF ai piedi di un giocatore lontano dalla sua stanza, senza interazione"],door:["Chiude la porta d'ingresso fuori caccia e fuori evento"],
+far:["Attiva un sensore a più di 4 m dalla sua stanza","Fuori caccia e fuori evento."],room:["Ha cambiato stanza preferita"],same:["Ha iniziato una caccia mentre ero nella sua stanza con lei"],shy:["Non si muove niente quando sono nella sua stanza","Resta qualche minuto con lei nella sua stanza."],two:["Due interazioni quasi insieme in due posti"],
+i60:["Caccia tra 60 e 90 s dopo l'incenso"],i90:["Caccia tra 90 e 180 s dopo l'incenso"],i180:["Nessuna caccia per 180 s dopo l'incenso, più volte"],iout:["Esce dalla sua stanza entro 90 s dall'incenso","Sale calpestato o sensore, fuori evento. No: rimasta bloccata 90 s."],
+blind:["Accecata dall'incenso molto più a lungo del solito","Durante la caccia."],rage:["Più veloce dopo crocifisso, incenso o sale"],crux:["Crocifisso bruciato oltre la sua portata normale"],flame:["Spegne una fiamma invece di cacciare","No: ha cacciato con una fiamma accesa lì vicino."],
+cruxfl:["Crocifisso bruciato mentre una fiamma era accesa lì vicino"],third:["Caccia subito dopo la 3ª fiamma spenta"],lamp:["La mia torcia lampeggia prima che senta i suoi passi","No: passi sentiti prima."],elec:["Più veloce passando vicino a elettronica accesa"],voice:["Non ha reagito alla mia voce a 4 o 5 m durante la caccia"],
+multi:["Lancia più oggetti in una volta","Fai un mucchio di una decina di oggetti nella sua stanza."],objslow:["Più lenta dopo che abbiamo spostato molti oggetti"],age:["Rallenta col passare della partita, senza spostare oggetti","No: rimasto a lungo vicino, sempre veloce."],cycle:["Attività e velocità che si alternano ogni 2 min","Contato dalla prima apertura della porta."],
+orb:["Orbe visibile in videocamera (partita a 0 prove)","No: nessun orbe dopo una lunga osservazione."],th50:["Ha cacciato sopra il 50% di sanità media"],th35:["Nessuna caccia prima del 35% di sanità media","No: ha cacciato sopra il 35%."]},
 g:{0:["Incenso, poi cronometro: nessuna caccia prima di 180 s (90 s per le altre, 60 s per il Demon). Ripeti 2 o 3 volte.","Nessun altro segno: velocità e comportamento normali.","Shade (test di presenza), Demon (60 s)."],
 1:["Passa sul sale senza toccarlo. Prova il passaggio: caccia, evento o sensore subito dietro la linea. Niente crocifisso né incenso prima del test.","Teletrasporto: EMF ai piedi di un giocatore, lontano dalla sua stanza, senza interazione.","Gallu infuriata (calpesta sempre il primo mucchio), Mimic."],
 2:["Foto durante un evento: sparisce subito e non appare nella foto.","Quasi sempre invisibile durante la caccia.","Obake (resta nella foto)."],
-3:["Fai un mucchio di una decina di oggetti nella sua stanza: ne lancia diversi in una volta.","Lancia oggetti quasi senza sosta durante la caccia.","The Twins (due interazioni in due posti), Deildegast."],
+3:["Fai un mucchio di una decina di oggetti nella sua stanza: ne lancia diversi in una volta.","Lancia oggetti quasi senza sosta durante la caccia. In caccia prova a lanciare un oggetto vicino a sé ogni 0,5 s.","The Twins (due interazioni in due posti), Deildegast."],
 4:["Microfono parabolico: urlo acuto tipico. In gruppo, durante la caccia, ignora un giocatore visibile che non è il suo bersaglio.","Sempre femminile. Non cambia mai stanza ma va lontano per seguire il bersaglio.","Kormos (ignora tutti i giocatori fermi), Goryo."],
 5:["Quadro acceso: se ti vede a più di 3 m, scatta a 2,5 m/s, poi rallenta vicino a te. Quadro spento: velocità normale.","Non spegne mai il quadro da solo.","Raiju: spegni il quadro e tieni accesa l'elettronica."],
 6:["Accendi una luce: a volte la spegne uno o due secondi dopo. Non accende mai una luce.","Lascia o cambia stanza quando la luce è accesa.","Goryo (resta nella sua stanza anche con la luce)."],
 7:["Nascosto, in silenzio, elettronica spenta: passi lentissimi (1 m/s), poi 3 m/s di colpo quando ti individua.","Quando ti perde, corre alla tua ultima posizione, poi torna lento.","Thaye vecchio, Hantu al caldo, Kormos, Deildegast."],
-8:["Resta nella sua stessa stanza: non può iniziare una caccia e interagisce pochissimo.","Molto timida, più attiva quando siete lontani.","Spirit (incenso 180 s), Obambo calmo, Goryo."],
-9:["Incenso, poi cronometro: caccia possibile già da 60 s (90 s per le altre).","Il crocifisso agisce su di lui il 50% più lontano.","Onryo (fiamme), Thaye giovane, Gallu, Obambo aggressivo."],
+8:["Resta nella sua stessa stanza: non può iniziare una caccia e interagisce pochissimo.","Molto timida, più attiva quando siete lontani. Al cerchio di evocazione o al carillon appare solo come ombra.","Spirit (incenso 180 s), Obambo calmo, Goryo."],
+9:["Incenso, poi cronometro: caccia possibile già da 60 s (90 s per le altre).","Il crocifisso agisce su di lui il 50% più lontano. Può cacciare di nuovo 20 s dopo la fine di una caccia (25 s per le altre).","Onryo (fiamme), Thaye giovane, Gallu, Obambo aggressivo."],
 10:["Incenso nella sua stanza: resta bloccato lì 90 s. Metti sale e sensori alle uscite.","Unico a chiudere la porta d'ingresso fuori caccia E fuori evento.","Goryo (può uscire nei 90 s), Shade."],
-11:["Non fa mai l'evento nebbia.","Molto visibile durante la caccia, molto attivo vicino ai giocatori.","Kormos (niente nebbia neanche lui, ma mai un inseguimento)."],
+11:["Non fa mai l'evento nebbia.","Molto visibile durante la caccia, molto attivo vicino ai giocatori. Visibile circa il 60% del tempo in caccia (circa il 30% per le altre).","Kormos (niente nebbia neanche lui, ma mai un inseguimento)."],
 12:["In caccia sente la tua voce solo a circa 2,5 m: nascosto a 4 o 5 m, parla, non viene verso di te.","Fuori caccia, parlargli vicino lo rende più aggressivo.","Kormos (reagisce ai passi, non alla voce)."],
-13:["Velocità legata alla temperatura: lento al caldo (circa 1,4 m/s), veloce al freddo (circa 2,7 m/s). Non accelera quando ti vede.","Quadro spento: respiro freddo visibile in caccia.","Revenant, Obambo calmo."],
+13:["Velocità legata alla temperatura: lento al caldo (circa 1,4 m/s), veloce al freddo (circa 2,7 m/s). Non accelera quando ti vede.","Quadro spento: respiro freddo visibile in caccia. Non riaccende mai il quadro elettrico.","Revenant, Obambo calmo."],
 14:["Fa solo brevi giri: i sensori a più di 4 m dalla sua stanza non scattano mai fuori caccia o evento. Non cambia mai stanza.","Nessun test al 100% senza prove: tienilo quando tutto il resto è escluso.","Banshee, Yurei, Shade."],
 15:["Torcia accesa in caccia: lampeggia prima che tu senta i suoi passi (udibili a circa 12 m invece di 20 m).","Fa più rumori al microfono parabolico.","Raiju (accelera vicino all'elettronica), Revenant."],
 16:["Candela accesa e crocifisso affiancati: spegne la candela invece di cacciare, il crocifisso non brucia. Dopo la 3ª fiamma spenta, caccia.","Riaccendi la candela ogni volta per tenere il conto.","Demon (caccia spesso, la fiamma non lo ferma)."],
@@ -512,15 +527,15 @@ g:{0:["Incenso, poi cronometro: nessuna caccia prima di 180 s (90 s per le altre
 29:["Velocità di base lenta (circa 1,53 m/s). Quando ti vede accelera più di ogni altra entità (circa 2,53 m/s in 9 s). Se ti raggiunge in un nascondiglio ufficiale, la caccia si ferma di colpo.","La caccia successiva parte senza periodo di grazia, dritta al tuo nascondiglio.","The Twins (velocità lenta), Moroi."],
 30:["3 m/s all'inizio di ogni caccia, meno 0,1 m/s per ogni oggetto diverso della casa spostato prima della caccia (minimo 0,4). Non accelera quando ti vede.","Il conteggio si azzera dopo ogni caccia o crocifisso bruciato.","Revenant, Deogen, Thaye, Moroi."]}},
 
-ro:{u:{tag:"Jurnalul fără dovezi.",intro:"Ca în joc: bifează ce face, taie ce nu face. Entitățile imposibile sunt tăiate. Testele simple sunt sub jurnal. Apasă pe o entitate ca s-o tai de mână.",
+ro:{u:{hideOff:"Ascunde opțiunile gri",rNoEv:"Imposibil cu 0 dovezi: fără amprente.",noSimple:"Niciun test simplu nu mai privește entitățile rămase.",tag:"Jurnalul fără dovezi.",intro:"Răspunde Da sau Nu la ce observi: entitățile imposibile sunt tăiate în jurnal. Testele simple sunt sub jurnal. Apasă pe o entitate ca s-o tai de mână.",
 mim:"Mimic copiază tot",reset:"Joc nou",settings:"Setările jocului",searchLbl:"Caută un semn",searchPh:"lumină, ceață, viteză, sare…",
 poss1:"entitate posibilă",possN:"entități posibile",findPh:"Găsește un nume: Twins, Esprit…",findHelp:"Scrie un nume în engleză sau franceză.",noMatch:"Nicio entitate nu se potrivește.",none24:"None, nu e o entitate.",
-simpleH:"Teste simple",simpleP:"Un obiect de pus sau de folosit. Răspunde Da sau Nu; apasă din nou ca să ștergi. Testele devenite inutile sunt gri, la baza fiecărui grup.",
+simpleH:"Teste simple",simpleP:"Teste de făcut cu un obiect sau o pregătire. Răspunde Da sau Nu; apasă din nou ca să ștergi. Apar doar testele care privesc încă o entitate posibilă.",
 greyed:n=>n+" test"+(n>1?"e":"")+" gri: inutil"+(n>1?"e":"")+" sau imposibil"+(n>1?"e":"")+" cu setările tale.",
 testsH:"Teste pentru departajare",testsN:n=>"Teste pentru departajarea celor "+n+" rămase",testLb:"Test: ",confuse:"A nu se confunda cu:",empty:"Debifează o căsuță ca să recuperezi entități.",
 note:"Valori la zi din noiembrie 2026 (inclusiv Deildegast). Viteza normală: 1,7 m/s, până la circa 2,8 m/s când entitatea te vede. „Păstrează” = rămân doar aceste entități, toate celelalte sunt tăiate; „Exclude” = taie entitățile enumerate.",
 v1:x=>"A rămas doar: "+x+". Verific-o cu testul ei înainte să confirmi.",v0:"Nicio entitate posibilă: probabil un răspuns e greșit.",
-leg1:"1 clic: face asta",leg2:"2 clicuri: nu face asta",leg3:"3 clicuri: șterge",yes:"Da",no:"Nu",chk:"Bifat:",strk:"Tăiat:",keep:"păstrează",excl:"exclude",
+leg1:"1 clic: face asta",leg2:"2 clicuri: nu face asta",leg3:"3 clicuri: șterge",yes:"Da",no:"Nu",chk:"Bifat:",strk:"Nu:",keep:"păstrează",excl:"exclude",
 useless:"Inutil: privește doar entități deja tăiate.",evfull:n=>"Ai deja "+n+" din "+n+" dovezi.",answers:n=>n+" răspuns"+(n>1?"uri":""),signs:n=>n+" semne",
 manual:"Tăiată de mână",notdo:"Nu face: ",clickStrike:"Apasă ca s-o tai",rFuse:"Imposibil: tablou electric stricat.",rSolo:"Imposibil singur.",rEv:"Inutilizabil când se dau dovezi.",rMiss:"Îți lipsește: ",or:" sau ",and:" și ",
 lang:"Limba",lStart:"Sănătate mintală inițială",lPills:"Pastile de sănătate",oNone:"Deloc",oYes:"Da",lDrain:"Pierdere de sănătate",oSlow:"Lentă",oNormal:"Normală",oFast:"Rapidă",lEv:"Dovezi date",lFuse:"Tablou electric",oFuseOk:"Funcționează",oFuseBroken:"Stricat, fără curent",lPl:"Jucători",oSolo:"Singur",oGroup:"În grup",eqTitle:"Echipament disponibil",
@@ -529,35 +544,35 @@ iZero:"Sănătate blocată la 0%: pragurile de vânătoare sunt ascunse, iar Mor
 eq:{sel:"Sare",encens:"Tămâie",crucifix:"Crucifix",bougie:"Lumânare și brichetă",photo:"Aparat foto",micro:"Microfon parabolic",detect:"Senzori de mișcare",camera:"Cameră video"},
 fam:{P:["Dovezi","Dovezile clasice, când jocul tău le oferă."],H:["În afara vânătorii","Ce observi în timpul anchetei, fără vânătoare în curs."],C:["În timpul vânătorii","Viteza, aspectul, ce auzi. Mai riscant."],D:["În timp","De confirmat pe parcursul mai multor minute sau vânători."]},
 cat:["Dovezi","Viteză și vânătoare","Lumini și curent","Evenimente și aspect","Sare, uși și deplasări","Tămâie, crucifix și flăcări","Sunete și electronice","Obiecte și timp","Mimic","Praguri de vânătoare"],
-s:{ev_emf:["EMF nivel 5"],ev_sb:["Spirit Box"],ev_uv:["Amprente (UV)"],ev_orb:["Orb fantomatic","Mimic le arată mereu, chiar dacă nu e una dintre dovezile lui."],ev_wr:["Scris fantomatic"],ev_fr:["Temperaturi înghețate"],ev_dots:["D.O.T.S."],
+s:{twop:["A urmărit doi jucători diferiți în aceeași vânătoare","Toată lumea în casă."],fuseon:["A repornit singură tabloul electric"],shadow:["Apare doar ca umbră la cercul de invocare sau la cutia muzicală","Nu: entitatea a apărut întreagă."],polthunt:["La vânătoare aruncă fără oprire obiectele din jur","Nu: a trecut pe lângă obiecte câteva secunde fără să arunce nimic."],cooldown:["Vânează din nou la mai puțin de 25 s după vânătoarea anterioară"],door2:["A lăsat o ușă întredeschisă","În afara vânătorii: o ușă împinsă doar câteva grade. Yurei deschide sau închide mereu o ușă complet."],six:["Amprentă cu 6 degete","Cu lanterna UV, când amprentele fac parte din dovezile jocului."],ev_emf:["EMF nivel 5"],ev_sb:["Spirit Box"],ev_uv:["Amprente (UV)"],ev_orb:["Orb fantomatic","Mimic le arată mereu, chiar dacă nu e una dintre dovezile lui."],ev_wr:["Scris fantomatic"],ev_fr:["Temperaturi înghețate"],ev_dots:["D.O.T.S."],
 los:["Accelerează treptat când mă vede","Creștere treptată în linia vizuală."],norm:["Viteză normală fără să mă vadă, toată vânătoarea","Ca mersul tău, fără schimbare."],slow:["Mult mai lentă decât normal fără să mă vadă","Mai lentă decât mersul tău."],fast:["Mult mai rapidă decât normal fără să mă vadă"],
 jump:["Trece brusc de la foarte lentă la foarte rapidă","Salt instantaneu când te reperează."],brake:["Încetinește clar când se apropie de mine"],still:["Viteza i se schimbă când mă opresc sau pornesc","La mai puțin de 10 m de ea."],vary:["Viteză diferită de la o vânătoare la alta","Fără schimbări de temperatură sau electronice."],
-cold:["Mai rapidă în camerele reci, lentă la cald"],breath:["Respirație rece vizibilă la vânătoare","Tablou electric oprit."],jinn:["Pornește cu 2,5 m/s când mă vede de departe, curent pornit"],ign:["M-a ignorat, nemișcat și vizibil la peste 5 m"],steps:["Accelerează spre zgomotul pașilor mei sau când alerg"],
-hide:["Vânătoarea s-a oprit brusc când m-a ajuns ascuns","Ascunzătoare oficială. Tăiat: m-a ucis în ascunzătoare."],nograce:["Vânătoare fără perioadă de grație, direct la ascunzătoarea mea"],found:["M-a găsit imediat deși eram ascuns","Fără să te fi văzut intrând."],losfast:["Accelerează foarte repede când mă vede, mai mult ca de obicei"],
+cold:["Mai rapidă în camerele reci, lentă la cald"],breath:["Respirație rece vizibilă la vânătoare","Tablou electric oprit."],jinn:["Pornește cu 2,5 m/s când mă vede de departe, curent pornit"],ign:["M-a ignorat, nemișcat și vizibil la peste 5 m","În liniște, electronice oprite."],steps:["Accelerează spre zgomotul pașilor mei sau când alerg"],
+hide:["Vânătoarea s-a oprit brusc când m-a ajuns ascuns","Ascunzătoare oficială. Nu: m-a ucis în ascunzătoare."],nograce:["Vânătoare fără perioadă de grație, direct la ascunzătoarea mea"],found:["Mă găsește la fiecare vânătoare, chiar ascuns și nemișcat","Ca și cum ar ști mereu unde ești."],losfast:["Accelerează foarte repede când mă vede, mai mult ca de obicei"],
 lighton:["A aprins o lumină","Lampă sau întrerupător, în afara vânătorii."],instoff:["Stinge o lumină la o secundă-două după ce am aprins-o"],leave:["Își părăsește camera când lumina e aprinsă acolo"],fuse:["A oprit singură tabloul electric","Nu o suprasarcină de lumini."],
-mist:["Eveniment ceață"],chase:["Eveniment de urmărire","Te urmărește, ușile se închid."],photo:["Dispare când o fotografiez în timpul unui eveniment","Tăiat: a rămas vizibilă în poză."],shape:["Își schimbă aspectul la vânătoare"],vis:["Foarte vizibilă la vânătoare, clipește puțin"],invis:["Aproape invizibilă la vânătoare"],
-male:["Jurnalul arată o entitate masculină"],scream:["Țipăt ascuțit la microfonul parabolic"],target:["Țintește mereu același jucător","Tăiat: atacă mai mulți jucători."],
-salt:["Calcă în sare","Tăiat: trecere peste sare dovedită, grămadă neatinsă."],salt3:["Sarea de nivel III o încetinește la vânătoare"],tp:["EMF la picioarele unui jucător departe de camera ei, fără interacțiune"],door:["Închide ușa de la intrare în afara vânătorii și a evenimentelor"],
-far:["Declanșează un senzor la peste 4 m de camera ei","În afara vânătorii și a evenimentelor."],room:["Și-a schimbat camera preferată"],same:["A început o vânătoare cât eram cu ea în camera ei"],shy:["Nimic nu se mișcă când sunt în camera ei"],two:["Două interacțiuni aproape simultan în două locuri"],
-i60:["Vânătoare la 60–90 s după tămâie"],i90:["Vânătoare la 90–180 s după tămâie"],i180:["Nicio vânătoare 180 s după tămâie, de mai multe ori"],iout:["Iese din cameră în 90 s după tămâie","Sare călcată sau senzor, în afara evenimentelor. Tăiat: a rămas blocată 90 s."],
-blind:["Orbită de tămâie mult mai mult ca de obicei","La vânătoare."],rage:["Mai rapidă după crucifix, tămâie sau sare"],crux:["Crucifix ars mai departe decât raza normală"],flame:["Suflă o flacără în loc să vâneze","Tăiat: a vânat cu o flacără aprinsă chiar lângă ea."],
-cruxfl:["Crucifix ars deși o flacără ardea chiar lângă"],third:["Vânătoare imediat după a 3-a flacără stinsă"],lamp:["Lanterna clipește înainte să-i aud pașii la vânătoare","Tăiat: pașii auziți mai întâi."],elec:["Mai rapidă când trece pe lângă electronice pornite"],voice:["N-a reacționat la vocea mea de la 4–5 m la vânătoare"],
-multi:["Aruncă mai multe obiecte deodată"],objslow:["Mai lentă după ce am mutat multe obiecte"],age:["Încetinește pe parcursul jocului, fără să mutăm obiecte","Tăiat: am stat mult lângă ea, la fel de rapidă."],cycle:["Activitate și viteză care alternează la fiecare 2 min","Socotit de la prima deschidere a ușii."],
-orb:["Orb vizibil pe cameră (joc cu 0 dovezi)","Tăiat: niciun orb după o observare lungă."],th50:["A vânat peste 50% sănătate medie"],th35:["Nicio vânătoare înainte de 35% sănătate medie"]},
+mist:["Eveniment ceață"],chase:["Eveniment de urmărire","Te urmărește, ușile se închid."],photo:["Dispare când o fotografiez în timpul unui eveniment","Nu: a rămas vizibilă în poză."],shape:["Își schimbă aspectul la vânătoare"],vis:["Foarte vizibilă la vânătoare, clipește puțin"],invis:["Aproape invizibilă la vânătoare"],
+male:["Jurnalul arată o entitate masculină"],scream:["Țipăt ascuțit la microfonul parabolic"],target:["Țintește mereu același jucător","Nu: atacă mai mulți jucători."],
+salt:["Calcă în sare","Nu: trecere peste sare dovedită, grămadă neatinsă."],salt3:["Sarea de nivel III o încetinește la vânătoare"],tp:["EMF la picioarele unui jucător departe de camera ei, fără interacțiune"],door:["Închide ușa de la intrare în afara vânătorii și a evenimentelor"],
+far:["Declanșează un senzor la peste 4 m de camera ei","În afara vânătorii și a evenimentelor."],room:["Și-a schimbat camera preferată"],same:["A început o vânătoare cât eram cu ea în camera ei"],shy:["Nimic nu se mișcă când sunt în camera ei","Stai câteva minute cu ea în camera ei."],two:["Două interacțiuni aproape simultan în două locuri"],
+i60:["Vânătoare la 60–90 s după tămâie"],i90:["Vânătoare la 90–180 s după tămâie"],i180:["Nicio vânătoare 180 s după tămâie, de mai multe ori"],iout:["Iese din cameră în 90 s după tămâie","Sare călcată sau senzor, în afara evenimentelor. Nu: a rămas blocată 90 s."],
+blind:["Orbită de tămâie mult mai mult ca de obicei","La vânătoare."],rage:["Mai rapidă după crucifix, tămâie sau sare"],crux:["Crucifix ars mai departe decât raza normală"],flame:["Suflă o flacără în loc să vâneze","Nu: a vânat cu o flacără aprinsă chiar lângă ea."],
+cruxfl:["Crucifix ars deși o flacără ardea chiar lângă"],third:["Vânătoare imediat după a 3-a flacără stinsă"],lamp:["Lanterna clipește înainte să-i aud pașii la vânătoare","Nu: pașii auziți mai întâi."],elec:["Mai rapidă când trece pe lângă electronice pornite"],voice:["N-a reacționat la vocea mea de la 4–5 m la vânătoare"],
+multi:["Aruncă mai multe obiecte deodată","Fă o grămadă de vreo zece obiecte în camera ei."],objslow:["Mai lentă după ce am mutat multe obiecte"],age:["Încetinește pe parcursul jocului, fără să mutăm obiecte","Nu: am stat mult lângă ea, la fel de rapidă."],cycle:["Activitate și viteză care alternează la fiecare 2 min","Socotit de la prima deschidere a ușii."],
+orb:["Orb vizibil pe cameră (joc cu 0 dovezi)","Nu: niciun orb după o observare lungă."],th50:["A vânat peste 50% sănătate medie"],th35:["Nicio vânătoare înainte de 35% sănătate medie","Nu: a vânat peste 35%."]},
 g:{0:["Tămâie, apoi cronometru: nicio vânătoare înainte de 180 s (90 s pentru celelalte, 60 s pentru Demon). Repetă de 2–3 ori.","Niciun alt semn: viteză și comportament normale.","Shade (testul prezenței), Demon (60 s)."],
 1:["Trece peste sare fără s-o deranjeze. Dovedește trecerea: vânătoare, eveniment sau senzor chiar după linie. Fără crucifix sau tămâie înainte de test.","Teleportare: EMF la picioarele unui jucător, departe de camera lui, fără interacțiune.","Gallu înfuriată (calcă mereu prima grămadă), Mimic."],
 2:["Poză în timpul unui eveniment: dispare imediat și nu apare în poză.","Aproape mereu invizibilă la vânătoare.","Obake (rămâne în poză)."],
-3:["Fă o grămadă de vreo zece obiecte în camera lui: aruncă mai multe deodată.","Aruncă obiecte aproape fără oprire la vânătoare.","The Twins (două interacțiuni în două locuri), Deildegast."],
+3:["Fă o grămadă de vreo zece obiecte în camera lui: aruncă mai multe deodată.","Aruncă obiecte aproape fără oprire la vânătoare. La vânătoare încearcă să arunce un obiect din jur la fiecare 0,5 s.","The Twins (două interacțiuni în două locuri), Deildegast."],
 4:["Microfon parabolic: țipăt ascuțit tipic. În grup, la vânătoare, ignoră un jucător vizibil care nu e ținta ei.","Mereu feminină. Nu schimbă niciodată camera, dar merge departe după țintă.","Kormos (ignoră toți jucătorii nemișcați), Goryo."],
 5:["Tablou pornit: când te vede la peste 3 m, sare la 2,5 m/s, apoi încetinește lângă tine. Tablou oprit: viteză normală.","Nu oprește niciodată singur tabloul.","Raiju: oprește tabloul și lasă electronicele pornite."],
 6:["Aprinde o lumină: uneori o stinge la o secundă-două după. Nu aprinde niciodată o lumină.","Pleacă sau schimbă camera când lumina e aprinsă acolo.","Goryo (rămâne în cameră și cu lumina aprinsă)."],
 7:["Ascuns, în liniște, electronice oprite: pași foarte lenți (1 m/s), apoi brusc 3 m/s când te reperează.","Când te pierde, fuge la ultima ta poziție, apoi încetinește din nou.","Thaye bătrân, Hantu la cald, Kormos, Deildegast."],
-8:["Stai în aceeași cameră cu ea: nu poate porni o vânătoare și interacționează foarte puțin.","Foarte timidă, mai activă când sunteți departe.","Spirit (tămâie 180 s), Obambo calm, Goryo."],
-9:["Tămâie, apoi cronometru: vânătoarea e posibilă de la 60 s (90 s pentru celelalte).","Crucifixul acționează asupra lui cu 50% mai departe.","Onryo (flăcări), Thaye tânăr, Gallu, Obambo agresiv."],
+8:["Stai în aceeași cameră cu ea: nu poate porni o vânătoare și interacționează foarte puțin.","Foarte timidă, mai activă când sunteți departe. La cercul de invocare sau la cutia muzicală apare doar ca umbră.","Spirit (tămâie 180 s), Obambo calm, Goryo."],
+9:["Tămâie, apoi cronometru: vânătoarea e posibilă de la 60 s (90 s pentru celelalte).","Crucifixul acționează asupra lui cu 50% mai departe. Poate vâna din nou la 20 s după o vânătoare (25 s la celelalte).","Onryo (flăcări), Thaye tânăr, Gallu, Obambo agresiv."],
 10:["Tămâie în camera lui: rămâne blocat acolo 90 s. Pune sare și senzori la ieșiri.","Singurul care închide ușa de la intrare în afara vânătorii ȘI a evenimentelor.","Goryo (poate ieși în cele 90 s), Shade."],
-11:["Nu face niciodată evenimentul ceață.","Foarte vizibil la vânătoare, foarte activ lângă jucători.","Kormos (nici el nu face ceață, dar niciodată urmărire)."],
+11:["Nu face niciodată evenimentul ceață.","Foarte vizibil la vânătoare, foarte activ lângă jucători. Vizibil cam 60% din timp la vânătoare (cam 30% la celelalte).","Kormos (nici el nu face ceață, dar niciodată urmărire)."],
 12:["La vânătoare îți aude vocea doar de la circa 2,5 m: ascuns la 4–5 m, vorbește, nu vine spre tine.","În afara vânătorii, vorbitul lângă el îl face mai agresiv.","Kormos (reacționează la pași, nu la voce)."],
-13:["Viteza depinde de temperatură: lent la cald (circa 1,4 m/s), rapid la rece (circa 2,7 m/s). Nu accelerează când te vede.","Tablou oprit: respirație rece vizibilă la vânătoare.","Revenant, Obambo calm."],
+13:["Viteza depinde de temperatură: lent la cald (circa 1,4 m/s), rapid la rece (circa 2,7 m/s). Nu accelerează când te vede.","Tablou oprit: respirație rece vizibilă la vânătoare. Nu repornește niciodată tabloul electric.","Revenant, Obambo calm."],
 14:["Face doar plimbări scurte: senzorii la peste 4 m de camera lui nu se declanșează niciodată în afara vânătorii sau a evenimentelor. Nu schimbă niciodată camera.","Fără dovezi nu există test 100%: păstrează-l când tot restul e exclus.","Banshee, Yurei, Shade."],
 15:["Lanterna pornită la vânătoare: clipește înainte să-i auzi pașii (auziți la circa 12 m în loc de 20 m).","Face mai multe sunete la microfonul parabolic.","Raiju (accelerează lângă electronice), Revenant."],
 16:["Lumânare aprinsă și crucifix alăturate: suflă lumânarea în loc să vâneze, crucifixul nu arde. După a 3-a flacără stinsă, vânează.","Reaprinde lumânarea de fiecare dată ca să ții socoteala.","Demon (vânează des, flacăra nu-l oprește)."],
@@ -575,27 +590,478 @@ g:{0:["Tămâie, apoi cronometru: nicio vânătoare înainte de 180 s (90 s pent
 29:["Viteză de bază lentă (circa 1,53 m/s). Când te vede, accelerează mai repede decât orice altă entitate (circa 2,53 m/s în 9 s). Dacă te ajunge într-o ascunzătoare oficială, vânătoarea se oprește brusc.","Următoarea vânătoare pornește fără perioadă de grație, direct la ascunzătoarea ta.","The Twins (viteză lentă), Moroi."],
 30:["3 m/s la începutul fiecărei vânători, minus 0,1 m/s pentru fiecare obiect diferit din casă mutat înainte de vânătoare (minim 0,4). Nu accelerează când te vede.","Numărătoarea se resetează după fiecare vânătoare sau crucifix ars.","Revenant, Deogen, Thaye, Moroi."]}}
 };
+I.es={u:{hideOff:"Ocultar opciones en gris",rNoEv:"Imposible con 0 pruebas: no hay huellas.",noSimple:"Ninguna prueba simple afecta ya a los fantasmas restantes.",tag:"El diario sin pruebas.",intro:"Responde Sí o No a lo que observas: los fantasmas imposibles se tachan en el diario. Las pruebas simples están debajo del diario. Haz clic en un fantasma para tacharlo a mano.",
+mim:"El Mimic lo copia todo",reset:"Nueva partida",settings:"Ajustes de la partida",searchLbl:"Buscar una señal",searchPh:"luz, niebla, velocidad, sal…",
+poss1:"fantasma posible",possN:"fantasmas posibles",findPh:"Buscar un nombre: Twins, Esprit…",findHelp:"Escribe un nombre en inglés o en francés.",noMatch:"Ningún fantasma coincide.",none24:"None, no es un fantasma.",
+simpleH:"Pruebas simples",simpleP:"Pruebas con un objeto o una preparación. Responde Sí o No; vuelve a hacer clic para borrar. Solo aparecen las pruebas que aún afectan a un fantasma posible.",
+greyed:n=>n+" prueba"+(n>1?"s":"")+" en gris: inútil"+(n>1?"es":"")+" o imposible"+(n>1?"s":"")+" con tus ajustes.",
+testsH:"Pruebas para distinguirlos",testsN:n=>"Pruebas para distinguir los "+n+" restantes",testLb:"Prueba: ",confuse:"No confundir con:",empty:"Quita una respuesta para recuperar fantasmas.",
+note:"Valores a noviembre de 2026 (Deildegast incluido). Velocidad normal: 1,7 m/s, hasta unos 2,8 m/s cuando el fantasma te ve. «Mantiene» = solo quedan estos fantasmas; «Descarta» = tacha los indicados.",
+v1:x=>"Solo queda uno: "+x+". Compruébalo con su prueba antes de confirmar.",v0:"No queda ningún fantasma: seguramente una respuesta es incorrecta.",
+yes:"Sí",no:"No",keep:"mantiene",excl:"descarta",useless:"Inútil: solo afecta a fantasmas ya tachados.",evfull:n=>"Ya tienes tus "+n+" pruebas de "+n+".",answers:n=>n+" respuesta"+(n>1?"s":""),signs:n=>n+" señales",
+manual:"Tachado a mano",notdo:"No lo hace: ",clickStrike:"Clic para tachar",rFuse:"Imposible: caja de fusibles rota.",rSolo:"Imposible en solitario.",rEv:"No se puede usar con pruebas activadas.",rMiss:"Te falta: ",or:" o ",and:" y ",
+lang:"Idioma",lStart:"Cordura inicial",lPills:"Pastillas de cordura",oNone:"Ninguna",oYes:"Sí",lDrain:"Pérdida de cordura",oSlow:"Lenta",oNormal:"Normal",oFast:"Rápida",lEv:"Pruebas dadas",lFuse:"Caja de fusibles",oFuseOk:"Funciona",oFuseBroken:"Rota, sin corriente",lPl:"Jugadores",oSolo:"Solo",oGroup:"En grupo",eqTitle:"Equipo disponible",
+sum:s=>(s.pl==="solo"?"Solo":"En grupo")+" · "+s.ev+" prueba"+(+s.ev===1?"":"s")+" · cordura "+s.start+" %"+(+s.pills?" con pastillas":"")+" · fusibles "+(s.fuse==="broken"?"rotos":"OK"),
+iZero:"Cordura bloqueada en 0 %: los umbrales de caza se ocultan y el Moroi es siempre rápido.",iDrain0:"La cordura no baja: el fantasma cazará poco o nada. Los umbrales de caza (Con el tiempo) siguen siendo útiles.",iNorm:"Los umbrales de caza están en Con el tiempo. El Moroi puede ser lento mientras la cordura sea alta.",iEv:"Con pruebas activadas, la prueba de orbes del Mimic ya no funciona.",iFuse:"Sin corriente, las pruebas de luces y la del Jinn son imposibles.",iSolo:"En solitario siempre eres el objetivo de la Banshee."},
+eq:{sel:"Sal",encens:"Incienso",crucifix:"Crucifijo",bougie:"Vela y mechero",photo:"Cámara de fotos",micro:"Micrófono parabólico",detect:"Sensores de movimiento",camera:"Videocámara"},
+fam:{P:["Pruebas","Las pruebas clásicas, cuando tu partida las da."],H:["Fuera de caza","Lo que notas durante la investigación, sin caza en curso."],C:["Durante la caza","Su velocidad, su aspecto, lo que oyes. Más arriesgado."],D:["Con el tiempo","A confirmar durante varios minutos o varias cazas."]},
+cat:["Pruebas","Velocidad y caza","Luces y corriente","Eventos y aspecto","Sal, puertas y movimiento","Incienso, crucifijo y llamas","Sonidos y electrónica","Objetos y tiempo","El Mimic","Umbrales de caza"],
+s:{twop:["Persiguió a dos jugadores distintos en la misma caza","Todos dentro de la casa."],fuseon:["Volvió a encender la caja de fusibles él mismo"],shadow:["Solo aparece como sombra en el círculo de invocación o con la caja de música","No: apareció entero."],polthunt:["Durante la caza lanza sin parar los objetos a su alrededor","No: pasó varios segundos junto a objetos sin lanzar nada."],cooldown:["Vuelve a cazar menos de 25 s después del final de la caza anterior"],
+door2:["Dejó una puerta entreabierta","Fuera de caza: una puerta movida solo unos grados. El Yurei siempre abre o cierra una puerta del todo."],six:["Huella de 6 dedos","Con la luz UV, cuando las huellas son prueba en la partida."],
+ev_emf:["EMF nivel 5"],ev_sb:["Spirit Box"],ev_uv:["Huellas (UV)"],ev_orb:["Orbe fantasma","El Mimic siempre los muestra, aunque no sea una de sus pruebas."],ev_wr:["Escritura fantasma"],ev_fr:["Temperaturas gélidas"],ev_dots:["D.O.T.S."],
+los:["Acelera poco a poco cuando me ve","Aumento gradual con línea de visión."],norm:["Velocidad normal sin verme, toda la caza","Como tu forma de andar, sin cambios."],slow:["Claramente más lento de lo normal sin verme","Más lento que tu paso."],fast:["Claramente más rápido de lo normal sin verme"],
+jump:["Pasa de golpe de muy lento a muy rápido","Salto instantáneo cuando te detecta."],brake:["Frena claramente al acercarse a mí"],still:["Su velocidad cambia cuando me quedo quieto o me muevo","A menos de 10 m de él."],vary:["Velocidad distinta de una caza a otra","Sin cambios de temperatura ni de electrónica."],
+cold:["Más rápido en habitaciones frías, lento en las cálidas"],breath:["Aliento frío visible durante la caza","Fusibles apagados."],jinn:["Corre a 2,5 m/s al verme de lejos, con la corriente encendida"],ign:["Me ignoró, quieto y visible a más de 5 m","En silencio, con la electrónica apagada."],steps:["Acelera hacia mis pasos o cuando corro"],
+hide:["La caza se detuvo en seco al alcanzarme escondido","Escondite oficial. No: me mató en el escondite."],nograce:["Caza sin periodo de gracia, directo a mi escondite"],found:["Me encuentra en cada caza, aunque esté escondido y quieto","Como si siempre supiera dónde estás."],losfast:["Acelera muy rápido cuando me ve, más de lo normal"],
+lighton:["Encendió una luz","Lámpara o interruptor, fuera de caza."],instoff:["Apaga una luz uno o dos segundos después de encenderla yo"],leave:["Sale de su habitación cuando la luz está encendida"],fuse:["Apagó la caja de fusibles él mismo","No una sobrecarga de luces."],
+mist:["Evento de niebla"],chase:["Evento de persecución","Te sigue, las puertas se cierran."],photo:["Desaparece cuando le hago una foto durante un evento","No: siguió visible en la foto."],shape:["Cambia de aspecto durante la caza"],vis:["Muy visible durante la caza, parpadea poco"],invis:["Casi invisible durante la caza"],
+male:["El diario indica un fantasma masculino"],scream:["Grito agudo en el micrófono parabólico"],target:["Va siempre a por el mismo jugador","No: va a por varios jugadores."],
+salt:["Pisa la sal","No: paso por la sal comprobado, montón intacto."],salt3:["La sal de nivel III lo frena durante la caza"],tp:["EMF a los pies de un jugador lejos de su habitación, sin interacción"],door:["Cierra la puerta de entrada fuera de caza y de evento"],
+far:["Activa un sensor a más de 4 m de su habitación","Fuera de caza y de evento."],room:["Cambió de habitación favorita"],same:["Empezó una caza mientras yo estaba en su habitación con él"],shy:["No se mueve nada cuando estoy en su habitación","Quédate varios minutos con él en su habitación."],two:["Dos interacciones casi a la vez en dos sitios"],
+i60:["Caza entre 60 y 90 s después del incienso"],i90:["Caza entre 90 y 180 s después del incienso"],i180:["Ninguna caza durante 180 s después del incienso, varias veces"],iout:["Sale de su habitación en los 90 s tras el incienso","Sal pisada o sensor, fuera de evento."],
+blind:["Cegado por el incienso mucho más tiempo de lo normal","Durante la caza."],rage:["Más rápido tras un crucifijo, incienso o sal"],crux:["Crucifijo quemado más lejos de su alcance normal"],flame:["Apaga una llama en lugar de cazar","No: cazó con una llama encendida justo al lado."],
+cruxfl:["Crucifijo quemado con una llama encendida justo al lado"],third:["Caza justo después de la 3.ª llama apagada"],lamp:["Mi linterna parpadea antes de oír sus pasos durante la caza","No: oí sus pasos primero."],elec:["Más rápido al pasar cerca de electrónica encendida"],voice:["No reaccionó a mi voz a 4 o 5 m durante la caza"],
+multi:["Lanza varios objetos a la vez","Haz un montón de unos diez objetos en su habitación."],objslow:["Más lento después de mover muchos objetos"],age:["Se vuelve más lento con la partida, sin mover objetos","No: me quedé mucho tiempo cerca y sigue igual de rápido."],cycle:["Actividad y velocidad que alternan cada 2 min","Contado desde la primera apertura de la puerta."],
+orb:["Orbe visible en cámara (partida con 0 pruebas)","No: ningún orbe tras observar mucho tiempo."],th50:["Cazó por encima del 50 % de cordura media"],th35:["Ninguna caza antes del 35 % de cordura media","No: cazó por encima del 35 %."]},
+g:{0:["Incienso y cronómetro: ninguna caza antes de 180 s (90 s para los demás, 60 s para el Demon). Repite 2 o 3 veces.","Ninguna otra señal: velocidad y comportamiento normales.","Shade (prueba de presencia), Demon (60 s)."],
+1:["Pasa por la sal sin tocarla. Comprueba el paso: caza, evento o sensor justo detrás de la línea. Sin crucifijo ni incienso antes de la prueba.","Teletransporte: EMF a los pies de un jugador, lejos de su habitación, sin interacción.","Gallu enfurecido (siempre pisa el primer montón), Mimic."],
+2:["Foto durante un evento: desaparece al instante y no sale en la foto.","Casi siempre invisible durante la caza.","Obake (sale en la foto)."],
+3:["Haz un montón de unos diez objetos en su habitación: lanza varios a la vez.","Lanza objetos casi sin parar durante la caza. En caza intenta lanzar un objeto cercano cada 0,5 s.","The Twins (dos interacciones en dos sitios), Deildegast."],
+4:["Micrófono parabólico: grito agudo característico. En grupo, durante la caza, ignora a un jugador visible que no es su objetivo.","Siempre femenina. Nunca cambia de habitación, pero va lejos para seguir a su objetivo.","Kormos (ignora a todos los jugadores quietos), Goryo."],
+5:["Fusibles encendidos: si te ve a más de 3 m, salta a 2,5 m/s y frena cerca de ti. Fusibles apagados: velocidad normal.","Nunca apaga la caja de fusibles él mismo.","Raiju: apaga los fusibles y deja tu electrónica encendida."],
+6:["Enciende una luz: a veces la apaga uno o dos segundos después. Nunca enciende una luz.","Sale o cambia de habitación cuando su luz está encendida.","Goryo (se queda en su habitación aunque haya luz)."],
+7:["Escondido, en silencio, electrónica apagada: pasos muy lentos (1 m/s), luego 3 m/s de golpe al detectarte.","Cuando te pierde, corre a tu última posición y vuelve a ir lento.","Thaye viejo, Hantu en zona cálida, Kormos, Deildegast."],
+8:["Quédate en su misma habitación: no puede empezar una caza y casi no interactúa.","Muy tímida, más activa cuando estáis lejos. En el círculo de invocación o con la caja de música solo aparece como sombra.","Spirit (incienso 180 s), Obambo calmado, Goryo."],
+9:["Incienso y cronómetro: una caza es posible desde 60 s (90 s para los demás).","El crucifijo le afecta un 50 % más lejos. Puede volver a cazar 20 s después de una caza (25 s para los demás).","Onryo (llamas), Thaye joven, Gallu, Obambo agresivo."],
+10:["Incienso en su habitación: se queda bloqueado allí 90 s. Pon sal y sensores en las salidas.","Único que cierra la puerta de entrada fuera de caza Y de evento.","Goryo (puede salir en esos 90 s), Shade."],
+11:["Nunca hace el evento de niebla.","Muy visible en caza, muy activo cerca de los jugadores. Visible alrededor del 60 % del tiempo en caza (unos 30 % los demás).","Kormos (tampoco hace niebla, pero nunca persecución)."],
+12:["En caza solo oye tu voz a unos 2,5 m: escondido a 4–5 m, habla; no viene hacia ti.","Fuera de caza, hablar cerca lo vuelve más agresivo.","Kormos (reacciona a los pasos, no a la voz)."],
+13:["Velocidad según la temperatura: lento en lo cálido (unos 1,4 m/s), rápido en lo frío (unos 2,7 m/s). No acelera al verte.","Fusibles apagados: aliento frío visible en caza. Nunca vuelve a encender los fusibles.","Revenant, Obambo calmado."],
+14:["Solo hace paseos cortos: los sensores a más de 4 m de su habitación nunca se activan fuera de caza o evento. Nunca cambia de habitación.","Sin pruebas no hay test al 100 %: se queda cuando todo lo demás está descartado.","Banshee, Yurei, Shade."],
+15:["Linterna encendida en caza: parpadea antes de que oigas sus pasos (se oyen a unos 12 m en vez de 20 m).","Hace más ruidos en el micrófono parabólico.","Raiju (acelera cerca de la electrónica), Revenant."],
+16:["Vela encendida y crucifijo juntos: apaga la vela en lugar de cazar y el crucifijo no se quema. Tras la 3.ª llama apagada, caza.","Vuelve a encender la vela cada vez para llevar la cuenta.","Demon (caza a menudo, la llama no lo detiene)."],
+17:["Velocidad distinta de una caza a otra (unos 1,5 o 1,9 m/s), al azar.","Dos interacciones casi a la vez en dos sitios.","Obambo (su velocidad sigue un cronómetro), Poltergeist."],
+18:["Electrónica encendida en su camino: allí va a 2,5 m/s, incluso sin verte.","Hace parpadear la electrónica desde más lejos que los demás.","Jinn (depende de los fusibles), Myling, Dayan."],
+19:["Cambia de aspecto durante la caza.","Huellas de 6 dedos que desaparecen antes (si hay UV).","Phantom (desaparece en la foto)."],
+20:["Siempre muestra orbes en cámara, incluso con 0 pruebas. Pon una cámara en su habitación.","Copia las habilidades de otros fantasmas y cambia de modelo durante la partida.","Todos los fantasmas."],
+21:["Al 0 %: rápido sin verte (unos 2,3 m/s), luego hasta unos 3,7 m/s cuando te ve.","Incienso en caza: cegado 7,5, 9 o 10,5 s en vez de 5, 6 o 7 s (niveles I, II, III).","Dayan, Thaye joven, Kormos, Deildegast, Aswang."],
+22:["Muy rápido de lejos (3 m/s), casi parado justo a tu lado (0,4 m/s).","Siempre sabe dónde están los jugadores: esconderse no sirve.","Revenant (lo contrario), Dayan."],
+23:["Rápido al principio (unos 2,75 m/s), luego más lento al envejecer, hasta 1 m/s. Nunca acelera al verte.","Envejece cuando os quedáis cerca. La Ouija cuesta cordura: al 0 %, riesgo de caza maldita.","Deildegast (objetos), Obambo, Deogen."],
+25:["Sin crucifijo, incienso ni sal: velocidad normal. Tras una protección: enfurecido y más rápido (unos 1,96 m/s, hasta 3,2 m/s). Tras una caza enfurecida: debilitado y más lento (unos 1,36 m/s).","Enfurecido, puede pasar por la sal sin tocarla.","Wraith, Obambo, Demon."],
+26:["A menos de 10 m en caza: si te quedas quieto baja a 1,2 m/s; si te mueves sube a 2,25 m/s.","Siempre femenina.","Kormos, Deogen, Revenant."],
+27:["Cronómetro desde la primera apertura de una puerta de salida: calmado de 0 a 1 min, agresivo de 1 a 3, luego cambia cada 2 min. Calmado unos 1,45 m/s, agresivo unos 1,96 m/s.","Las cazas iniciadas en estado agresivo duran un 20 % menos.","The Twins, Gallu, Hantu."],
+28:["Casi ciego en caza: quieto y visible a más de 5 m, te ignora. Acelera hacia tus pasos (hasta unos 3,7 m/s).","Nunca hace el evento de niebla ni de persecución.","Dayan, Yokai, Oni, Banshee."],
+29:["Velocidad base lenta (unos 1,53 m/s). Al verte acelera más rápido que cualquier otro (unos 2,53 m/s en 9 s). Si te alcanza en un escondite oficial, la caza se detiene en seco.","La siguiente caza empieza sin periodo de gracia, directo a tu escondite.","The Twins (velocidad lenta), Moroi."],
+30:["3 m/s al inicio de cada caza, menos 0,1 m/s por cada objeto distinto de la casa movido antes (mínimo 0,4). No acelera al verte.","El contador se reinicia tras cada caza o crucifijo quemado.","Revenant, Deogen, Thaye, Moroi."]}};
 
-const LANGS=[["fr","Français"],["en","English"],["de","Deutsch"],["it","Italiano"],["ro","Română"]];
+I.pt={u:{hideOff:"Ocultar opções em cinza",rNoEv:"Impossível com 0 evidências: sem digitais.",noSimple:"Nenhum teste simples ainda diz respeito aos fantasmas restantes.",tag:"O diário sem evidências.",intro:"Responda Sim ou Não ao que você observa: os fantasmas impossíveis são riscados no diário. Os testes simples ficam abaixo do diário. Clique em um fantasma para riscá-lo à mão.",
+mim:"O Mimic copia tudo",reset:"Nova partida",settings:"Configurações da partida",searchLbl:"Buscar um sinal",searchPh:"luz, névoa, velocidade, sal…",
+poss1:"fantasma possível",possN:"fantasmas possíveis",findPh:"Encontrar um nome: Twins, Esprit…",findHelp:"Digite um nome em inglês ou francês.",noMatch:"Nenhum fantasma corresponde.",none24:"None, não é um fantasma.",
+simpleH:"Testes simples",simpleP:"Testes com um item ou uma preparação. Responda Sim ou Não; clique de novo para apagar. Só aparecem os testes que ainda dizem respeito a um fantasma possível.",
+greyed:n=>n+" teste"+(n>1?"s":"")+" em cinza: inúte"+(n>1?"is":"l")+" ou impossíve"+(n>1?"is":"l")+" com suas configurações.",
+testsH:"Testes para diferenciá-los",testsN:n=>"Testes para diferenciar os "+n+" restantes",testLb:"Teste: ",confuse:"Não confundir com:",empty:"Remova uma resposta para recuperar fantasmas.",
+note:"Valores de novembro de 2026 (Deildegast incluído). Velocidade normal: 1,7 m/s, até cerca de 2,8 m/s quando o fantasma vê você. «Mantém» = só restam esses fantasmas; «Descarta» = risca os listados.",
+v1:x=>"Só resta um: "+x+". Confirme com o teste dele antes de escolher.",v0:"Nenhum fantasma possível: provavelmente uma resposta está errada.",
+yes:"Sim",no:"Não",keep:"mantém",excl:"descarta",useless:"Inútil: só diz respeito a fantasmas já riscados.",evfull:n=>"Você já tem suas "+n+" evidências de "+n+".",answers:n=>n+" resposta"+(n>1?"s":""),signs:n=>n+" sinais",
+manual:"Riscado à mão",notdo:"Não faz: ",clickStrike:"Clique para riscar",rFuse:"Impossível: caixa de força quebrada.",rSolo:"Impossível sozinho.",rEv:"Indisponível quando há evidências.",rMiss:"Falta: ",or:" ou ",and:" e ",
+lang:"Idioma",lStart:"Sanidade inicial",lPills:"Remédios de sanidade",oNone:"Nenhum",oYes:"Sim",lDrain:"Perda de sanidade",oSlow:"Lenta",oNormal:"Normal",oFast:"Rápida",lEv:"Evidências dadas",lFuse:"Caixa de força",oFuseOk:"Funcionando",oFuseBroken:"Quebrada, sem energia",lPl:"Jogadores",oSolo:"Sozinho",oGroup:"Em grupo",eqTitle:"Equipamento disponível",
+sum:s=>(s.pl==="solo"?"Sozinho":"Em grupo")+" · "+s.ev+" evidência"+(+s.ev===1?"":"s")+" · sanidade "+s.start+"%"+(+s.pills?" com remédios":"")+" · caixa de força "+(s.fuse==="broken"?"quebrada":"OK"),
+iZero:"Sanidade travada em 0%: os limites de caçada ficam ocultos e o Moroi é sempre rápido.",iDrain0:"A sanidade não cai: o fantasma vai caçar pouco ou nada. Os limites de caçada (Com o tempo) continuam úteis.",iNorm:"Os limites de caçada estão em Com o tempo. O Moroi pode ser lento enquanto a sanidade estiver alta.",iEv:"Com evidências ativadas, o teste dos orbes do Mimic não funciona mais.",iFuse:"Sem energia, os testes de luz e do Jinn são impossíveis.",iSolo:"Sozinho, você é sempre o alvo da Banshee."},
+eq:{sel:"Sal",encens:"Incenso",crucifix:"Crucifixo",bougie:"Vela e isqueiro",photo:"Câmera fotográfica",micro:"Microfone parabólico",detect:"Sensores de movimento",camera:"Câmera de vídeo"},
+fam:{P:["Evidências","As evidências clássicas, quando sua partida as dá."],H:["Fora da caçada","O que você percebe durante a investigação, sem caçada em andamento."],C:["Durante a caçada","Velocidade, aparência, o que você ouve. Mais arriscado."],D:["Com o tempo","Para confirmar ao longo de vários minutos ou caçadas."]},
+cat:["Evidências","Velocidade e caçada","Luzes e energia","Eventos e aparência","Sal, portas e deslocamento","Incenso, crucifixo e chamas","Sons e eletrônicos","Objetos e tempo","O Mimic","Limites de caçada"],
+s:{twop:["Perseguiu dois jogadores diferentes na mesma caçada","Todos dentro da casa."],fuseon:["Religou a caixa de força sozinho"],shadow:["Só aparece como sombra no círculo de invocação ou na caixa de música","Não: apareceu por inteiro."],polthunt:["Na caçada, arremessa sem parar os objetos ao redor","Não: passou vários segundos perto de objetos sem arremessar nada."],cooldown:["Caça de novo menos de 25 s após o fim da caçada anterior"],
+door2:["Deixou uma porta entreaberta","Fora da caçada: uma porta empurrada só alguns graus. O Yurei sempre abre ou fecha uma porta por completo."],six:["Digital de 6 dedos","Com a luz UV, quando as digitais são evidência na partida."],
+ev_emf:["EMF nível 5"],ev_sb:["Spirit Box"],ev_uv:["Digitais (UV)"],ev_orb:["Orbe fantasma","O Mimic sempre mostra, mesmo não sendo uma de suas evidências."],ev_wr:["Escrita fantasma"],ev_fr:["Temperaturas congelantes"],ev_dots:["D.O.T.S."],
+los:["Acelera aos poucos quando me vê","Aumento gradual com linha de visão."],norm:["Velocidade normal sem me ver, a caçada toda","Como o seu andar, sem mudança."],slow:["Claramente mais lento que o normal sem me ver","Mais lento que o seu andar."],fast:["Claramente mais rápido que o normal sem me ver"],
+jump:["Passa de repente de muito lento a muito rápido","Salto instantâneo quando te detecta."],brake:["Desacelera claramente ao chegar perto de mim"],still:["A velocidade muda quando paro ou volto a andar","A menos de 10 m dele."],vary:["Velocidade diferente de uma caçada para outra","Sem mudança de temperatura ou de eletrônicos."],
+cold:["Mais rápido em cômodos frios, lento nos quentes"],breath:["Hálito frio visível na caçada","Caixa de força desligada."],jinn:["Dispara a 2,5 m/s ao me ver de longe, energia ligada"],ign:["Me ignorou, parado e visível a mais de 5 m","Em silêncio, eletrônicos desligados."],steps:["Acelera na direção dos meus passos ou quando corro"],
+hide:["A caçada parou na hora quando ele me alcançou escondido","Esconderijo oficial. Não: me matou no esconderijo."],nograce:["Caçada sem período de graça, direto ao meu esconderijo"],found:["Me encontra em toda caçada, mesmo escondido e parado","Como se sempre soubesse onde você está."],losfast:["Acelera muito rápido quando me vê, mais que o normal"],
+lighton:["Acendeu uma luz","Lâmpada ou interruptor, fora da caçada."],instoff:["Apaga uma luz um ou dois segundos depois que eu a acendo"],leave:["Sai do cômodo quando a luz dele está acesa"],fuse:["Desligou a caixa de força sozinho","Não foi sobrecarga de luzes."],
+mist:["Evento de névoa"],chase:["Evento de perseguição","Ele te segue, as portas se fecham."],photo:["Some quando tiro uma foto dele durante um evento","Não: continuou visível na foto."],shape:["Muda de aparência durante a caçada"],vis:["Muito visível na caçada, pisca pouco"],invis:["Quase invisível na caçada"],
+male:["O diário indica um fantasma masculino"],scream:["Grito agudo no microfone parabólico"],target:["Vai sempre atrás do mesmo jogador","Não: vai atrás de vários jogadores."],
+salt:["Pisa no sal","Não: passagem pelo sal comprovada, monte intacto."],salt3:["O sal nível III o deixa mais lento na caçada"],tp:["EMF aos pés de um jogador longe do cômodo dele, sem interação"],door:["Fecha a porta de entrada fora de caçada e de evento"],
+far:["Ativa um sensor a mais de 4 m do cômodo dele","Fora de caçada e de evento."],room:["Mudou de cômodo favorito"],same:["Começou uma caçada enquanto eu estava no cômodo com ele"],shy:["Nada se mexe quando estou no cômodo dele","Fique vários minutos com ele no cômodo."],two:["Duas interações quase ao mesmo tempo em dois lugares"],
+i60:["Caçada entre 60 e 90 s após o incenso"],i90:["Caçada entre 90 e 180 s após o incenso"],i180:["Nenhuma caçada por 180 s após o incenso, várias vezes"],iout:["Sai do cômodo em até 90 s após o incenso","Sal pisado ou sensor, fora de evento."],
+blind:["Cegado pelo incenso bem mais tempo que o normal","Durante a caçada."],rage:["Mais rápido depois de crucifixo, incenso ou sal"],crux:["Crucifixo queimado além do alcance normal"],flame:["Apaga uma chama em vez de caçar","Não: caçou com uma chama acesa logo ao lado."],
+cruxfl:["Crucifixo queimado com uma chama acesa logo ao lado"],third:["Caçada logo após a 3ª chama apagada"],lamp:["Minha lanterna pisca antes de eu ouvir os passos na caçada","Não: ouvi os passos antes."],elec:["Mais rápido ao passar perto de eletrônicos ligados"],voice:["Não reagiu à minha voz a 4 ou 5 m na caçada"],
+multi:["Arremessa vários objetos de uma vez","Faça um monte de uns dez objetos no cômodo dele."],objslow:["Mais lento depois de movermos muitos objetos"],age:["Fica mais lento ao longo da partida, sem mover objetos","Não: fiquei muito tempo perto e continua rápido."],cycle:["Atividade e velocidade alternando a cada 2 min","Contado desde a primeira abertura da porta."],
+orb:["Orbe visível na câmera (partida com 0 evidências)","Não: nenhum orbe após observar bastante."],th50:["Caçou acima de 50% de sanidade média"],th35:["Nenhuma caçada antes de 35% de sanidade média","Não: caçou acima de 35%."]},
+g:{0:["Incenso e cronômetro: nenhuma caçada antes de 180 s (90 s para os outros, 60 s para o Demon). Repita 2 ou 3 vezes.","Nenhum outro sinal: velocidade e comportamento normais.","Shade (teste de presença), Demon (60 s)."],
+1:["Passa pelo sal sem mexer nele. Comprove a passagem: caçada, evento ou sensor logo atrás da linha. Sem crucifixo nem incenso antes do teste.","Teleporte: EMF aos pés de um jogador, longe do cômodo, sem interação.","Gallu enfurecido (sempre pisa o primeiro monte), Mimic."],
+2:["Foto durante um evento: some na hora e não aparece na foto.","Quase sempre invisível na caçada.","Obake (aparece na foto)."],
+3:["Faça um monte de uns dez objetos no cômodo dele: arremessa vários de uma vez.","Arremessa objetos quase sem parar na caçada. Na caçada tenta arremessar um objeto próximo a cada 0,5 s.","The Twins (duas interações em dois lugares), Deildegast."],
+4:["Microfone parabólico: grito agudo típico. Em grupo, na caçada, ignora um jogador visível que não é o alvo dela.","Sempre feminina. Nunca muda de cômodo, mas vai longe para seguir o alvo.","Kormos (ignora todos os jogadores parados), Goryo."],
+5:["Caixa de força ligada: se te vê a mais de 3 m, salta para 2,5 m/s e desacelera perto de você. Desligada: velocidade normal.","Nunca desliga a caixa de força sozinho.","Raiju: desligue a caixa e deixe seus eletrônicos ligados."],
+6:["Acenda uma luz: às vezes ele apaga um ou dois segundos depois. Nunca acende uma luz.","Sai ou troca de cômodo quando a luz dele está acesa.","Goryo (fica no cômodo mesmo com luz)."],
+7:["Escondido, em silêncio, eletrônicos desligados: passos muito lentos (1 m/s), depois 3 m/s de uma vez ao te detectar.","Quando te perde, corre até sua última posição e volta a ficar lento.","Thaye velho, Hantu no quente, Kormos, Deildegast."],
+8:["Fique no mesmo cômodo que ela: não pode começar uma caçada e quase não interage.","Muito tímida, mais ativa quando vocês estão longe. No círculo de invocação ou na caixa de música só aparece como sombra.","Spirit (incenso 180 s), Obambo calmo, Goryo."],
+9:["Incenso e cronômetro: caçada possível a partir de 60 s (90 s para os outros).","O crucifixo age nele 50% mais longe. Pode caçar de novo 20 s depois de uma caçada (25 s para os outros).","Onryo (chamas), Thaye jovem, Gallu, Obambo agressivo."],
+10:["Incenso no cômodo dele: fica preso lá 90 s. Coloque sal e sensores nas saídas.","Único que fecha a porta de entrada fora de caçada E de evento.","Goryo (pode sair nos 90 s), Shade."],
+11:["Nunca faz o evento de névoa.","Muito visível na caçada, muito ativo perto dos jogadores. Visível cerca de 60% do tempo na caçada (uns 30% os outros).","Kormos (também sem névoa, mas nunca perseguição)."],
+12:["Na caçada só ouve sua voz a cerca de 2,5 m: escondido a 4–5 m, fale; ele não vem até você.","Fora da caçada, falar perto dele o deixa mais agressivo.","Kormos (reage a passos, não à voz)."],
+13:["Velocidade ligada à temperatura: lento no quente (cerca de 1,4 m/s), rápido no frio (cerca de 2,7 m/s). Não acelera ao te ver.","Caixa de força desligada: hálito frio visível na caçada. Nunca religa a caixa de força.","Revenant, Obambo calmo."],
+14:["Só faz passeios curtos: sensores a mais de 4 m do cômodo nunca disparam fora de caçada ou evento. Nunca muda de cômodo.","Sem evidências não há teste 100%: fica quando todo o resto foi descartado.","Banshee, Yurei, Shade."],
+15:["Lanterna ligada na caçada: pisca antes de você ouvir os passos (ouvidos a cerca de 12 m em vez de 20 m).","Faz mais sons no microfone parabólico.","Raiju (acelera perto de eletrônicos), Revenant."],
+16:["Vela acesa e crucifixo lado a lado: apaga a vela em vez de caçar, o crucifixo não queima. Depois da 3ª chama apagada, caça.","Reacenda a vela a cada vez para contar.","Demon (caça muito, a chama não o para)."],
+17:["Velocidade diferente de uma caçada para outra (cerca de 1,5 ou 1,9 m/s), ao acaso.","Duas interações quase ao mesmo tempo em dois lugares.","Obambo (velocidade segue um cronômetro), Poltergeist."],
+18:["Eletrônicos ligados no caminho dele: ali vai a 2,5 m/s, mesmo sem te ver.","Faz os eletrônicos piscarem de mais longe que os outros.","Jinn (depende da caixa de força), Myling, Dayan."],
+19:["Muda de aparência durante a caçada.","Digitais de 6 dedos que somem mais rápido (se houver UV).","Phantom (some na foto)."],
+20:["Sempre mostra orbes na câmera, mesmo com 0 evidências. Coloque uma câmera no cômodo dele.","Copia habilidades de outros fantasmas e muda de modelo durante a partida.","Todos os fantasmas."],
+21:["Em 0%: rápido sem te ver (cerca de 2,3 m/s), depois até cerca de 3,7 m/s quando te vê.","Incenso na caçada: cego por 7,5, 9 ou 10,5 s em vez de 5, 6 ou 7 s (níveis I, II, III).","Dayan, Thaye jovem, Kormos, Deildegast, Aswang."],
+22:["Muito rápido de longe (3 m/s), quase parado bem perto de você (0,4 m/s).","Sempre sabe onde os jogadores estão: se esconder não adianta.","Revenant (o oposto), Dayan."],
+23:["Rápido no começo (cerca de 2,75 m/s), depois mais lento ao envelhecer, até 1 m/s. Nunca acelera ao te ver.","Envelhece quando vocês ficam perto. A Ouija custa sanidade: em 0%, risco de caçada amaldiçoada.","Deildegast (objetos), Obambo, Deogen."],
+25:["Sem crucifixo, incenso ou sal: velocidade normal. Depois de uma proteção: enfurecido e mais rápido (cerca de 1,96 m/s, até 3,2 m/s). Depois de uma caçada enfurecida: enfraquecido e mais lento (cerca de 1,36 m/s).","Enfurecido, pode passar pelo sal sem mexer nele.","Wraith, Obambo, Demon."],
+26:["A menos de 10 m na caçada: parado, cai para 1,2 m/s; andando, sobe para 2,25 m/s.","Sempre feminina.","Kormos, Deogen, Revenant."],
+27:["Cronômetro desde a primeira abertura de uma porta de saída: calmo de 0 a 1 min, agressivo de 1 a 3, depois alterna a cada 2 min. Calmo cerca de 1,45 m/s, agressivo cerca de 1,96 m/s.","Caçadas iniciadas no modo agressivo duram 20% menos.","The Twins, Gallu, Hantu."],
+28:["Quase cego na caçada: parado e visível a mais de 5 m, ele te ignora. Acelera na direção dos seus passos (até cerca de 3,7 m/s).","Nunca faz o evento de névoa nem de perseguição.","Dayan, Yokai, Oni, Banshee."],
+29:["Velocidade base lenta (cerca de 1,53 m/s). Ao te ver acelera mais rápido que qualquer outro (cerca de 2,53 m/s em 9 s). Se te alcança num esconderijo oficial, a caçada para na hora.","A caçada seguinte começa sem período de graça, direto ao seu esconderijo.","The Twins (velocidade lenta), Moroi."],
+30:["3 m/s no início de cada caçada, menos 0,1 m/s para cada objeto diferente da casa movido antes (mínimo 0,4). Não acelera ao te ver.","A contagem zera após cada caçada ou crucifixo queimado.","Revenant, Deogen, Thaye, Moroi."]}};
+
+I.ru=(()=>{const pl=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4&&(h<10||h>=20)?b:c)};return {u:{hideOff:"Скрыть серые варианты",rNoEv:"Невозможно при 0 уликах: отпечатков нет.",noSimple:"Ни один простой тест больше не касается оставшихся призраков.",tag:"Журнал без улик.",intro:"Отвечай «Да» или «Нет» на то, что видишь: невозможные призраки вычёркиваются в журнале. Простые тесты — под журналом. Нажми на призрака, чтобы вычеркнуть его вручную.",
+mim:"Mimic копирует всё",reset:"Новая игра",settings:"Настройки игры",searchLbl:"Найти признак",searchPh:"свет, туман, скорость, соль…",
+poss1:"возможный призрак",possN:n=>pl(n,"возможный призрак","возможных призрака","возможных призраков"),findPh:"Найти имя: Twins, Esprit…",findHelp:"Введи имя на английском или французском.",noMatch:"Совпадений нет.",none24:"None — это не призрак.",
+simpleH:"Простые тесты",simpleP:"Тесты с предметом или подготовкой. Отвечай «Да» или «Нет»; нажми ещё раз, чтобы стереть. Показаны только тесты, которые ещё касаются возможного призрака.",
+greyed:n=>n+" "+pl(n,"тест","теста","тестов")+" серым: бесполезны или невозможны с твоими настройками.",
+testsH:"Тесты, чтобы различить",testsN:n=>"Тесты, чтобы различить оставшихся: "+n,testLb:"Тест: ",confuse:"Не путать с:",empty:"Убери ответ, чтобы вернуть призраков.",
+note:"Данные на ноябрь 2026 (включая Deildegast). Обычная скорость: 1,7 м/с, до ~2,8 м/с, когда призрак тебя видит. «Оставляет» — остаются только эти призраки; «Исключает» — вычёркивает перечисленных.",
+v1:x=>"Остался один: "+x+". Проверь его тестом, прежде чем выбирать.",v0:"Не осталось ни одного призрака: вероятно, один из ответов неверен.",
+yes:"Да",no:"Нет",keep:"оставляет",excl:"исключает",useless:"Бесполезно: касается только уже вычеркнутых призраков.",evfull:n=>"У тебя уже "+n+" из "+n+" улик.",answers:n=>n+" "+pl(n,"ответ","ответа","ответов"),signs:n=>n+" "+pl(n,"признак","признака","признаков"),
+manual:"Вычеркнут вручную",notdo:"Не делает: ",clickStrike:"Нажми, чтобы вычеркнуть",rFuse:"Невозможно: щиток сломан.",rSolo:"Невозможно в одиночку.",rEv:"Недоступно, когда даются улики.",rMiss:"Не хватает: ",or:" или ",and:" и ",
+lang:"Язык",lStart:"Начальный рассудок",lPills:"Таблетки рассудка",oNone:"Нет",oYes:"Да",lDrain:"Потеря рассудка",oSlow:"Медленная",oNormal:"Обычная",oFast:"Быстрая",lEv:"Количество улик",lFuse:"Электрощиток",oFuseOk:"Работает",oFuseBroken:"Сломан, нет тока",lPl:"Игроки",oSolo:"Один",oGroup:"Группа",eqTitle:"Доступное снаряжение",
+sum:s=>(s.pl==="solo"?"Один":"Группа")+" · улик: "+s.ev+" · рассудок "+s.start+"%"+(+s.pills?" с таблетками":"")+" · щиток "+(s.fuse==="broken"?"сломан":"OK"),
+iZero:"Рассудок застыл на 0%: пороги охоты скрыты, Moroi всегда быстрая.",iDrain0:"Рассудок не падает: призрак будет охотиться мало или совсем нет. Пороги охоты («Со временем») остаются полезными.",iNorm:"Пороги охоты учтены в разделе «Со временем». Moroi может быть медленной, пока рассудок высокий.",iEv:"С уликами тест сфер Mimic больше не работает.",iFuse:"Без тока тесты со светом и тест Jinn невозможны.",iSolo:"В одиночку ты всегда цель Banshee."},
+eq:{sel:"Соль",encens:"Благовония",crucifix:"Распятие",bougie:"Свеча и зажигалка",photo:"Фотокамера",micro:"Параболический микрофон",detect:"Датчики движения",camera:"Видеокамера"},
+fam:{P:["Улики","Классические улики, если игра их даёт."],H:["Вне охоты","Что ты замечаешь во время расследования, без охоты."],C:["Во время охоты","Скорость, вид, что ты слышишь. Рискованнее."],D:["Со временем","Подтверждать в течение нескольких минут или охот."]},
+cat:["Улики","Скорость и охота","Свет и электричество","События и облик","Соль, двери и перемещение","Благовония, распятие и огонь","Звуки и электроника","Предметы и время","Mimic","Пороги охоты"],
+s:{twop:["Гнался за двумя разными игроками в одной охоте","Все внутри дома."],fuseon:["Сам включил щиток обратно"],shadow:["У круга призыва или музыкальной шкатулки появляется только тенью","Нет: появился целиком."],polthunt:["Во время охоты непрерывно бросает предметы вокруг","Нет: несколько секунд прошёл мимо предметов и ничего не бросил."],cooldown:["Снова охотится меньше чем через 25 с после конца прошлой охоты"],
+door2:["Оставил дверь приоткрытой","Вне охоты: дверь сдвинута всего на несколько градусов. Yurei всегда открывает или закрывает дверь полностью."],six:["Отпечаток с 6 пальцами","С УФ-фонарём, если отпечатки — улика в этой игре."],
+ev_emf:["ЭМП 5"],ev_sb:["Радиоприёмник (Spirit Box)"],ev_uv:["Отпечатки (УФ)"],ev_orb:["Призрачный огонёк","Mimic всегда их показывает, хотя это не его улика."],ev_wr:["Записи в блокноте"],ev_fr:["Минусовая температура"],ev_dots:["Лазерный проектор (D.O.T.S.)"],
+los:["Постепенно ускоряется, когда видит меня","Плавный рост при прямой видимости."],norm:["Обычная скорость без прямой видимости, всю охоту","Как твой шаг, без изменений."],slow:["Заметно медленнее обычного, не видя меня","Медленнее твоего шага."],fast:["Заметно быстрее обычного, не видя меня"],
+jump:["Резко переходит от очень медленного к очень быстрому","Мгновенный рывок, когда замечает тебя."],brake:["Заметно замедляется, подходя ко мне"],still:["Скорость меняется, когда я замираю или снова иду","В пределах 10 м от него."],vary:["Разная скорость от охоты к охоте","Без изменений температуры или электроники."],
+cold:["Быстрее в холодных комнатах, медленный в тёплых"],breath:["Холодное дыхание видно во время охоты","Щиток выключен."],jinn:["Несётся на 2,5 м/с, увидев меня издалека, ток включён"],ign:["Игнорировал меня, неподвижного и видимого дальше 5 м","Тихо, электроника выключена."],steps:["Ускоряется на звук моих шагов или когда я бегу"],
+hide:["Охота резко закончилась, когда он добрался до меня в укрытии","Официальное укрытие. Нет: убил меня в укрытии."],nograce:["Охота без льготного периода, сразу к моему укрытию"],found:["Находит меня каждую охоту, даже спрятавшегося и неподвижного","Будто всегда знает, где ты."],losfast:["Очень быстро ускоряется, увидев меня, сильнее обычного"],
+lighton:["Включил свет","Лампа или выключатель, вне охоты."],instoff:["Выключает свет через секунду-две после того, как я его включил"],leave:["Уходит из комнаты, когда там горит свет"],fuse:["Сам выключил щиток","Не перегрузка от ламп."],
+mist:["Событие «туман»"],chase:["Событие преследования","Он идёт за тобой, двери закрываются."],photo:["Исчезает, когда я фотографирую его во время события","Нет: остался виден на фото."],shape:["Меняет облик во время охоты"],vis:["Хорошо виден во время охоты, мало мигает"],invis:["Почти невидим во время охоты"],
+male:["Журнал показывает призрака-мужчину"],scream:["Пронзительный крик в параболическом микрофоне"],target:["Всегда преследует одного и того же игрока","Нет: нападает на разных игроков."],
+salt:["Наступает в соль","Нет: проход по соли доказан, кучка цела."],salt3:["Соль III уровня замедляет его на охоте"],tp:["ЭМП у ног игрока далеко от его комнаты, без взаимодействия"],door:["Закрывает входную дверь вне охоты и событий"],
+far:["Срабатывает датчик дальше 4 м от его комнаты","Вне охоты и событий."],room:["Сменил любимую комнату"],same:["Начал охоту, когда я был с ним в его комнате"],shy:["Ничего не двигается, когда я в его комнате","Побудь с ним в комнате несколько минут."],two:["Два взаимодействия почти одновременно в двух местах"],
+i60:["Охота через 60–90 с после благовоний"],i90:["Охота через 90–180 с после благовоний"],i180:["Нет охоты 180 с после благовоний, несколько раз"],iout:["Выходит из комнаты в течение 90 с после благовоний","Соль растоптана или датчик, вне событий."],
+blind:["Ослеплён благовониями намного дольше обычного","Во время охоты."],rage:["Быстрее после распятия, благовоний или соли"],crux:["Распятие сгорело дальше обычного радиуса"],flame:["Задувает огонь вместо охоты","Нет: охотился при горящем огне рядом."],
+cruxfl:["Распятие сгорело при горящем огне рядом"],third:["Охота сразу после 3-го задутого огня"],lamp:["Фонарик мигает раньше, чем я слышу шаги на охоте","Нет: шаги слышны раньше."],elec:["Быстрее рядом с включённой электроникой"],voice:["Не отреагировал на мой голос с 4–5 м во время охоты"],
+multi:["Бросает несколько предметов сразу","Сложи кучку из десятка предметов в его комнате."],objslow:["Медленнее после того, как мы передвинули много предметов"],age:["Замедляется по ходу игры без перемещения предметов","Нет: долго был рядом, а он так же быстр."],cycle:["Активность и скорость чередуются каждые 2 мин","Отсчёт с первого открытия двери."],
+orb:["Огонёк на камере (игра с 0 уликами)","Нет: огоньков нет после долгого наблюдения."],th50:["Охотился при среднем рассудке выше 50%"],th35:["Нет охоты до 35% среднего рассудка","Нет: охотился выше 35%."]},
+g:{0:["Благовония и таймер: нет охоты 180 с (90 с у остальных, 60 с у Demon). Повтори 2–3 раза.","Других признаков нет: скорость и поведение обычные.","Shade (тест присутствия), Demon (60 с)."],
+1:["Проходит по соли, не задевая её. Докажи проход: охота, событие или датчик сразу за линией. Без распятия и благовоний до теста.","Телепорт: ЭМП у ног игрока далеко от его комнаты, без взаимодействия.","Разъярённый Gallu (всегда топчет первую кучку), Mimic."],
+2:["Фото во время события: сразу исчезает и не виден на снимке.","На охоте почти всегда невидим.","Obake (остаётся на фото)."],
+3:["Сложи кучку из десятка предметов в его комнате: бросает несколько сразу.","На охоте почти непрерывно бросает предметы: пытается бросить ближайший раз в 0,5 с.","The Twins (два взаимодействия в двух местах), Deildegast."],
+4:["Параболический микрофон: характерный пронзительный крик. В группе на охоте игнорирует видимого игрока, если он не её цель.","Всегда женщина. Не меняет комнату, но уходит далеко за целью.","Kormos (игнорирует всех неподвижных), Goryo."],
+5:["Щиток включён: увидев тебя дальше 3 м, разгоняется до 2,5 м/с, рядом замедляется. Щиток выключен: обычная скорость.","Никогда сам не выключает щиток.","Raiju: выключи щиток, оставь электронику включённой."],
+6:["Включи свет: иногда выключает его через секунду-две. Никогда не включает свет.","Уходит или меняет комнату, когда там горит свет.","Goryo (остаётся в комнате и при свете)."],
+7:["Спрятавшись тихо, без электроники: очень медленные шаги (1 м/с), затем резко 3 м/с, когда замечает тебя.","Потеряв тебя, бежит к последней точке, потом снова медленный.","Старый Thaye, Hantu в тепле, Kormos, Deildegast."],
+8:["Будь в её комнате: не может начать охоту и почти не взаимодействует.","Очень робкая, активнее, когда вы далеко. У круга призыва или шкатулки появляется только тенью.","Spirit (благовония 180 с), спокойный Obambo, Goryo."],
+9:["Благовония и таймер: охота возможна уже через 60 с (90 с у остальных).","Распятие действует на него на 50% дальше. Может снова охотиться через 20 с после охоты (25 с у остальных).","Onryo (огонь), молодой Thaye, Gallu, агрессивный Obambo."],
+10:["Благовония в его комнате: заперт там на 90 с. Поставь соль и датчики у выходов.","Единственный закрывает входную дверь вне охоты И вне событий.","Goryo (может выйти за эти 90 с), Shade."],
+11:["Никогда не делает событие «туман».","На охоте хорошо виден, очень активен рядом с игроками. Виден около 60% времени охоты (у остальных около 30%).","Kormos (тоже без тумана, но никогда без преследования)."],
+12:["На охоте слышит голос только с ~2,5 м: спрячься на 4–6 м и говори — он не идёт к тебе.","Вне охоты разговоры рядом делают его агрессивнее.","Kormos (реагирует на шаги, не на голос)."],
+13:["Скорость зависит от температуры: медленный в тепле (~1,4 м/с), быстрый в холоде (~2,7 м/с). Не ускоряется, видя тебя.","Щиток выключен: на охоте видно холодное дыхание. Никогда не включает щиток обратно.","Revenant, спокойный Obambo."],
+14:["Только короткие прогулки: датчики дальше 4 м от комнаты не срабатывают вне охоты и событий. Никогда не меняет комнату.","Без улик 100% теста нет: остаётся, когда всё остальное исключено.","Banshee, Yurei, Shade."],
+15:["Фонарик включён на охоте: мигает раньше, чем слышны шаги (слышны с ~12 м вместо 20 м).","Больше звуков в параболическом микрофоне.","Raiju (ускоряется у электроники), Revenant."],
+16:["Горящая свеча рядом с распятием: задувает свечу вместо охоты, распятие не сгорает. После 3-го задутого огня охотится.","Каждый раз зажигай свечу снова, чтобы считать.","Demon (часто охотится, огонь его не останавливает)."],
+17:["Разная скорость от охоты к охоте (~1,5 или ~1,9 м/с), случайно.","Два взаимодействия почти одновременно в двух местах.","Obambo (скорость по таймеру), Poltergeist."],
+18:["Включённая электроника на его пути: там 2,5 м/с, даже не видя тебя.","Заставляет электронику мигать с большего расстояния.","Jinn (зависит от щитка), Myling, Dayan."],
+19:["Меняет облик во время охоты.","Отпечатки с 6 пальцами, исчезают быстрее (если есть УФ).","Phantom (исчезает на фото)."],
+20:["Всегда показывает огоньки на камере, даже при 0 уликах. Поставь камеру в его комнату.","Копирует способности других призраков и меняет облик по ходу игры.","Все призраки."],
+21:["При 0%: быстрая, не видя тебя (~2,3 м/с), затем до ~3,7 м/с, когда видит.","Благовония на охоте: ослеплена 7,5/9/10,5 с вместо 5/6/7 с (уровни I, II, III).","Dayan, молодой Thaye, Kormos, Deildegast, Aswang."],
+22:["Очень быстрый издалека (3 м/с), почти стоит рядом с тобой (0,4 м/с).","Всегда знает, где игроки: прятаться бесполезно.","Revenant (наоборот), Dayan."],
+23:["Быстрый в начале (~2,75 м/с), стареет и замедляется до 1 м/с. Никогда не ускоряется, видя тебя.","Стареет, когда вы рядом. Уиджа стоит рассудка: при 0% риск проклятой охоты.","Deildegast (предметы), Obambo, Deogen."],
+25:["Без распятия, благовоний и соли: обычная скорость. После защиты: разъярён и быстрее (~1,96 м/с, до 3,2 м/с). После разъярённой охоты: ослаблен и медленнее (~1,36 м/с).","Разъярённый может пройти по соли, не задев её.","Wraith, Obambo, Demon."],
+26:["Ближе 10 м на охоте: стоишь — 1,2 м/с; двигаешься — 2,25 м/с.","Всегда женщина.","Kormos, Deogen, Revenant."],
+27:["Таймер с первого открытия выходной двери: спокоен 0–1 мин, агрессивен 1–3, затем смена каждые 2 мин. Спокоен ~1,45 м/с, агрессивен ~1,96 м/с.","Охоты, начатые в агрессивном состоянии, на 20% короче.","The Twins, Gallu, Hantu."],
+28:["Почти слеп на охоте: неподвижного и видимого дальше 5 м игнорирует. Ускоряется на звук шагов (до ~3,7 м/с).","Никогда не делает туман или преследование.","Dayan, Yokai, Oni, Banshee."],
+29:["Медленная базовая скорость (~1,53 м/с). Видя тебя, ускоряется быстрее всех (~2,53 м/с за 9 с). Если настигает в официальном укрытии, охота сразу заканчивается.","Следующая охота без льготного периода, сразу к твоему укрытию.","The Twins (медленная скорость), Moroi."],
+30:["3 м/с в начале каждой охоты, минус 0,1 м/с за каждый разный предмет дома, сдвинутый до охоты (минимум 0,4). Не ускоряется, видя тебя.","Счёт сбрасывается после каждой охоты или сгоревшего распятия.","Revenant, Deogen, Thaye, Moroi."]}}})();
+
+I.zh={u:{hideOff:"隐藏灰色选项",rNoEv:"0 证据时无法进行：没有指纹。",noSimple:"已没有与剩余鬼魂相关的简单测试。",tag:"无证据日志。",intro:"对你观察到的现象回答“是”或“否”：不可能的鬼魂会在日志中被划掉。简单测试在日志下方。点击鬼魂可手动划掉。",
+mim:"Mimic 会复制一切",reset:"新的一局",settings:"游戏设置",searchLbl:"搜索特征",searchPh:"灯光、雾、速度、盐……",
+poss1:"个可能的鬼魂",possN:"个可能的鬼魂",findPh:"查找名称：Twins、Esprit……",findHelp:"输入英文或法文名称。",noMatch:"没有匹配的鬼魂。",none24:"None，不是鬼魂。",
+simpleH:"简单测试",simpleP:"需要道具或布置的测试。回答“是”或“否”；再次点击可清除。只显示仍与可能鬼魂相关的测试。",
+greyed:n=>n+" 个测试为灰色：在你的设置下无用或无法进行。",
+testsH:"区分它们的测试",testsN:n=>"区分剩余 "+n+" 个鬼魂的测试",testLb:"测试：",confuse:"容易混淆：",empty:"取消一个回答以恢复鬼魂。",
+note:"数据截至 2026 年 11 月（含 Deildegast）。正常速度：1.7 米/秒，鬼魂看到你时最高约 2.8 米/秒。“保留”= 只剩这些鬼魂；“排除”= 划掉列出的鬼魂。",
+v1:x=>"只剩一个："+x+"。确认前先用它的测试验证。",v0:"没有剩余鬼魂：可能有一个回答是错的。",
+yes:"是",no:"否",keep:"保留",excl:"排除",useless:"无用：只涉及已被划掉的鬼魂。",evfull:n=>"你已找到全部 "+n+" 个证据。",answers:n=>n+" 个回答",signs:n=>n+" 个特征",
+manual:"手动划掉",notdo:"不会：",clickStrike:"点击划掉",rFuse:"无法进行：电闸已损坏。",rSolo:"单人时无法进行。",rEv:"有证据时不可用。",rMiss:"你缺少：",or:" 或 ",and:" 和 ",
+lang:"语言",lStart:"初始理智",lPills:"理智药",oNone:"无",oYes:"有",lDrain:"理智下降",oSlow:"慢",oNormal:"正常",oFast:"快",lEv:"给出的证据数",lFuse:"电闸",oFuseOk:"正常",oFuseBroken:"损坏，无电",lPl:"玩家",oSolo:"单人",oGroup:"多人",eqTitle:"可用装备",
+sum:s=>(s.pl==="solo"?"单人":"多人")+" · "+s.ev+" 个证据 · 理智 "+s.start+"%"+(+s.pills?" · 有理智药":"")+" · 电闸"+(s.fuse==="broken"?"损坏":"正常"),
+iZero:"理智锁定为 0%：狩猎阈值已隐藏，Moroi 总是很快。",iDrain0:"理智不会下降：鬼魂很少或不会狩猎。狩猎阈值（“长期观察”）仍然有用。",iNorm:"狩猎阈值在“长期观察”中。理智较高时 Moroi 可能较慢。",iEv:"开启证据后，Mimic 的灵球测试不再有效。",iFuse:"没有电时，灯光测试和 Jinn 测试无法进行。",iSolo:"单人时你始终是 Banshee 的目标。"},
+eq:{sel:"盐",encens:"熏香",crucifix:"十字架",bougie:"蜡烛和打火机",photo:"照相机",micro:"抛物面麦克风",detect:"运动传感器",camera:"摄像机"},
+fam:{P:["证据","游戏给出证据时的经典证据。"],H:["非狩猎时","调查期间、没有狩猎时注意到的现象。"],C:["狩猎时","速度、外观、听到的声音。风险更高。"],D:["长期观察","需要几分钟或几次狩猎来确认。"]},
+cat:["证据","速度与狩猎","灯光与电力","事件与外观","盐、门与移动","熏香、十字架与火焰","声音与电子设备","物品与时间","Mimic","狩猎阈值"],
+s:{twop:["同一次狩猎中追了两名不同玩家","所有人都在房子里。"],fuseon:["自己把电闸重新打开"],shadow:["在召唤阵或音乐盒处只以影子形态出现","否：完整现身。"],polthunt:["狩猎时不停地扔周围的物品","否：在物品旁走了好几秒却什么都没扔。"],cooldown:["上次狩猎结束后不到 25 秒再次狩猎"],
+door2:["把门留成半开","非狩猎时：门只被推动了几度。Yurei 总是把门完全打开或完全关上。"],six:["六指指纹","用紫外线灯，当指纹是本局证据时。"],
+ev_emf:["EMF 5 级"],ev_sb:["通灵盒"],ev_uv:["指纹（紫外线）"],ev_orb:["灵球","Mimic 总会显示灵球，尽管这不是它的证据。"],ev_wr:["鬼魂笔记"],ev_fr:["极寒温度"],ev_dots:["D.O.T.S."],
+los:["看到我时逐渐加速","在视线内逐步提速。"],norm:["看不到我时整场狩猎都是正常速度","像你走路一样，没有变化。"],slow:["看不到我时明显比正常慢","比你走路还慢。"],fast:["看不到我时明显比正常快"],
+jump:["一下子从很慢变得很快","发现你时瞬间提速。"],brake:["靠近我时明显减速"],still:["我站着不动或重新移动时它的速度会变","距离它 10 米以内。"],vary:["每次狩猎速度不同","温度和电子设备都没有变化。"],
+cold:["在冷房间更快，在暖房间更慢"],breath:["狩猎时能看到寒气呼吸","电闸关闭时。"],jinn:["通电时远远看到我会以 2.5 米/秒冲过来"],ign:["我站着不动、在 5 米外可见时它无视我","保持安静，电子设备关闭。"],steps:["朝我的脚步声或我奔跑时加速"],
+hide:["它在藏身处抓到我时狩猎立刻结束","官方藏身处。否：它在藏身处杀了我。"],nograce:["没有宽限期的狩猎，直奔我的藏身处"],found:["每次狩猎都能找到我，即使我躲着不动","好像总知道你在哪。"],losfast:["看到我时加速非常快，超过平常"],
+lighton:["打开了一盏灯","台灯或开关，非狩猎时。"],instoff:["我开灯后一两秒就把灯关掉"],leave:["它的房间亮灯时会离开"],fuse:["自己关掉了电闸","不是灯太多导致跳闸。"],
+mist:["雾气事件"],chase:["追逐事件","它会跟着你，门会关上。"],photo:["在事件中拍照时它会消失","否：照片里仍然看得到。"],shape:["狩猎时改变外形"],vis:["狩猎时非常显眼，很少闪烁"],invis:["狩猎时几乎看不见"],
+male:["日志显示为男性鬼魂"],scream:["抛物面麦克风中的尖叫"],target:["总是追同一名玩家","否：会追多名玩家。"],
+salt:["踩到盐","否：已证明经过盐堆，盐堆完好。"],salt3:["3 级盐会在狩猎时让它减速"],tp:["远离其房间的玩家脚下出现 EMF，没有互动"],door:["在非狩猎、非事件时关上大门"],
+far:["触发了离其房间 4 米以外的传感器","非狩猎、非事件时。"],room:["换了常驻房间"],same:["我和它在同一房间时开始了狩猎"],shy:["我在它房间时什么都不动","在它的房间里待几分钟。"],two:["两个地方几乎同时发生互动"],
+i60:["熏香后 60–90 秒内狩猎"],i90:["熏香后 90–180 秒内狩猎"],i180:["熏香后 180 秒内都没有狩猎，多次如此"],iout:["熏香后 90 秒内离开房间","盐被踩或传感器触发，非事件时。"],
+blind:["被熏香致盲的时间比平常长得多","狩猎时。"],rage:["使用十字架、熏香或盐后变快"],crux:["十字架在超出正常范围的距离被烧掉"],flame:["吹灭火焰而不是狩猎","否：旁边点着火焰它照样狩猎。"],
+cruxfl:["旁边点着火焰时十字架被烧掉"],third:["第 3 个火焰被吹灭后立刻狩猎"],lamp:["狩猎时手电筒在听到脚步声之前就闪烁","否：先听到了脚步声。"],elec:["经过开着的电子设备时变快"],voice:["狩猎时对我 4–5 米外的说话声没有反应"],
+multi:["一次扔出好几个物品","在它的房间堆十个左右的物品。"],objslow:["我们移动了很多物品后变慢"],age:["随着游戏进行变慢，且没有移动物品","否：在它旁边待了很久，仍然一样快。"],cycle:["活跃度和速度每 2 分钟交替一次","从第一次开门开始计时。"],
+orb:["摄像机里看到灵球（0 证据局）","否：长时间观察也没有灵球。"],th50:["平均理智高于 50% 时狩猎"],th35:["平均理智到 35% 前都没有狩猎","否：高于 35% 时狩猎了。"]},
+g:{0:["熏香后计时：180 秒内不会狩猎（其他鬼魂 90 秒，Demon 60 秒）。重复 2–3 次。","没有其他特征：速度和行为都正常。","Shade（在场测试）、Demon（60 秒）。"],
+1:["经过盐而不弄乱它。要证明它经过了：狩猎、事件或盐线后的传感器。测试前不要用十字架或熏香。","瞬移：远离其房间的玩家脚下出现 EMF，没有互动。","暴怒的 Gallu（总会踩第一堆盐）、Mimic。"],
+2:["事件中拍照：它立刻消失且不出现在照片里。","狩猎时几乎一直隐形。","Obake（会出现在照片里）。"],
+3:["在它房间堆十个左右的物品：它会一次扔出好几个。","狩猎时几乎不停地扔东西：每 0.5 秒尝试扔一个附近物品。","The Twins（两处互动）、Deildegast。"],
+4:["抛物面麦克风：特有的尖叫。多人时，狩猎中会无视不是其目标的可见玩家。","总是女性。从不换房间，但会走很远跟随目标。","Kormos（无视所有静止玩家）、Goryo。"],
+5:["电闸开着：在 3 米外看到你会以 2.5 米/秒冲刺，靠近后减速。电闸关闭：正常速度。","从不自己关电闸。","Raiju：关掉电闸，保持电子设备开启。"],
+6:["开灯：它有时会在一两秒后关掉。它从不开灯。","房间亮灯时会离开或换房间。","Goryo（即使亮灯也留在房间）。"],
+7:["躲起来、保持安静、关掉电子设备：脚步很慢（1 米/秒），发现你时瞬间变 3 米/秒。","跟丢你后冲到你最后的位置，然后再变慢。","年老的 Thaye、暖处的 Hantu、Kormos、Deildegast。"],
+8:["和它待在同一房间：它无法开始狩猎，几乎不互动。","非常害羞，你们离开时更活跃。在召唤阵或音乐盒处只以影子出现。","Spirit（熏香 180 秒）、平静的 Obambo、Goryo。"],
+9:["熏香后计时：60 秒起就可能狩猎（其他鬼魂 90 秒）。","十字架对它的范围大 50%。狩猎结束后 20 秒就能再次狩猎（其他 25 秒）。","Onryo（火焰）、年轻的 Thaye、Gallu、暴躁的 Obambo。"],
+10:["在它房间熏香：它会被困在房间里 90 秒。在出口放盐和传感器。","唯一能在非狩猎且非事件时关上大门的鬼魂。","Goryo（90 秒内可能离开）、Shade。"],
+11:["从不做雾气事件。","狩猎时非常显眼，玩家附近很活跃。狩猎中约 60% 的时间可见（其他鬼魂约 30%）。","Kormos（也没有雾气，但从不追逐）。"],
+12:["狩猎时只能听到约 2.5 米内的说话声：躲在 4–6 米外说话，它不会过来。","非狩猎时在它附近说话会让它更具攻击性。","Kormos（对脚步声有反应，而不是说话声）。"],
+13:["速度取决于温度：暖处慢（约 1.4 米/秒），冷处快（约 2.7 米/秒）。看到你不会加速。","电闸关闭时狩猎中可见寒气呼吸。从不重新打开电闸。","Revenant、平静的 Obambo。"],
+14:["只做短距离游荡：离房间 4 米外的传感器在非狩猎、非事件时从不触发。从不换房间。","没有证据时没有 100% 的测试：其他都排除后留下的就是它。","Banshee、Yurei、Shade。"],
+15:["狩猎时开着手电筒：在你听到脚步前手电就会闪（约 12 米才听得到，其他为 20 米）。","抛物面麦克风中声音更多。","Raiju（靠近电子设备加速）、Revenant。"],
+16:["点燃的蜡烛放在十字架旁：它会吹灭蜡烛而不是狩猎，十字架不烧。吹灭第 3 个火焰后会狩猎。","每次都重新点燃蜡烛以便计数。","Demon（经常狩猎，火焰拦不住）。"],
+17:["每次狩猎速度不同（约 1.5 或 1.9 米/秒），随机。","两个地方几乎同时发生互动。","Obambo（速度按计时变化）、Poltergeist。"],
+18:["在它路线上放开着的电子设备：经过时达到 2.5 米/秒，即使看不到你。","在更远的距离就让电子设备闪烁。","Jinn（取决于电闸）、Myling、Dayan。"],
+19:["狩猎时改变外形。","六指指纹，消失得更快（若有紫外线证据）。","Phantom（拍照会消失）。"],
+20:["即使 0 证据，摄像机里也总会出现灵球。在它房间放一台摄像机。","复制其他鬼魂的能力，并在游戏中更换模型。","所有鬼魂。"],
+21:["0% 时：没看到你也很快（约 2.3 米/秒），看到你后最高约 3.7 米/秒。","狩猎中熏香：致盲 7.5/9/10.5 秒，而不是 5/6/7 秒（I、II、III 级）。","Dayan、年轻的 Thaye、Kormos、Deildegast、Aswang。"],
+22:["远处非常快（3 米/秒），到你身边几乎停下（0.4 米/秒）。","总知道玩家在哪：躲起来没用。","Revenant（正好相反）、Dayan。"],
+23:["开局很快（约 2.75 米/秒），随着变老减速到 1 米/秒。看到你从不加速。","你们待在它附近时它会变老。通灵板会消耗理智：0% 时有诅咒狩猎的风险。","Deildegast（物品）、Obambo、Deogen。"],
+25:["不用十字架、熏香、盐：正常速度。使用防护后：暴怒且更快（约 1.96 米/秒，最高 3.2 米/秒）。暴怒狩猎结束后：虚弱且更慢（约 1.36 米/秒）。","暴怒时可以经过盐而不弄乱它。","Wraith、Obambo、Demon。"],
+26:["狩猎时在 10 米内：你站着不动它降到 1.2 米/秒；你移动它升到 2.25 米/秒。","总是女性。","Kormos、Deogen、Revenant。"],
+27:["从第一次打开出口门开始计时：0–1 分钟平静，1–3 分钟暴躁，之后每 2 分钟切换。平静约 1.45 米/秒，暴躁约 1.96 米/秒。","暴躁状态开始的狩猎短 20%。","The Twins、Gallu、Hantu。"],
+28:["狩猎时几乎失明：你在 5 米外静止且可见，它会无视你。朝你的脚步声加速（最高约 3.7 米/秒）。","从不做雾气或追逐事件。","Dayan、Yokai、Oni、Banshee。"],
+29:["基础速度慢（约 1.53 米/秒）。看到你时加速比任何鬼魂都快（9 秒约 2.53 米/秒）。在官方藏身处抓到你时狩猎立即结束。","下一次狩猎没有宽限期，直奔你的藏身处。","The Twins（慢速）、Moroi。"],
+30:["每次狩猎开始时 3 米/秒，狩猎前每移动一个不同的房屋物品就减 0.1 米/秒（最低 0.4）。看到你不会加速。","每次狩猎或十字架燃烧后重新计数。","Revenant、Deogen、Thaye、Moroi。"]}};
+
+I.pl=(()=>{const pl=(n,a,b,c)=>{const m=n%10,h=n%100;return n===1?a:(m>=2&&m<=4&&(h<12||h>14)?b:c)};return {u:{hideOff:"Ukryj wyszarzone opcje",rNoEv:"Niemożliwe przy 0 dowodach: brak odcisków.",noSimple:"Żaden prosty test nie dotyczy już pozostałych duchów.",tag:"Dziennik bez dowodów.",intro:"Odpowiadaj Tak lub Nie na to, co obserwujesz: niemożliwe duchy są skreślane w dzienniku. Proste testy są pod dziennikiem. Kliknij ducha, aby skreślić go ręcznie.",
+mim:"Mimic kopiuje wszystko",reset:"Nowa gra",settings:"Ustawienia gry",searchLbl:"Szukaj oznaki",searchPh:"światło, mgła, prędkość, sól…",
+poss1:"możliwy duch",possN:n=>pl(n,"możliwy duch","możliwe duchy","możliwych duchów"),findPh:"Znajdź nazwę: Twins, Esprit…",findHelp:"Wpisz nazwę po angielsku lub francusku.",noMatch:"Żaden duch nie pasuje.",none24:"None, to nie duch.",
+simpleH:"Proste testy",simpleP:"Testy z przedmiotem lub przygotowaniem. Odpowiedz Tak lub Nie; kliknij ponownie, aby wyczyścić. Widać tylko testy, które dotyczą jeszcze możliwego ducha.",
+greyed:n=>n+" "+pl(n,"test wyszarzony","testy wyszarzone","testów wyszarzonych")+": bezużyteczne lub niemożliwe przy twoich ustawieniach.",
+testsH:"Testy, by je rozróżnić",testsN:n=>"Testy, by rozróżnić pozostałe: "+n,testLb:"Test: ",confuse:"Nie mylić z:",empty:"Usuń odpowiedź, aby przywrócić duchy.",
+note:"Dane z listopada 2026 (z Deildegast). Normalna prędkość: 1,7 m/s, do ok. 2,8 m/s, gdy duch cię widzi. „Zostawia” = zostają tylko te duchy; „Wyklucza” = skreśla wymienione.",
+v1:x=>"Został tylko jeden: "+x+". Sprawdź go testem, zanim wybierzesz.",v0:"Nie został żaden duch: któraś odpowiedź jest pewnie błędna.",
+yes:"Tak",no:"Nie",keep:"zostawia",excl:"wyklucza",useless:"Bezużyteczne: dotyczy tylko skreślonych duchów.",evfull:n=>"Masz już "+n+" z "+n+" dowodów.",answers:n=>n+" "+pl(n,"odpowiedź","odpowiedzi","odpowiedzi"),signs:n=>n+" "+pl(n,"oznaka","oznaki","oznak"),
+manual:"Skreślony ręcznie",notdo:"Nie robi: ",clickStrike:"Kliknij, aby skreślić",rFuse:"Niemożliwe: bezpiecznik zepsuty.",rSolo:"Niemożliwe w pojedynkę.",rEv:"Niedostępne, gdy są dowody.",rMiss:"Brakuje ci: ",or:" lub ",and:" i ",
+lang:"Język",lStart:"Początkowa poczytalność",lPills:"Tabletki poczytalności",oNone:"Brak",oYes:"Tak",lDrain:"Utrata poczytalności",oSlow:"Wolna",oNormal:"Normalna",oFast:"Szybka",lEv:"Liczba dowodów",lFuse:"Skrzynka bezpieczników",oFuseOk:"Działa",oFuseBroken:"Zepsuta, brak prądu",lPl:"Gracze",oSolo:"Solo",oGroup:"Drużyna",eqTitle:"Dostępny sprzęt",
+sum:s=>(s.pl==="solo"?"Solo":"Drużyna")+" · dowody: "+s.ev+" · poczytalność "+s.start+"%"+(+s.pills?" z tabletkami":"")+" · bezpiecznik "+(s.fuse==="broken"?"zepsuty":"OK"),
+iZero:"Poczytalność stała na 0%: progi polowania są ukryte, a Moroi jest zawsze szybki.",iDrain0:"Poczytalność nie spada: duch będzie polował mało albo wcale. Progi polowania („Z czasem”) dalej się przydają.",iNorm:"Progi polowania są w sekcji „Z czasem”. Moroi może być wolny, póki poczytalność jest wysoka.",iEv:"Z dowodami test kul Mimika już nie działa.",iFuse:"Bez prądu testy świateł i test Jinna są niemożliwe.",iSolo:"W pojedynkę zawsze jesteś celem Banshee."},
+eq:{sel:"Sól",encens:"Kadzidło",crucifix:"Krucyfiks",bougie:"Świeca i zapalniczka",photo:"Aparat",micro:"Mikrofon paraboliczny",detect:"Czujniki ruchu",camera:"Kamera wideo"},
+fam:{P:["Dowody","Klasyczne dowody, gdy gra je daje."],H:["Poza polowaniem","Co zauważasz podczas śledztwa, bez polowania."],C:["Podczas polowania","Prędkość, wygląd, co słyszysz. Bardziej ryzykowne."],D:["Z czasem","Do potwierdzenia przez kilka minut lub polowań."]},
+cat:["Dowody","Prędkość i polowanie","Światło i prąd","Zdarzenia i wygląd","Sól, drzwi i ruch","Kadzidło, krucyfiks i płomienie","Dźwięki i elektronika","Przedmioty i czas","Mimic","Progi polowania"],
+s:{twop:["Gonił dwóch różnych graczy w jednym polowaniu","Wszyscy w domu."],fuseon:["Sam włączył z powrotem bezpieczniki"],shadow:["Przy kręgu przywołania lub pozytywce pojawia się tylko jako cień","Nie: pojawił się w całości."],polthunt:["Podczas polowania bez przerwy rzuca przedmiotami wokół siebie","Nie: przez kilka sekund mijał przedmioty i nic nie rzucił."],cooldown:["Znów poluje mniej niż 25 s po końcu poprzedniego polowania"],
+door2:["Zostawił uchylone drzwi","Poza polowaniem: drzwi przesunięte tylko o kilka stopni. Yurei zawsze otwiera lub zamyka drzwi do końca."],six:["Odcisk z 6 palcami","Z lampą UV, gdy odciski są dowodem w tej grze."],
+ev_emf:["EMF poziom 5"],ev_sb:["Spirit Box"],ev_uv:["Odciski palców (UV)"],ev_orb:["Kula duchowa","Mimic zawsze je pokazuje, choć to nie jego dowód."],ev_wr:["Pismo ducha"],ev_fr:["Mroźne temperatury"],ev_dots:["D.O.T.S."],
+los:["Stopniowo przyspiesza, gdy mnie widzi","Płynny wzrost w polu widzenia."],norm:["Normalna prędkość, gdy mnie nie widzi, przez całe polowanie","Jak twój chód, bez zmian."],slow:["Wyraźnie wolniejszy niż normalnie, gdy mnie nie widzi","Wolniejszy niż twój chód."],fast:["Wyraźnie szybszy niż normalnie, gdy mnie nie widzi"],
+jump:["Nagle przechodzi z bardzo wolnego w bardzo szybki","Natychmiastowy skok, gdy cię wykryje."],brake:["Wyraźnie zwalnia, zbliżając się do mnie"],still:["Jego prędkość zmienia się, gdy stoję lub ruszam","W promieniu 10 m od niego."],vary:["Inna prędkość w każdym polowaniu","Bez zmian temperatury ani elektroniki."],
+cold:["Szybszy w zimnych pokojach, wolny w ciepłych"],breath:["Widoczny mroźny oddech podczas polowania","Bezpieczniki wyłączone."],jinn:["Pędzi 2,5 m/s, gdy widzi mnie z daleka, prąd włączony"],ign:["Zignorował mnie, stojącego i widocznego z ponad 5 m","Cicho, elektronika wyłączona."],steps:["Przyspiesza w stronę moich kroków lub gdy biegnę"],
+hide:["Polowanie urwało się, gdy dopadł mnie w kryjówce","Oficjalna kryjówka. Nie: zabił mnie w kryjówce."],nograce:["Polowanie bez okresu ochronnego, prosto do mojej kryjówki"],found:["Znajduje mnie w każdym polowaniu, nawet ukrytego i nieruchomego","Jakby zawsze wiedział, gdzie jesteś."],losfast:["Bardzo szybko przyspiesza, gdy mnie widzi, bardziej niż zwykle"],
+lighton:["Włączył światło","Lampa lub włącznik, poza polowaniem."],instoff:["Gasi światło sekundę lub dwie po tym, jak je zapaliłem"],leave:["Opuszcza pokój, gdy jest w nim zapalone światło"],fuse:["Sam wyłączył bezpieczniki","Nie przeciążenie od świateł."],
+mist:["Zdarzenie z mgłą"],chase:["Zdarzenie pościgu","Idzie za tobą, drzwi się zamykają."],photo:["Znika, gdy robię mu zdjęcie podczas zdarzenia","Nie: był widoczny na zdjęciu."],shape:["Zmienia wygląd podczas polowania"],vis:["Bardzo widoczny podczas polowania, rzadko miga"],invis:["Prawie niewidoczny podczas polowania"],
+male:["Dziennik pokazuje męskiego ducha"],scream:["Wysoki krzyk w mikrofonie parabolicznym"],target:["Zawsze ściga tego samego gracza","Nie: atakuje różnych graczy."],
+salt:["Wchodzi w sól","Nie: przejście przez sól potwierdzone, kupka nienaruszona."],salt3:["Sól III poziomu spowalnia go w polowaniu"],tp:["EMF przy stopach gracza daleko od jego pokoju, bez interakcji"],door:["Zamyka drzwi wejściowe poza polowaniem i zdarzeniem"],
+far:["Uruchamia czujnik ponad 4 m od swojego pokoju","Poza polowaniem i zdarzeniem."],room:["Zmienił ulubiony pokój"],same:["Zaczął polowanie, gdy byłem z nim w jego pokoju"],shy:["Nic się nie rusza, gdy jestem w jego pokoju","Zostań z nim w pokoju kilka minut."],two:["Dwie interakcje prawie naraz w dwóch miejscach"],
+i60:["Polowanie 60–90 s po kadzidle"],i90:["Polowanie 90–180 s po kadzidle"],i180:["Brak polowania przez 180 s po kadzidle, kilka razy"],iout:["Wychodzi z pokoju w ciągu 90 s po kadzidle","Rozdeptana sól lub czujnik, poza zdarzeniem."],
+blind:["Oślepiony kadzidłem dużo dłużej niż zwykle","Podczas polowania."],rage:["Szybszy po krucyfiksie, kadzidle lub soli"],crux:["Krucyfiks spalony dalej niż normalny zasięg"],flame:["Gasi płomień zamiast polować","Nie: polował przy zapalonym płomieniu obok."],
+cruxfl:["Krucyfiks spalony przy zapalonym płomieniu obok"],third:["Polowanie zaraz po 3. zgaszonym płomieniu"],lamp:["Latarka miga, zanim usłyszę jego kroki w polowaniu","Nie: najpierw usłyszałem kroki."],elec:["Szybszy przy włączonej elektronice"],voice:["Nie zareagował na mój głos z 4–5 m podczas polowania"],
+multi:["Rzuca kilkoma przedmiotami naraz","Zrób kupkę z około dziesięciu przedmiotów w jego pokoju."],objslow:["Wolniejszy po przesunięciu wielu przedmiotów"],age:["Zwalnia z czasem gry, bez przesuwania przedmiotów","Nie: długo byłem obok, nadal tak samo szybki."],cycle:["Aktywność i prędkość zmieniają się co 2 min","Liczone od pierwszego otwarcia drzwi."],
+orb:["Kula widoczna na kamerze (gra z 0 dowodami)","Nie: brak kul po długiej obserwacji."],th50:["Polował przy średniej poczytalności powyżej 50%"],th35:["Brak polowania przed 35% średniej poczytalności","Nie: polował powyżej 35%."]},
+g:{0:["Kadzidło i stoper: brak polowania przez 180 s (90 s u innych, 60 s u Demona). Powtórz 2–3 razy.","Brak innych oznak: normalna prędkość i zachowanie.","Shade (test obecności), Demon (60 s)."],
+1:["Przechodzi przez sól, nie ruszając jej. Potwierdź przejście: polowanie, zdarzenie lub czujnik tuż za linią. Bez krucyfiksu i kadzidła przed testem.","Teleport: EMF przy stopach gracza, daleko od jego pokoju, bez interakcji.","Wściekły Gallu (zawsze depcze pierwszą kupkę), Mimic."],
+2:["Zdjęcie podczas zdarzenia: od razu znika i nie ma go na zdjęciu.","W polowaniu prawie zawsze niewidoczny.","Obake (zostaje na zdjęciu)."],
+3:["Zrób kupkę z około dziesięciu przedmiotów w jego pokoju: rzuca kilkoma naraz.","W polowaniu rzuca prawie bez przerwy: próbuje rzucić pobliski przedmiot co 0,5 s.","The Twins (dwie interakcje w dwóch miejscach), Deildegast."],
+4:["Mikrofon paraboliczny: charakterystyczny wysoki krzyk. W drużynie, w polowaniu ignoruje widocznego gracza, który nie jest jej celem.","Zawsze kobieta. Nigdy nie zmienia pokoju, ale idzie daleko za celem.","Kormos (ignoruje wszystkich nieruchomych), Goryo."],
+5:["Bezpieczniki włączone: gdy widzi cię z ponad 3 m, rusza 2,5 m/s i zwalnia przy tobie. Wyłączone: normalna prędkość.","Nigdy sam nie wyłącza bezpieczników.","Raiju: wyłącz bezpieczniki, zostaw włączoną elektronikę."],
+6:["Zapal światło: czasem gasi je po sekundzie lub dwóch. Nigdy nie zapala światła.","Opuszcza lub zmienia pokój, gdy jest w nim światło.","Goryo (zostaje w pokoju nawet przy świetle)."],
+7:["Ukryty, cicho, bez elektroniki: bardzo wolne kroki (1 m/s), potem nagle 3 m/s, gdy cię wykryje.","Gdy cię zgubi, biegnie do ostatniej pozycji i znów zwalnia.","Stary Thaye, Hantu w cieple, Kormos, Deildegast."],
+8:["Bądź w tym samym pokoju: nie może zacząć polowania i prawie nic nie robi.","Bardzo nieśmiała, aktywniejsza, gdy jesteście daleko. Przy kręgu przywołania lub pozytywce pojawia się tylko jako cień.","Spirit (kadzidło 180 s), spokojny Obambo, Goryo."],
+9:["Kadzidło i stoper: polowanie możliwe już po 60 s (90 s u innych).","Krucyfiks działa na niego o 50% dalej. Może znów polować 20 s po polowaniu (25 s u innych).","Onryo (płomienie), młody Thaye, Gallu, agresywny Obambo."],
+10:["Kadzidło w jego pokoju: zostaje tam uwięziony na 90 s. Połóż sól i czujniki przy wyjściach.","Jedyny zamyka drzwi wejściowe poza polowaniem I poza zdarzeniem.","Goryo (może wyjść w ciągu 90 s), Shade."],
+11:["Nigdy nie robi zdarzenia z mgłą.","Bardzo widoczny w polowaniu, bardzo aktywny przy graczach. Widoczny przez ok. 60% polowania (inni ok. 30%).","Kormos (też bez mgły, ale nigdy pościgu)."],
+12:["W polowaniu słyszy głos tylko z ok. 2,5 m: ukryj się 4–6 m dalej i mów — nie przyjdzie.","Poza polowaniem mówienie obok czyni go agresywniejszym.","Kormos (reaguje na kroki, nie na głos)."],
+13:["Prędkość zależy od temperatury: wolny w cieple (ok. 1,4 m/s), szybki w zimnie (ok. 2,7 m/s). Nie przyspiesza, gdy cię widzi.","Bezpieczniki wyłączone: widoczny mroźny oddech w polowaniu. Nigdy nie włącza bezpieczników z powrotem.","Revenant, spokojny Obambo."],
+14:["Tylko krótkie spacery: czujniki ponad 4 m od pokoju nie włączają się poza polowaniem i zdarzeniem. Nigdy nie zmienia pokoju.","Bez dowodów nie ma testu na 100%: zostaje, gdy reszta jest wykluczona.","Banshee, Yurei, Shade."],
+15:["Latarka włączona w polowaniu: miga, zanim usłyszysz kroki (słychać je z ok. 12 m zamiast 20 m).","Więcej dźwięków w mikrofonie parabolicznym.","Raiju (przyspiesza przy elektronice), Revenant."],
+16:["Zapalona świeca obok krucyfiksu: gasi świecę zamiast polować, krucyfiks się nie pali. Po 3. zgaszonym płomieniu poluje.","Za każdym razem zapal świecę ponownie, by liczyć.","Demon (często poluje, płomień go nie zatrzymuje)."],
+17:["Inna prędkość w każdym polowaniu (ok. 1,5 lub 1,9 m/s), losowo.","Dwie interakcje prawie naraz w dwóch miejscach.","Obambo (prędkość według stopera), Poltergeist."],
+18:["Włączona elektronika na jego drodze: tam 2,5 m/s, nawet gdy cię nie widzi.","Sprawia, że elektronika miga z większej odległości.","Jinn (zależy od bezpieczników), Myling, Dayan."],
+19:["Zmienia wygląd podczas polowania.","Odciski z 6 palcami, szybciej znikają (jeśli jest UV).","Phantom (znika na zdjęciu)."],
+20:["Zawsze pokazuje kule na kamerze, nawet przy 0 dowodach. Postaw kamerę w jego pokoju.","Kopiuje zdolności innych duchów i zmienia wygląd w trakcie gry.","Wszystkie duchy."],
+21:["Przy 0%: szybki, nie widząc cię (ok. 2,3 m/s), potem do ok. 3,7 m/s, gdy widzi.","Kadzidło w polowaniu: oślepiony na 7,5/9/10,5 s zamiast 5/6/7 s (poziomy I, II, III).","Dayan, młody Thaye, Kormos, Deildegast, Aswang."],
+22:["Bardzo szybki z daleka (3 m/s), prawie stoi tuż przy tobie (0,4 m/s).","Zawsze wie, gdzie są gracze: chowanie się nie pomaga.","Revenant (odwrotnie), Dayan."],
+23:["Szybki na początku (ok. 2,75 m/s), potem starzeje się i zwalnia do 1 m/s. Nigdy nie przyspiesza, gdy cię widzi.","Starzeje się, gdy jesteście blisko. Ouija kosztuje poczytalność: przy 0% ryzyko przeklętego polowania.","Deildegast (przedmioty), Obambo, Deogen."],
+25:["Bez krucyfiksu, kadzidła i soli: normalna prędkość. Po ochronie: wściekły i szybszy (ok. 1,96 m/s, do 3,2 m/s). Po wściekłym polowaniu: osłabiony i wolniejszy (ok. 1,36 m/s).","Wściekły może przejść przez sól, nie ruszając jej.","Wraith, Obambo, Demon."],
+26:["W polowaniu bliżej niż 10 m: stoisz — 1,2 m/s; ruszasz się — 2,25 m/s.","Zawsze kobieta.","Kormos, Deogen, Revenant."],
+27:["Stoper od pierwszego otwarcia drzwi wyjściowych: spokojny 0–1 min, agresywny 1–3, potem zmiana co 2 min. Spokojny ok. 1,45 m/s, agresywny ok. 1,96 m/s.","Polowania zaczęte w stanie agresywnym są o 20% krótsze.","The Twins, Gallu, Hantu."],
+28:["Prawie ślepy w polowaniu: nieruchomego i widocznego z ponad 5 m ignoruje. Przyspiesza w stronę twoich kroków (do ok. 3,7 m/s).","Nigdy nie robi mgły ani pościgu.","Dayan, Yokai, Oni, Banshee."],
+29:["Wolna prędkość bazowa (ok. 1,53 m/s). Gdy cię widzi, przyspiesza szybciej niż każdy inny (ok. 2,53 m/s w 9 s). Jeśli dopadnie cię w oficjalnej kryjówce, polowanie od razu się kończy.","Następne polowanie bez okresu ochronnego, prosto do twojej kryjówki.","The Twins (wolna prędkość), Moroi."],
+30:["3 m/s na początku każdego polowania, minus 0,1 m/s za każdy inny przedmiot z domu przesunięty wcześniej (minimum 0,4). Nie przyspiesza, gdy cię widzi.","Licznik zeruje się po każdym polowaniu lub spalonym krucyfiksie.","Revenant, Deogen, Thaye, Moroi."]}}})();
+
+I.ko={u:{hideOff:"회색 항목 숨기기",rNoEv:"증거 0개에서는 불가능: 지문이 없습니다.",noSimple:"남은 유령과 관련된 간단한 테스트가 더 이상 없습니다.",tag:"증거 없는 일지.",intro:"관찰한 것에 예 또는 아니요로 답하세요. 불가능한 유령은 일지에서 지워집니다. 간단한 테스트는 일지 아래에 있습니다. 유령을 클릭하면 직접 지울 수 있습니다.",
+mim:"Mimic은 모든 것을 따라 합니다",reset:"새 게임",settings:"게임 설정",searchLbl:"징후 검색",searchPh:"조명, 안개, 속도, 소금…",
+poss1:"가능한 유령",possN:"가능한 유령",findPh:"이름 찾기: Twins, Esprit…",findHelp:"영어나 프랑스어 이름을 입력하세요.",noMatch:"일치하는 유령이 없습니다.",none24:"None, 유령이 아닙니다.",
+simpleH:"간단한 테스트",simpleP:"아이템이나 준비가 필요한 테스트입니다. 예 또는 아니요로 답하고, 다시 누르면 지워집니다. 아직 가능한 유령과 관련된 테스트만 표시됩니다.",
+greyed:n=>"테스트 "+n+"개가 회색: 현재 설정에서 쓸모없거나 불가능합니다.",
+testsH:"구별하기 위한 테스트",testsN:n=>"남은 "+n+"개를 구별하는 테스트",testLb:"테스트: ",confuse:"혼동 주의:",empty:"답변 하나를 지우면 유령이 돌아옵니다.",
+note:"2026년 11월 기준 (Deildegast 포함). 기본 속도: 1.7 m/s, 유령이 당신을 보면 최대 약 2.8 m/s. “유지” = 이 유령들만 남김; “제외” = 나열된 유령을 지움.",
+v1:x=>"하나만 남았습니다: "+x+". 확정하기 전에 해당 테스트로 확인하세요.",v0:"남은 유령이 없습니다: 답변 중 하나가 틀렸을 가능성이 큽니다.",
+yes:"예",no:"아니요",keep:"유지",excl:"제외",useless:"쓸모없음: 이미 지운 유령에만 해당합니다.",evfull:n=>"이미 "+n+"개 중 "+n+"개의 증거를 찾았습니다.",answers:n=>"답변 "+n+"개",signs:n=>"징후 "+n+"개",
+manual:"직접 지움",notdo:"하지 않음: ",clickStrike:"클릭하여 지우기",rFuse:"불가능: 두꺼비집 고장.",rSolo:"솔로에서는 불가능.",rEv:"증거가 주어질 때는 사용할 수 없습니다.",rMiss:"부족한 장비: ",or:" 또는 ",and:" 및 ",
+lang:"언어",lStart:"시작 정신력",lPills:"정신력 약",oNone:"없음",oYes:"있음",lDrain:"정신력 감소",oSlow:"느림",oNormal:"보통",oFast:"빠름",lEv:"주어지는 증거",lFuse:"두꺼비집",oFuseOk:"정상",oFuseBroken:"고장, 전기 없음",lPl:"플레이어",oSolo:"솔로",oGroup:"그룹",eqTitle:"사용 가능한 장비",
+sum:s=>(s.pl==="solo"?"솔로":"그룹")+" · 증거 "+s.ev+"개 · 정신력 "+s.start+"%"+(+s.pills?" · 약 있음":"")+" · 두꺼비집 "+(s.fuse==="broken"?"고장":"정상"),
+iZero:"정신력이 0%로 고정: 사냥 기준이 숨겨지고 Moroi는 항상 빠릅니다.",iDrain0:"정신력이 줄지 않음: 유령이 거의 사냥하지 않습니다. 사냥 기준(시간 경과)은 여전히 유용합니다.",iNorm:"사냥 기준은 ‘시간 경과’에 있습니다. 정신력이 높을 때 Moroi는 느릴 수 있습니다.",iEv:"증거가 켜져 있으면 Mimic 오브 테스트가 작동하지 않습니다.",iFuse:"전기가 없으면 조명 테스트와 Jinn 테스트가 불가능합니다.",iSolo:"솔로에서는 항상 당신이 Banshee의 목표입니다."},
+eq:{sel:"소금",encens:"향",crucifix:"십자가",bougie:"양초와 라이터",photo:"사진기",micro:"파라볼릭 마이크",detect:"동작 감지기",camera:"비디오 카메라"},
+fam:{P:["증거","게임에서 증거를 줄 때의 기본 증거."],H:["사냥 외","사냥이 없을 때 조사 중에 알아챈 것."],C:["사냥 중","속도, 모습, 들리는 소리. 더 위험합니다."],D:["시간 경과","몇 분 또는 여러 번의 사냥으로 확인."]},
+cat:["증거","속도와 사냥","조명과 전기","이벤트와 모습","소금, 문, 이동","향, 십자가, 불꽃","소리와 전자기기","물건과 시간","Mimic","사냥 기준"],
+s:{twop:["한 번의 사냥에서 서로 다른 두 플레이어를 쫓았다","모두 집 안에 있음."],fuseon:["두꺼비집을 스스로 다시 켰다"],shadow:["소환진이나 오르골에서 그림자로만 나타난다","아니요: 온전한 모습으로 나타남."],polthunt:["사냥 중 주변 물건을 끊임없이 던진다","아니요: 몇 초 동안 물건 옆을 지나가며 아무것도 던지지 않음."],cooldown:["이전 사냥이 끝난 뒤 25초 이내에 다시 사냥한다"],
+door2:["문을 반쯤 열어 두었다","사냥 외: 문이 몇 도만 움직임. Yurei는 항상 문을 완전히 열거나 닫습니다."],six:["손가락 6개 지문","UV 손전등으로, 지문이 이번 게임의 증거일 때."],
+ev_emf:["EMF 5단계"],ev_sb:["스피릿 박스"],ev_uv:["지문 (UV)"],ev_orb:["유령 오브","Mimic은 자기 증거가 아니어도 항상 오브를 보여 줍니다."],ev_wr:["유령 글씨"],ev_fr:["영하의 온도"],ev_dots:["D.O.T.S."],
+los:["나를 보면 점점 빨라진다","시야 안에서 서서히 가속."],norm:["나를 보지 않을 때 사냥 내내 보통 속도","걷는 속도와 비슷, 변화 없음."],slow:["나를 보지 않을 때 보통보다 확실히 느림","내 걸음보다 느림."],fast:["나를 보지 않을 때 보통보다 확실히 빠름"],
+jump:["아주 느리다가 갑자기 아주 빨라진다","당신을 발견하는 순간 급가속."],brake:["나에게 가까워지면 확실히 느려진다"],still:["내가 멈추거나 다시 움직이면 속도가 바뀐다","유령과 10 m 이내."],vary:["사냥마다 속도가 다르다","온도나 전자기기 변화 없이."],
+cold:["추운 방에서 더 빠르고 따뜻한 방에서 느림"],breath:["사냥 중 차가운 입김이 보인다","두꺼비집 꺼짐."],jinn:["전기가 켜져 있을 때 멀리서 나를 보면 2.5 m/s로 돌진"],ign:["5 m 넘게 떨어져 가만히 보이는 나를 무시했다","조용히, 전자기기 끔."],steps:["내 발소리 쪽이나 달릴 때 빨라진다"],
+hide:["숨은 나에게 닿자 사냥이 바로 끝났다","공식 은신처. 아니요: 은신처에서 나를 죽임."],nograce:["유예 시간 없이 바로 내 은신처로 오는 사냥"],found:["숨어서 가만히 있어도 사냥마다 나를 찾는다","항상 당신의 위치를 아는 것처럼."],losfast:["나를 보면 평소보다 훨씬 빨리 가속한다"],
+lighton:["불을 켰다","램프나 스위치, 사냥 외."],instoff:["내가 불을 켜고 1~2초 뒤에 끈다"],leave:["자기 방에 불이 켜지면 방을 떠난다"],fuse:["두꺼비집을 스스로 껐다","조명 과부하가 아님."],
+mist:["안개 이벤트"],chase:["추격 이벤트","당신을 따라오고 문이 닫힘."],photo:["이벤트 중 사진을 찍으면 사라진다","아니요: 사진에 계속 보임."],shape:["사냥 중 모습이 바뀐다"],vis:["사냥 중 잘 보이고 거의 깜빡이지 않는다"],invis:["사냥 중 거의 보이지 않는다"],
+male:["일지에 남성 유령으로 표시된다"],scream:["파라볼릭 마이크에서 날카로운 비명"],target:["항상 같은 플레이어를 노린다","아니요: 여러 플레이어를 노림."],
+salt:["소금을 밟는다","아니요: 소금 위를 지나간 것이 확인됐고 소금은 그대로."],salt3:["3단계 소금이 사냥 중 속도를 늦춘다"],tp:["방에서 먼 플레이어 발밑에 상호작용 없이 EMF"],door:["사냥과 이벤트 밖에서 현관문을 닫는다"],
+far:["방에서 4 m 넘게 떨어진 감지기를 작동시킨다","사냥과 이벤트 외."],room:["선호하는 방을 바꿨다"],same:["내가 같은 방에 있을 때 사냥을 시작했다"],shy:["내가 그 방에 있으면 아무것도 움직이지 않는다","그 방에서 몇 분 함께 있어 보세요."],two:["두 곳에서 거의 동시에 상호작용"],
+i60:["향을 피운 뒤 60~90초 사이에 사냥"],i90:["향을 피운 뒤 90~180초 사이에 사냥"],i180:["향을 피운 뒤 180초 동안 사냥 없음, 여러 번"],iout:["향을 피운 뒤 90초 안에 방을 나간다","소금이 밟히거나 감지기 작동, 이벤트 외."],
+blind:["향에 평소보다 훨씬 오래 눈이 먼다","사냥 중."],rage:["십자가, 향, 소금을 쓴 뒤 더 빨라진다"],crux:["평소 범위보다 먼 곳에서 십자가가 탔다"],flame:["사냥하는 대신 불꽃을 끈다","아니요: 바로 옆에 불꽃이 있는데도 사냥함."],
+cruxfl:["바로 옆에 불꽃이 켜져 있는데 십자가가 탔다"],third:["세 번째 불꽃을 끈 직후 사냥"],lamp:["사냥 중 발소리가 들리기 전에 손전등이 깜빡인다","아니요: 발소리가 먼저 들림."],elec:["켜진 전자기기 근처를 지날 때 빨라진다"],voice:["사냥 중 4~5 m 거리의 내 목소리에 반응하지 않았다"],
+multi:["여러 물건을 한꺼번에 던진다","그 방에 물건 10개 정도를 쌓아 두세요."],objslow:["물건을 많이 옮긴 뒤 느려진다"],age:["물건을 옮기지 않아도 게임이 진행될수록 느려진다","아니요: 오래 곁에 있었는데 여전히 빠름."],cycle:["활동과 속도가 2분마다 바뀐다","문을 처음 연 때부터 계산."],
+orb:["카메라에 오브가 보임 (증거 0개 게임)","아니요: 오래 지켜봐도 오브 없음."],th50:["평균 정신력 50% 이상에서 사냥"],th35:["평균 정신력 35% 전에는 사냥 없음","아니요: 35% 이상에서 사냥함."]},
+g:{0:["향과 타이머: 180초 동안 사냥 없음 (다른 유령 90초, Demon 60초). 2~3번 반복.","다른 징후 없음: 속도와 행동이 보통.","Shade (존재 테스트), Demon (60초)."],
+1:["소금을 건드리지 않고 지나간다. 지나간 것을 확인하세요: 사냥, 이벤트, 소금선 뒤 감지기. 테스트 전 십자가와 향 금지.","순간이동: 방에서 먼 플레이어 발밑에 상호작용 없는 EMF.","격노한 Gallu (첫 소금은 항상 밟음), Mimic."],
+2:["이벤트 중 사진: 즉시 사라지고 사진에 나오지 않는다.","사냥 중 거의 항상 보이지 않음.","Obake (사진에 나옴)."],
+3:["방에 물건 10개 정도를 쌓으면: 여러 개를 한꺼번에 던진다.","사냥 중 거의 쉬지 않고 던진다: 0.5초마다 근처 물건을 던지려 함.","The Twins (두 곳의 상호작용), Deildegast."],
+4:["파라볼릭 마이크: 특유의 날카로운 비명. 그룹일 때 사냥 중 목표가 아닌 보이는 플레이어를 무시한다.","항상 여성. 방을 바꾸지 않지만 목표를 따라 멀리 이동.","Kormos (멈춘 플레이어 모두 무시), Goryo."],
+5:["두꺼비집 켜짐: 3 m 넘게 떨어져 당신을 보면 2.5 m/s로 돌진, 가까워지면 감속. 꺼짐: 보통 속도.","스스로 두꺼비집을 끄지 않는다.","Raiju: 두꺼비집을 끄고 전자기기는 켜 두세요."],
+6:["불을 켜면: 가끔 1~2초 뒤 끈다. 절대 불을 켜지 않는다.","방에 불이 켜지면 떠나거나 방을 바꾼다.","Goryo (불이 켜져도 방에 머묾)."],
+7:["숨어서 조용히, 전자기기 끔: 아주 느린 발소리(1 m/s), 발견하면 순간 3 m/s.","놓치면 마지막 위치로 달려간 뒤 다시 느려진다.","늙은 Thaye, 따뜻한 곳의 Hantu, Kormos, Deildegast."],
+8:["같은 방에 있으면: 사냥을 시작할 수 없고 거의 상호작용하지 않는다.","매우 수줍고, 멀리 있을 때 더 활발. 소환진이나 오르골에서는 그림자로만 나타남.","Spirit (향 180초), 차분한 Obambo, Goryo."],
+9:["향과 타이머: 60초부터 사냥 가능 (다른 유령 90초).","십자가 범위가 50% 넓게 적용됨. 사냥이 끝나고 20초 뒤 다시 사냥 가능 (다른 유령 25초).","Onryo (불꽃), 젊은 Thaye, Gallu, 공격적인 Obambo."],
+10:["방에서 향: 90초 동안 방에 갇힌다. 출구에 소금과 감지기를 두세요.","사냥과 이벤트 밖에서 현관문을 닫는 유일한 유령.","Goryo (90초 안에 나갈 수 있음), Shade."],
+11:["안개 이벤트를 절대 하지 않는다.","사냥 중 잘 보이고 플레이어 근처에서 매우 활발. 사냥 시간의 약 60% 동안 보임 (다른 유령 약 30%).","Kormos (안개도 없지만 추격도 절대 없음)."],
+12:["사냥 중 목소리는 약 2.5 m 안에서만 들음: 4~6 m 떨어져 숨어서 말해도 오지 않는다.","사냥 외에 근처에서 말하면 더 공격적이 된다.","Kormos (목소리가 아니라 발소리에 반응)."],
+13:["속도는 온도에 따라: 따뜻하면 느림(약 1.4 m/s), 추우면 빠름(약 2.7 m/s). 당신을 봐도 가속하지 않음.","두꺼비집이 꺼지면 사냥 중 입김이 보임. 두꺼비집을 다시 켜지 않는다.","Revenant, 차분한 Obambo."],
+14:["짧은 배회만 함: 방에서 4 m 넘는 감지기는 사냥·이벤트 외에 작동하지 않는다. 방을 바꾸지 않는다.","증거 없이는 100% 테스트가 없음: 나머지를 모두 제외하면 남는 유령.","Banshee, Yurei, Shade."],
+15:["사냥 중 손전등을 켜면: 발소리가 들리기 전에 깜빡인다 (약 12 m에서 들림, 보통 20 m).","파라볼릭 마이크 소리가 더 많다.","Raiju (전자기기 근처에서 가속), Revenant."],
+16:["불 켠 양초와 십자가를 나란히: 사냥 대신 양초를 끄고 십자가는 타지 않는다. 세 번째 불꽃을 끈 뒤 사냥.","셀 수 있게 매번 양초를 다시 켜세요.","Demon (자주 사냥, 불꽃으로 막을 수 없음)."],
+17:["사냥마다 속도가 다름 (약 1.5 또는 1.9 m/s), 무작위.","두 곳에서 거의 동시에 상호작용.","Obambo (속도가 타이머를 따름), Poltergeist."],
+18:["경로에 켜진 전자기기를 두면: 당신을 보지 않아도 그 근처에서 2.5 m/s.","다른 유령보다 먼 거리에서 전자기기를 깜빡이게 한다.","Jinn (두꺼비집에 따라), Myling, Dayan."],
+19:["사냥 중 모습이 바뀐다.","손가락 6개 지문, 더 빨리 사라짐 (UV가 있을 때).","Phantom (사진에서 사라짐)."],
+20:["증거 0개여도 카메라에 항상 오브가 보인다. 그 방에 카메라를 두세요.","다른 유령의 능력을 따라 하고 게임 중 모델이 바뀐다.","모든 유령."],
+21:["0%일 때: 보지 않아도 빠름 (약 2.3 m/s), 보면 약 3.7 m/s까지.","사냥 중 향: 5/6/7초 대신 7.5/9/10.5초 동안 눈이 멂 (I, II, III 단계).","Dayan, 젊은 Thaye, Kormos, Deildegast, Aswang."],
+22:["멀리서 매우 빠름 (3 m/s), 바로 옆에서는 거의 멈춤 (0.4 m/s).","항상 플레이어 위치를 앎: 숨어도 소용없음.","Revenant (정반대), Dayan."],
+23:["초반에 빠름 (약 2.75 m/s), 나이를 먹으며 1 m/s까지 느려짐. 당신을 봐도 절대 가속하지 않음.","곁에 있으면 나이를 먹는다. 위자보드는 정신력을 소모: 0%면 저주받은 사냥 위험.","Deildegast (물건), Obambo, Deogen."],
+25:["십자가·향·소금 없이는 보통 속도. 보호 장비를 쓰면 격노하여 더 빠름 (약 1.96 m/s, 최대 3.2 m/s). 격노 상태 사냥 후에는 약해져 더 느림 (약 1.36 m/s).","격노하면 소금을 건드리지 않고 지나갈 수 있다.","Wraith, Obambo, Demon."],
+26:["사냥 중 10 m 이내: 가만히 있으면 1.2 m/s, 움직이면 2.25 m/s.","항상 여성.","Kormos, Deogen, Revenant."],
+27:["출구 문을 처음 연 때부터 타이머: 0~1분 차분, 1~3분 공격적, 이후 2분마다 전환. 차분 약 1.45 m/s, 공격적 약 1.96 m/s.","공격적 상태에서 시작한 사냥은 20% 짧다.","The Twins, Gallu, Hantu."],
+28:["사냥 중 거의 장님: 5 m 넘게 떨어져 가만히 보이면 무시한다. 발소리 쪽으로 가속 (최대 약 3.7 m/s).","안개나 추격 이벤트를 절대 하지 않는다.","Dayan, Yokai, Oni, Banshee."],
+29:["기본 속도가 느림 (약 1.53 m/s). 당신을 보면 어떤 유령보다 빨리 가속 (9초에 약 2.53 m/s). 공식 은신처에서 당신에게 닿으면 사냥이 바로 끝난다.","다음 사냥은 유예 시간 없이 바로 당신의 은신처로.","The Twins (느린 속도), Moroi."],
+30:["사냥 시작 시 3 m/s, 사냥 전에 옮긴 서로 다른 집 물건 하나당 0.1 m/s 감소 (최소 0.4). 당신을 봐도 가속하지 않음.","사냥이나 십자가가 탈 때마다 개수가 초기화된다.","Revenant, Deogen, Thaye, Moroi."]}};
+
+I.tr={u:{hideOff:"Gri seçenekleri gizle",rNoEv:"0 kanıtta imkânsız: parmak izi yok.",noSimple:"Kalan hayaletlerle ilgili basit test kalmadı.",tag:"Kanıtsız günlük.",intro:"Gözlemlediğin şeylere Evet ya da Hayır de: imkânsız hayaletler günlükte üstü çizilir. Basit testler günlüğün altında. Bir hayaleti elle çizmek için üstüne tıkla.",
+mim:"Mimic her şeyi kopyalar",reset:"Yeni oyun",settings:"Oyun ayarları",searchLbl:"İşaret ara",searchPh:"ışık, sis, hız, tuz…",
+poss1:"olası hayalet",possN:"olası hayalet",findPh:"İsim bul: Twins, Esprit…",findHelp:"İngilizce ya da Fransızca bir isim yaz.",noMatch:"Eşleşen hayalet yok.",none24:"None, bir hayalet değil.",
+simpleH:"Basit testler",simpleP:"Bir eşya ya da hazırlık gerektiren testler. Evet ya da Hayır de; silmek için tekrar tıkla. Yalnızca hâlâ olası bir hayaleti ilgilendiren testler gösterilir.",
+greyed:n=>n+" test gri: ayarlarınla işe yaramaz ya da imkânsız.",
+testsH:"Ayırt etmek için testler",testsN:n=>"Kalan "+n+" hayaleti ayırt etmek için testler",testLb:"Test: ",confuse:"Karıştırma:",empty:"Hayaletleri geri getirmek için bir cevabı kaldır.",
+note:"Kasım 2026 itibarıyla değerler (Deildegast dahil). Normal hız: 1,7 m/s, hayalet seni görünce yaklaşık 2,8 m/s'ye kadar. “Tutar” = yalnızca bu hayaletler kalır; “Eler” = sayılanların üstünü çizer.",
+v1:x=>"Tek bir hayalet kaldı: "+x+". Seçmeden önce testiyle doğrula.",v0:"Hiç hayalet kalmadı: cevaplardan biri muhtemelen yanlış.",
+yes:"Evet",no:"Hayır",keep:"tutar",excl:"eler",useless:"İşe yaramaz: yalnızca üstü çizilmiş hayaletleri ilgilendiriyor.",evfull:n=>n+" kanıtın "+n+" tanesini zaten buldun.",answers:n=>n+" cevap",signs:n=>n+" işaret",
+manual:"Elle çizildi",notdo:"Yapmıyor: ",clickStrike:"Çizmek için tıkla",rFuse:"İmkânsız: sigorta kutusu bozuk.",rSolo:"Tek başına imkânsız.",rEv:"Kanıt verildiğinde kullanılamaz.",rMiss:"Eksik: ",or:" ya da ",and:" ve ",
+lang:"Dil",lStart:"Başlangıç akıl sağlığı",lPills:"Akıl sağlığı hapları",oNone:"Yok",oYes:"Var",lDrain:"Akıl sağlığı kaybı",oSlow:"Yavaş",oNormal:"Normal",oFast:"Hızlı",lEv:"Verilen kanıt",lFuse:"Sigorta kutusu",oFuseOk:"Çalışıyor",oFuseBroken:"Bozuk, elektrik yok",lPl:"Oyuncular",oSolo:"Tek",oGroup:"Grup",eqTitle:"Mevcut ekipman",
+sum:s=>(s.pl==="solo"?"Tek":"Grup")+" · "+s.ev+" kanıt · akıl sağlığı %"+s.start+(+s.pills?" · haplı":"")+" · sigorta "+(s.fuse==="broken"?"bozuk":"OK"),
+iZero:"Akıl sağlığı %0'da sabit: av eşikleri gizlendi ve Moroi her zaman hızlı.",iDrain0:"Akıl sağlığı düşmüyor: hayalet az avlanır ya da hiç avlanmaz. Av eşikleri (Zamanla) yine işe yarar.",iNorm:"Av eşikleri Zamanla bölümünde. Akıl sağlığı yüksekken Moroi yavaş olabilir.",iEv:"Kanıtlar açıkken Mimic küre testi artık çalışmaz.",iFuse:"Elektrik yokken ışık testleri ve Jinn testi imkânsız.",iSolo:"Tek başınayken her zaman Banshee'nin hedefi sensin."},
+eq:{sel:"Tuz",encens:"Tütsü",crucifix:"Haç",bougie:"Mum ve çakmak",photo:"Fotoğraf makinesi",micro:"Parabolik mikrofon",detect:"Hareket sensörleri",camera:"Video kamera"},
+fam:{P:["Kanıtlar","Oyun kanıt verdiğinde klasik kanıtlar."],H:["Av dışında","Av yokken araştırma sırasında fark ettiklerin."],C:["Av sırasında","Hızı, görünüşü, duydukların. Daha riskli."],D:["Zamanla","Birkaç dakika ya da birkaç av boyunca doğrulanır."]},
+cat:["Kanıtlar","Hız ve av","Işıklar ve elektrik","Olaylar ve görünüş","Tuz, kapılar ve hareket","Tütsü, haç ve alevler","Sesler ve elektronik","Eşyalar ve zaman","Mimic","Av eşikleri"],
+s:{twop:["Aynı avda iki farklı oyuncuyu kovaladı","Herkes evin içinde."],fuseon:["Sigorta kutusunu kendisi geri açtı"],shadow:["Çağırma çemberinde ya da müzik kutusunda yalnızca gölge olarak görünüyor","Hayır: tamamen göründü."],polthunt:["Av sırasında etrafındaki eşyaları durmadan fırlatıyor","Hayır: birkaç saniye eşyaların yanından geçti ve hiçbir şey fırlatmadı."],cooldown:["Önceki av bittikten sonra 25 saniyeden kısa sürede yeniden avlanıyor"],
+door2:["Bir kapıyı aralık bıraktı","Av dışında: kapı sadece birkaç derece itildi. Yurei kapıyı her zaman tamamen açar ya da kapatır."],six:["6 parmaklı iz","UV ışığıyla, parmak izleri bu oyunda kanıtsa."],
+ev_emf:["EMF 5. seviye"],ev_sb:["Ruh kutusu (Spirit Box)"],ev_uv:["Parmak izleri (UV)"],ev_orb:["Hayalet küresi","Mimic kendi kanıtı olmasa da her zaman küre gösterir."],ev_wr:["Hayalet yazısı"],ev_fr:["Dondurucu sıcaklık"],ev_dots:["D.O.T.S."],
+los:["Beni görünce yavaş yavaş hızlanıyor","Görüş hattında kademeli hızlanma."],norm:["Beni görmeden tüm av boyunca normal hız","Yürüyüşün gibi, değişmeden."],slow:["Beni görmeden normalden belirgin şekilde yavaş","Yürüyüşünden yavaş."],fast:["Beni görmeden normalden belirgin şekilde hızlı"],
+jump:["Bir anda çok yavaştan çok hızlıya geçiyor","Seni fark edince anında sıçrama."],brake:["Bana yaklaşınca belirgin şekilde yavaşlıyor"],still:["Durunca ya da yeniden yürüyünce hızı değişiyor","Ona 10 m'den yakınken."],vary:["Her avda farklı hız","Sıcaklık ya da elektronik değişmeden."],
+cold:["Soğuk odalarda daha hızlı, sıcak odalarda yavaş"],breath:["Av sırasında soğuk nefes görünüyor","Sigorta kapalı."],jinn:["Elektrik açıkken beni uzaktan görünce 2,5 m/s ile koşuyor"],ign:["5 m'den uzakta hareketsiz ve görünürken beni görmezden geldi","Sessiz, elektronik kapalı."],steps:["Ayak seslerime doğru ya da koşunca hızlanıyor"],
+hide:["Saklandığım yerde bana ulaşınca av hemen bitti","Resmî saklanma yeri. Hayır: saklandığım yerde beni öldürdü."],nograce:["Koruma süresi olmadan, doğrudan saklandığım yere av"],found:["Saklanıp hareketsiz kalsam da her avda beni buluyor","Sanki her zaman nerede olduğunu biliyor."],losfast:["Beni görünce normalden çok daha hızlı hızlanıyor"],
+lighton:["Bir ışık açtı","Lamba ya da düğme, av dışında."],instoff:["Ben ışığı açtıktan bir iki saniye sonra kapatıyor"],leave:["Odasının ışığı açıkken odadan çıkıyor"],fuse:["Sigorta kutusunu kendisi kapattı","Işık aşırı yüklemesi değil."],
+mist:["Sis olayı"],chase:["Kovalama olayı","Seni takip eder, kapılar kapanır."],photo:["Olay sırasında fotoğrafını çekince kayboluyor","Hayır: fotoğrafta görünmeye devam etti."],shape:["Av sırasında görünüşü değişiyor"],vis:["Av sırasında çok görünür, az yanıp sönüyor"],invis:["Av sırasında neredeyse görünmez"],
+male:["Günlük erkek bir hayalet gösteriyor"],scream:["Parabolik mikrofonda tiz çığlık"],target:["Hep aynı oyuncunun peşinde","Hayır: birden fazla oyuncuya saldırıyor."],
+salt:["Tuza basıyor","Hayır: tuzun üstünden geçtiği kanıtlandı, tuz bozulmadı."],salt3:["3. seviye tuz onu avda yavaşlatıyor"],tp:["Odasından uzaktaki bir oyuncunun ayağında etkileşimsiz EMF"],door:["Av ve olay dışında giriş kapısını kapatıyor"],
+far:["Odasından 4 m'den uzaktaki bir sensörü tetikliyor","Av ve olay dışında."],room:["Favori odasını değiştirdi"],same:["Ben odasında onunlayken av başlattı"],shy:["Odasındayken hiçbir şey kıpırdamıyor","Odasında onunla birkaç dakika kal."],two:["İki yerde neredeyse aynı anda iki etkileşim"],
+i60:["Tütsüden 60–90 saniye sonra av"],i90:["Tütsüden 90–180 saniye sonra av"],i180:["Tütsüden sonra 180 saniye av yok, birkaç kez"],iout:["Tütsüden sonraki 90 saniye içinde odasından çıkıyor","Tuz ezildi ya da sensör, olay dışında."],
+blind:["Tütsüyle normalden çok daha uzun süre kör oluyor","Av sırasında."],rage:["Haç, tütsü ya da tuzdan sonra daha hızlı"],crux:["Haç normal menzilinden uzakta yandı"],flame:["Avlanmak yerine bir alevi söndürüyor","Hayır: hemen yanında yanan alev varken avlandı."],
+cruxfl:["Hemen yanında alev yanarken haç yandı"],third:["3. alev söndükten hemen sonra av"],lamp:["Avda ayak seslerini duymadan önce fenerim yanıp sönüyor","Hayır: önce ayak seslerini duydum."],elec:["Açık elektroniğin yanından geçerken daha hızlı"],voice:["Avda 4–5 m'den sesime tepki vermedi"],
+multi:["Aynı anda birkaç eşya fırlatıyor","Odasına on kadar eşyadan bir yığın yap."],objslow:["Birçok eşyayı taşıdıktan sonra daha yavaş"],age:["Eşya taşımadan oyun ilerledikçe yavaşlıyor","Hayır: uzun süre yanındaydım, hâlâ aynı hızda."],cycle:["Aktivite ve hız her 2 dakikada değişiyor","Kapının ilk açılışından itibaren sayılır."],
+orb:["Kamerada küre görünüyor (0 kanıtlı oyun)","Hayır: uzun süre izledim, küre yok."],th50:["Ortalama akıl sağlığı %50'nin üstündeyken avlandı"],th35:["Ortalama akıl sağlığı %35'e inene kadar av yok","Hayır: %35'in üstünde avlandı."]},
+g:{0:["Tütsü ve kronometre: 180 saniye av yok (diğerleri 90 sn, Demon 60 sn). 2-3 kez tekrarla.","Başka işaret yok: hız ve davranış normal.","Shade (varlık testi), Demon (60 sn)."],
+1:["Tuzun üstünden bozmadan geçer. Geçişi kanıtla: av, olay ya da çizginin hemen arkasındaki sensör. Testten önce haç ya da tütsü yok.","Işınlanma: odasından uzaktaki bir oyuncunun ayağında etkileşimsiz EMF.","Öfkeli Gallu (ilk tuza her zaman basar), Mimic."],
+2:["Olay sırasında fotoğraf: anında kaybolur ve fotoğrafta görünmez.","Av sırasında neredeyse hep görünmez.","Obake (fotoğrafta kalır)."],
+3:["Odasına on kadar eşyadan yığın yap: birkaçını aynı anda fırlatır.","Avda neredeyse durmadan fırlatır: her 0,5 saniyede yakındaki bir eşyayı fırlatmaya çalışır.","The Twins (iki yerde iki etkileşim), Deildegast."],
+4:["Parabolik mikrofon: kendine özgü tiz çığlık. Grupta, av sırasında hedefi olmayan görünür oyuncuyu görmezden gelir.","Her zaman kadın. Odasını hiç değiştirmez ama hedefini izlemek için uzağa gider.","Kormos (hareketsiz herkesi görmezden gelir), Goryo."],
+5:["Sigorta açık: seni 3 m'den uzakta görünce 2,5 m/s'ye fırlar, yanına gelince yavaşlar. Sigorta kapalı: normal hız.","Sigorta kutusunu asla kendisi kapatmaz.","Raiju: sigortayı kapat, elektroniği açık bırak."],
+6:["Bir ışık aç: bazen bir iki saniye sonra kapatır. Asla ışık açmaz.","Odasının ışığı açıkken çıkar ya da oda değiştirir.","Goryo (ışık açık olsa da odasında kalır)."],
+7:["Saklan, sessiz kal, elektroniği kapat: çok yavaş adımlar (1 m/s), seni fark edince bir anda 3 m/s.","Seni kaybedince son konumuna koşar, sonra yine yavaşlar.","Yaşlı Thaye, sıcakta Hantu, Kormos, Deildegast."],
+8:["Onunla aynı odada kal: av başlatamaz ve neredeyse hiç etkileşmez.","Çok utangaç, uzaktayken daha aktif. Çağırma çemberinde ya da müzik kutusunda yalnızca gölge olarak görünür.","Spirit (tütsü 180 sn), sakin Obambo, Goryo."],
+9:["Tütsü ve kronometre: av 60. saniyeden itibaren mümkün (diğerleri 90 sn).","Haç ona %50 daha uzaktan etki eder. Bir av bittikten 20 saniye sonra yeniden avlanabilir (diğerleri 25 sn).","Onryo (alevler), genç Thaye, Gallu, saldırgan Obambo."],
+10:["Odasında tütsü: 90 saniye orada kilitli kalır. Çıkışlara tuz ve sensör koy.","Av VE olay dışında giriş kapısını kapatan tek hayalet.","Goryo (90 saniyede çıkabilir), Shade."],
+11:["Sis olayını asla yapmaz.","Avda çok görünür, oyuncuların yanında çok aktif. Avın yaklaşık %60'ında görünür (diğerleri yaklaşık %30).","Kormos (o da sis yapmaz ama asla kovalamaz)."],
+12:["Avda sesini yalnızca yaklaşık 2,5 m'den duyar: 4–6 m uzakta saklanıp konuş, sana gelmez.","Av dışında yanında konuşmak onu daha saldırgan yapar.","Kormos (sese değil adımlara tepki verir)."],
+13:["Hızı sıcaklığa bağlı: sıcakta yavaş (yaklaşık 1,4 m/s), soğukta hızlı (yaklaşık 2,7 m/s). Seni görünce hızlanmaz.","Sigorta kapalıyken avda soğuk nefesi görünür. Sigortayı asla geri açmaz.","Revenant, sakin Obambo."],
+14:["Yalnızca kısa dolaşır: odasından 4 m'den uzak sensörler av ve olay dışında hiç tetiklenmez. Odasını hiç değiştirmez.","Kanıtsız %100 test yok: geri kalan her şey elenince kalan odur.","Banshee, Yurei, Shade."],
+15:["Avda fener açıkken: ayak seslerini duymadan önce yanıp söner (yaklaşık 12 m'den duyulur, diğerleri 20 m).","Parabolik mikrofonda daha çok ses çıkarır.","Raiju (elektroniğin yanında hızlanır), Revenant."],
+16:["Yanan mum ile haç yan yana: avlanmak yerine mumu söndürür, haç yanmaz. 3. alev söndükten sonra avlanır.","Saymak için mumu her seferinde yeniden yak.","Demon (sık avlanır, alev onu durdurmaz)."],
+17:["Her avda farklı hız (yaklaşık 1,5 ya da 1,9 m/s), rastgele.","İki yerde neredeyse aynı anda iki etkileşim.","Obambo (hızı kronometreye bağlı), Poltergeist."],
+18:["Yoluna açık elektronik koy: seni görmese de orada 2,5 m/s'ye çıkar.","Elektroniği diğerlerinden daha uzaktan yanıp söndürür.","Jinn (sigortaya bağlı), Myling, Dayan."],
+19:["Av sırasında görünüşü değişir.","6 parmaklı izler, daha çabuk kaybolur (UV varsa).","Phantom (fotoğrafta kaybolur)."],
+20:["0 kanıtta bile kamerada her zaman küre görünür. Odasına bir kamera koy.","Diğer hayaletlerin yeteneklerini kopyalar ve oyun sırasında model değiştirir.","Tüm hayaletler."],
+21:["%0'da: görmeden hızlı (yaklaşık 2,3 m/s), görünce yaklaşık 3,7 m/s'ye kadar.","Avda tütsü: 5/6/7 saniye yerine 7,5/9/10,5 saniye kör (I, II, III. seviye).","Dayan, genç Thaye, Kormos, Deildegast, Aswang."],
+22:["Uzaktan çok hızlı (3 m/s), hemen yanında neredeyse duruyor (0,4 m/s).","Oyuncuların yerini her zaman bilir: saklanmak işe yaramaz.","Revenant (tam tersi), Dayan."],
+23:["Başta hızlı (yaklaşık 2,75 m/s), yaşlandıkça 1 m/s'ye kadar yavaşlar. Seni görünce asla hızlanmaz.","Yanında kaldıkça yaşlanır. Ouija akıl sağlığına mal olur: %0'da lanetli av riski.","Deildegast (eşyalar), Obambo, Deogen."],
+25:["Haç, tütsü ya da tuz yoksa normal hız. Bir korumadan sonra öfkeli ve daha hızlı (yaklaşık 1,96 m/s, 3,2 m/s'ye kadar). Öfkeli bir avdan sonra zayıf ve daha yavaş (yaklaşık 1,36 m/s).","Öfkeliyken tuzu bozmadan üstünden geçebilir.","Wraith, Obambo, Demon."],
+26:["Avda 10 m'den yakınken: durursan 1,2 m/s'ye düşer; hareket edersen 2,25 m/s'ye çıkar.","Her zaman kadın.","Kormos, Deogen, Revenant."],
+27:["Bir çıkış kapısının ilk açılışından itibaren kronometre: 0–1 dk sakin, 1–3 dk saldırgan, sonra her 2 dakikada değişir. Sakin yaklaşık 1,45 m/s, saldırgan yaklaşık 1,96 m/s.","Saldırgan durumda başlayan avlar %20 daha kısa.","The Twins, Gallu, Hantu."],
+28:["Avda neredeyse kör: 5 m'den uzakta hareketsiz ve görünürsen seni görmezden gelir. Ayak seslerine doğru hızlanır (yaklaşık 3,7 m/s'ye kadar).","Sis ya da kovalama olayını asla yapmaz.","Dayan, Yokai, Oni, Banshee."],
+29:["Taban hızı yavaş (yaklaşık 1,53 m/s). Seni görünce her hayaletten hızlı hızlanır (9 saniyede yaklaşık 2,53 m/s). Resmî saklanma yerinde sana ulaşırsa av hemen biter.","Sonraki av koruma süresi olmadan, doğrudan saklandığın yere başlar.","The Twins (yavaş hız), Moroi."],
+30:["Her avın başında 3 m/s, avdan önce taşınan her farklı ev eşyası için 0,1 m/s eksi (en az 0,4). Seni görünce hızlanmaz.","Sayaç her avdan ya da yanan haçtan sonra sıfırlanır.","Revenant, Deogen, Thaye, Moroi."]}};
+
+
+const LANGS=[["fr","Français"],["en","English"],["de","Deutsch"],["es","Español"],["it","Italiano"],["pt","Português"],["pl","Polski"],["ro","Română"],["ru","Русский"],["tr","Türkçe"],["zh","中文"],["ko","한국어"]];
 const F=[
 {k:"P",t:"Preuves",s:"Les preuves classiques, quand ta partie en donne."},
 {k:"H",t:"Hors chasse",s:"Ce que tu remarques pendant l'enquête, sans chasse en cours."},
 {k:"C",t:"En chasse",s:"Sa vitesse, son apparence, ce que tu entends. Plus risqué."},
 {k:"D",t:"Sur la durée",s:"À confirmer sur plusieurs minutes ou plusieurs chasses."}];
-const FAM={ev_emf:"P",ev_sb:"P",ev_uv:"P",ev_orb:"P",ev_wr:"P",ev_dots:"P",ev_fr:"P",lighton:"H",fuse:"H",mist:"H",chase:"H",male:"H",two:"H",target:"H",room:"H",door:"H",multi:"H",shy:"H",
+const FAM={twop:"C",fuseon:"H",shadow:"B",polthunt:"C",cooldown:"D",multi:"B",door2:"H",six:"B",ev_emf:"P",ev_sb:"P",ev_uv:"P",ev_orb:"P",ev_wr:"P",ev_dots:"P",ev_fr:"P",lighton:"H",fuse:"H",mist:"H",chase:"H",male:"H",two:"H",target:"H",room:"H",door:"H",shy:"B",
 norm:"C",slow:"C",fast:"C",los:"C",shape:"C",vis:"C",invis:"C",same:"C",jump:"C",brake:"C",still:"C",jinn:"C",ign:"C",steps:"C",hide:"C",nograce:"C",found:"C",losfast:"C",breath:"C",lamp:"C",voice:"C",blind:"C",salt3:"C",
 salt:"B",photo:"B",instoff:"B",leave:"B",i60:"B",i90:"B",i180:"B",iout:"B",flame:"B",cruxfl:"B",third:"B",crux:"B",rage:"B",far:"B",scream:"B",elec:"B",orb:"B",
 vary:"D",cold:"D",age:"D",cycle:"D",objslow:"D",tp:"D",th50:"D",th35:"D"};
 const ALL=C.flatMap(x=>x.l.map(o=>Object.assign(o,{cat:x.c,sane:x.sane,evc:x.evc})));
 /* barré = exclusion directe, même pour les signes rares */
-const NOAUTO=new Set(["male","th50"]);
-ALL.forEach(o=>{if(o.n||NOAUTO.has(o.k))return;if(o.o)o.n={e:o.o.slice()};else if(o.h)o.n={e:o.h.slice()};else if(o.e)o.n={o:o.e.slice()}});
+/* "Non" n'exclut que lorsque l'absence est une vraie preuve */
+const NONE=new Set(["mist","chase","far","iout"]);
+ALL.forEach(o=>{if(NONE.has(o.k))delete o.n});
+const AUTO={shape:{e:[19]},third:{e:[16]},i180:{e:[0]},jump:{e:[7]},th35:{e:[8]}};
+ALL.forEach(o=>{if(!o.n&&AUTO[o.k])o.n=AUTO[o.k]});
 /* signes incompatibles : en cocher un barre les autres */
-const EXCL=[["th50","th35"],["norm","slow","fast"],["vis","invis"]];
+const EXCL={th50:["th35"],th35:["th50"],norm:["slow","fast"],slow:["norm"],fast:["norm"],vis:["invis"],invis:["vis"]};
 const EQ=[["sel","Sel"],["encens","Encens"],["crucifix","Crucifix"],["bougie","Bougie et briquet"],["photo","Appareil photo"],["micro","Micro parabolique"],["detect","Détecteurs de mouvement"],["camera","Caméra vidéo"]];
 const EQN=Object.fromEntries(EQ);
 const DEF={start:0,pills:0,drain:0,ev:0,fuse:"ok",pl:"group",eq:Object.fromEntries(EQ.map(e=>[e[0],1]))};
-const REQ={lighton:{fuse:1},instoff:{fuse:1},leave:{fuse:1},fuse:{fuse:1},jinn:{fuse:1},target:{group:1},
+const REQ={twop:{group:1},six:{evn:1},lighton:{fuse:1},instoff:{fuse:1},leave:{fuse:1},fuse:{fuse:1},jinn:{fuse:1},target:{group:1},
 salt:{eq:["sel"]},salt3:{eq:["sel"]},photo:{eq:["photo"]},i60:{eq:["encens"]},i90:{eq:["encens"]},i180:{eq:["encens"]},iout:{eq:["encens"]},blind:{eq:["encens"]},
 rage:{eq:["sel","encens","crucifix"]},crux:{eq:["crucifix"]},cruxfl:{all:["crucifix","bougie"]},flame:{eq:["bougie"]},third:{eq:["bougie"]},far:{eq:["detect"]},scream:{eq:["micro"]},orb:{eq:["camera"],ev0:1}};
 let st={on:{},man:{},zero:true,mim:true,set:null,lang:null};
@@ -622,13 +1088,14 @@ function na(o){const r=REQ[o.k];if(!r)return "";const s=st.set;
   if(r.fuse&&s.fuse==="broken")return U("rFuse");
   if(r.group&&s.pl==="solo")return U("rSolo");
   if(r.ev0&&+s.ev>0)return U("rEv");
+  if(r.evn&&!+s.ev)return U("rNoEv");
   if(r.eq&&!r.eq.some(e=>s.eq[e]))return U("rMiss")+r.eq.map(EQT).join(U("or"))+".";
   if(r.all&&!r.all.every(e=>s.eq[e]))return U("rMiss")+r.all.filter(e=>!s.eq[e]).map(EQT).join(U("and"))+".";
   return ""}
 const keepOf=x=>{let a=x.o?x.o.slice():x.h?x.h.slice():null;if(a&&x.nz&&!st.zero)a=a.concat(x.nz);return a};
 const elimOf=x=>{let a=x.e?x.e.slice():null;if(a&&x.z&&st.zero)a=a.concat(x.z);return a};
-const eff=x=>{const k=keepOf(x);return k?U("keep")+' '+(k.length>6?k.length:k.map(NM).join(", ")):U("excl")+' '+elimOf(x).map(NM).join(", ")};
-const tag=(o,a,b)=>'<span class="tag '+(o.e?"t-elim":"t-only")+'">'+(a||U("chk"))+' '+eff(o)+'</span>'+(o.n?'<span class="tag t-no">'+(b||U("strk"))+' '+eff(o.n)+'</span>':'');
+const eff=x=>{const k=keepOf(x),e0=elimOf(x);if(!k&&!e0)return "";return k?U("keep")+' '+(k.length>6?k.length:k.map(NM).join(", ")):U("excl")+' '+elimOf(x).map(NM).join(", ")};
+const tag=(o,a,b)=>(eff(o)?'<span class="tag '+(o.e?"t-elim":"t-only")+'">'+(a||U("chk"))+' '+eff(o)+'</span>':'')+(o.n?'<span class="tag t-no">'+(b||U("strk"))+' '+eff(o.n)+'</span>':'');
 const targets=o=>{const s=new Set();[o,o.n].forEach(x=>{if(!x)return;["o","e","h","z","nz"].forEach(f=>(x[f]||[]).forEach(i=>s.add(i)))});return [...s]};
 function calc(){
   const act=ALL.filter(o=>val(o.k)&&vis(o)).map(o=>val(o.k)>0?{o,x:o,lb:ST(o)[0]}:o.n?{o,x:o.n,lb:U("notdo")+ST(o)[0]}:null).filter(Boolean);
@@ -643,29 +1110,31 @@ function calc(){
 let REM=new Set();
 const useful=o=>val(o.k)!==0||targets(o).some(i=>REM.has(i)&&!(i===20&&st.mim&&!o.m));
 const evFull=o=>{const n=+st.set.ev;if(!o.evc||!n)return "";const got=ALL.filter(x=>x.evc&&val(x.k)>0).length;return got>=n?U("evfull")(n):""};
-const obH=o=>{const v=val(o.k),w=v?"":(na(o)||evFull(o)||(useful(o)?"":U("useless")));const tx=ST(o);return '<button type="button" class="ob'+(v>0?" yes":v<0?" no":"")+(w?" na":"")+'" data-k="'+o.k+'"'+(w?" disabled":"")+'><span class="bx">'+(v>0?"✓":v<0?"✗":"")+'</span><span><b>'+tx[0]+'</b>'+tag(o)+(tx[1]?'<small>'+tx[1]+'</small>':'')+(w?'<small class="why2">'+w+'</small>':'')+'</span></button>'};
-const obYN=(o,off)=>{const v=val(o.k),w=v?"":na(o);if(w)off=true;const d=off?" disabled":"";const tx=ST(o);return '<div class="row'+(v>0?" yes":v<0?" no":"")+(off?" off":"")+'"><div><b>'+tx[0]+'</b>'+tag(o,U("yes")+colon(),U("no")+colon())+(tx[1]?'<small>'+tx[1]+'</small>':'')+(off?'<small class="why2">'+(w||U("useless"))+'</small>':'')+'</div><div class="seg" role="group" aria-label="'+tx[0].replace(/"/g,"")+'"><button type="button" class="y" data-k="'+o.k+'" data-v="1" aria-pressed="'+(v>0)+'"'+d+'>'+U("yes")+'</button><button type="button" class="n" data-k="'+o.k+'" data-v="-1" aria-pressed="'+(v<0)+'"'+d+'>'+U("no")+'</button></div></div>'};
+const obRow=(o,w)=>{const v=val(o.k),d=w?" disabled":"",tx=ST(o);return '<div class="row'+(v>0?" yes":v<0?" no":"")+(w?" off":"")+'"><div><b>'+tx[0]+'</b>'+tag(o,U("yes")+colon(),U("no")+colon())+(tx[1]?'<small>'+tx[1]+'</small>':'')+(w?'<small class="why2">'+w+'</small>':'')+'</div><div class="seg" role="group" aria-label="'+tx[0].replace(/"/g,"")+'"><button type="button" class="y" data-k="'+o.k+'" data-v="1" aria-pressed="'+(v>0)+'"'+d+'>'+U("yes")+'</button><button type="button" class="n" data-k="'+o.k+'" data-v="-1" aria-pressed="'+(v<0)+'"'+d+'>'+U("no")+'</button></div></div>'};
+const why=o=>val(o.k)?"":(na(o)||evFull(o)||(useful(o)?"":U("useless")));
+const obH=o=>obRow(o,why(o));
+const obYN=(o,off)=>obRow(o,val(o.k)?"":(na(o)||(off?U("useless"):"")));
 function drawObs(left){
   const open={};document.querySelectorAll("#obs details[data-id]").forEach(d=>open[d.dataset.id]=d.open);
   const isOpen=(id,def)=>id in open?open[id]:def;
   REM=new Set(left.map(x=>x.g.id));
-  $("#obs").innerHTML='<div class="leg"><span><span class="bx y">✓</span>'+U("leg1")+'</span><span><span class="bx x">✗</span>'+U("leg2")+'</span><span><span class="bx"></span>'+U("leg3")+'</span></div>'+
+  $("#obs").innerHTML=
   F.map((f,fi)=>{
-    const q=qv();const subs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]===f.k&&vis(o)&&(!q||(ST(o).join(" ")+" "+CATN(x.c)+" "+o.t).toLowerCase().includes(q)))})).filter(y=>y.l.length);
+    const q=qv();const subs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]===f.k&&vis(o)&&!(st.hideOff&&why(o))&&(!q||(ST(o).join(" ")+" "+CATN(x.c)+" "+o.t).toLowerCase().includes(q)))})).filter(y=>y.l.length);
     if(!subs.length)return "";
     const fid="f"+f.k;
     const cnt=ALL.filter(o=>FAM[o.k]===f.k&&vis(o)&&val(o.k)).length;
     return '<details class="fam" data-id="'+fid+'"'+(q||isOpen(fid,f.k==="P"||f.k==="H")?" open":"")+'><summary><span><h3>'+FAMT(f)[0]+'</h3><small class="fs">'+FAMT(f)[1]+'</small></span><span class="n">'+(cnt?U("answers")(cnt):U("signs")(subs.reduce((a,y)=>a+y.l.length,0)))+'</span></summary>'+
       subs.map(y=>{const sid=fid+"-"+y.x.c;return '<details class="sub" data-id="'+sid+'"'+(q||isOpen(sid,true)?" open":"")+'><summary><h4>'+CATN(y.x.c)+'</h4></summary>'+y.l.map(obH).join("")+'</details>'}).join("")+'</details>'}).join("");
   let hidden=0;
-  const bs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]==="B"&&vis(o))})).filter(y=>y.l.length).map(y=>{const ok=o=>useful(o)&&!(na(o)&&!val(o.k));const u=y.l.filter(ok),off=y.l.filter(o=>!ok(o));hidden+=off.length;return {x:y.x,u,off}});
-  $("#sb").innerHTML=bs.map(y=>'<div class="sbox'+(y.u.length?"":" alloff")+'"><h4>'+CATN(y.x.c)+'</h4>'+y.u.map(o=>obYN(o,false)).join("")+y.off.map(o=>obYN(o,true)).join("")+'</div>').join("");
+  const bs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]==="B"&&vis(o)&&useful(o))})).filter(y=>y.l.length).map(y=>{const imp=o=>!val(o.k)&&na(o);const u=y.l.filter(o=>!imp(o)),off=st.hideOff?[]:y.l.filter(imp);hidden+=off.length;return {x:y.x,u,off}}).filter(y=>y.u.length||y.off.length);
+  $("#sb").innerHTML=bs.length?bs.map(y=>'<div class="sbox'+(y.u.length?"":" alloff")+'"><h4>'+CATN(y.x.c)+'</h4>'+y.u.map(o=>obRow(o,"")).join("")+y.off.map(o=>obRow(o,na(o))).join("")+'</div>').join(""):'<p class="hid">'+U("noSimple")+'</p>';
   $("#sh").textContent=hidden?U("greyed")(hidden):"";
 }
 function draw(){
   const r=calc(),left=r.filter(x=>!x.why.length);
   drawObs(left);
-  $("#nb").textContent=left.length;$("#nbt").textContent=left.length===1?U("poss1"):U("possN");
+  $("#nb").textContent=left.length;{const pn=U("possN");$("#nbt").textContent=left.length===1?U("poss1"):(typeof pn==="function"?pn(left.length):pn)}
   $("#gl").innerHTML=r.map(x=>'<button class="g'+(x.why.length?" out":"")+'" data-g="'+x.g.id+'" title="'+(x.why.length?x.why.join(" · ").replace(/"/g,""):U("clickStrike"))+'"><span><span class="gn">'+gname(x.g)+'</span><span class="en">'+(x.why.length?'':gsub(x.g))+'</span>'+(x.why.length?'<span class="why">'+x.why[0]+'</span>':'')+'</span></button>').join("");
   const vd=$("#vd");
   if(left.length===1){vd.style.display="block";vd.textContent=U("v1")(gname(left[0].g))}
@@ -680,12 +1149,10 @@ function idFind(){const v=$("#q").value.trim(),out=$("#qr");
   const nrm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
   const m=G.filter(g=>String(g.id)===v||nrm(g.fr).includes(nrm(v))||nrm(g.en).includes(nrm(v)));
   out.innerHTML=m.length?m.slice(0,4).map(g=>"<b>"+gname(g)+"</b> = "+gsub(g)+" (ID "+g.id+")").join(" · "):U("noMatch")}
-const onOb=e=>{const b=e.target.closest(".ob");if(!b)return;const k=b.dataset.k,v=val(k);
-  if(v===0){st.on[k]=1;EXCL.forEach(g=>{if(g.includes(k))g.forEach(x=>{if(x!==k)st.on[x]=-1})})}else if(v>0)st.on[k]=-1;else delete st.on[k];
-  save();draw();const nb=document.querySelector('.ob[data-k="'+k+'"]');if(nb)nb.focus()};
-$("#obs").addEventListener("click",onOb);$("#sb").addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;const k=b.dataset.k,v=+b.dataset.v;
-  if(val(k)===v)delete st.on[k];else{st.on[k]=v;if(v>0)EXCL.forEach(g=>{if(g.includes(k))g.forEach(x=>{if(x!==k)st.on[x]=-1})})}save();draw();
-  const nb=document.querySelector('#sb [data-k="'+k+'"][data-v="'+v+'"]');if(nb)nb.focus()});
+function setAns(k,v){if(val(k)===v)delete st.on[k];else{st.on[k]=v;if(v>0)(EXCL[k]||[]).forEach(x=>{st.on[x]=-1})}}
+const onAns=e=>{const b=e.target.closest("[data-v]");if(!b||b.disabled)return;const k=b.dataset.k,v=+b.dataset.v;setAns(k,v);save();draw();
+  const nb=document.querySelector('[data-k="'+k+'"][data-v="'+v+'"]');if(nb)nb.focus()};
+$("#obs").addEventListener("click",onAns);$("#sb").addEventListener("click",onAns);
 $("#gl").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;const id=b.dataset.g;if(st.man[id])delete st.man[id];else st.man[id]=1;save();draw()});
 $("#mim").checked=st.mim;
 $("#fs").addEventListener("input",()=>drawObs(calc().filter(x=>!x.why.length)));
@@ -714,12 +1181,14 @@ $("#sets").addEventListener("change",e=>{const el=e.target;
 function applyStatic(){document.documentElement.lang=st.lang;
   document.querySelectorAll("[data-i]").forEach(el=>{const v=U(el.dataset.i);if(typeof v==="string")el.textContent=v});
   document.querySelectorAll("[data-ip]").forEach(el=>{el.placeholder=U(el.dataset.ip)});
+  $("#lcode").textContent=st.lang.toUpperCase();$("#lng").setAttribute("aria-label",U("lang"));document.querySelector(".langpick").title=U("lang");
   $("#lng").innerHTML=LANGS.map(l=>'<option value="'+l[0]+'"'+(l[0]===st.lang?" selected":"")+'>'+l[1]+'</option>').join("");
   idFind()}
 $("#lng").addEventListener("change",e=>{st.lang=e.target.value;save();applyStatic();drawSets();draw()});
 applyStatic();
 drawSets();
 $("#mim").addEventListener("change",e=>{st.mim=e.target.checked;save();draw()});
+$("#hideoff").checked=!!st.hideOff;$("#hideoff").addEventListener("change",e=>{st.hideOff=e.target.checked;save();draw()});
 $("#reset").addEventListener("click",()=>{st.on={};st.man={};save();draw()});
 $("#q").addEventListener("input",idFind);
 draw();
