@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Journal sans preuves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: carnet de terrain d'un chasseur, lu à la lampe UV dans le camion
+   IDEA: le journal du jeu — on coche ce qu'il fait, on barre ce qu'il ne fait pas
+   PICTURE: la grille des 30 entités qui se barre en direct, à côté des signes
+   COLOUR and TYPE: nuit #101118, violet UV #9a6bff, crayon rouge #ff5a4e ; Kalam + Atkinson Hyperlegible
+   LAYOUT: barre d'outils, deux pages (signes | entités), tests en bas ; empilé sous 900px */
+:root{color-scheme:light dark;
+--bg:light-dark(#f3f2f7,#101118);--page:light-dark(#ffffff,#181a24);--ink:light-dark(#1b1a24,#e9e7f2);
+--mute:light-dark(#5d5a6e,#a19eb4);--line:light-dark(#dcd9e6,#2b2d3c);--uv:light-dark(#5a2fd0,#9a6bff);
+--uvbg:light-dark(#efe8ff,#221c3a);--red:light-dark(#c4271c,#ff5a4e)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3,.gn{font-family:Kalam,"Comic Sans MS",cursive;font-weight:700}
+h1{font-size:clamp(30px,4vw,44px);line-height:1.05;margin:0;text-wrap:balance}
+h2{font-size:26px;line-height:1.1;margin:0 0 10px}
+.wrap{max-width:1240px;margin:0 auto;padding:clamp(16px,3vw,32px) max(4vw,14px)}
+.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.top p{margin:6px 0 0;color:var(--mute);max-width:62ch}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sw{display:flex;align-items:center;gap:8px;background:var(--page);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-height:44px;cursor:pointer;font-size:15px}
+.sw input{width:20px;height:20px;accent-color:var(--uv)}
+button{font:inherit;color:inherit;cursor:pointer}
+.pri{min-height:44px;padding:8px 14px;border-radius:10px;border:1px solid var(--uv);background:var(--uv);color:#fff}
+:focus-visible{outline:3px solid var(--uv);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:18px;align-items:start}
+.pg{background:var(--page);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.side{position:sticky;top:12px}
+details{border-top:1px solid var(--line)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 2px;min-height:44px}
+summary::-webkit-details-marker{display:none}
+summary h3{margin:0;font-size:21px}
+summary .n{font-size:13px;color:var(--uv);background:var(--uvbg);border-radius:20px;padding:2px 9px;white-space:nowrap}
+summary::after{content:"+";font-size:22px;color:var(--mute);width:20px;text-align:center}
+details[open]>summary::after{content:"−"}
+.fam>summary{padding:14px 2px}
+.fam>summary h3{font-size:26px}
+.fs{display:block;color:var(--mute);font-size:14px;margin-top:2px}
+.sub{margin:0 0 6px 10px;border-top:1px dashed var(--line)}
+.sub>summary{padding:8px 2px;min-height:40px}
+.sub h4{margin:0;font-size:16px;font-weight:700;color:var(--uv)}
+.sub>summary::after{font-size:18px}
+.leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--mute);padding-bottom:10px}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.ob{display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:start;padding:9px 6px;border-radius:9px;width:100%;text-align:left;border:0;background:transparent;min-height:44px}
+.ob:hover{background:var(--uvbg)}
+.bx{width:24px;height:24px;border:2px solid var(--mute);border-radius:6px;display:grid;place-items:center;font-weight:700;font-size:16px;line-height:1;margin-top:1px}
+.leg .bx{width:20px;height:20px;font-size:13px}
+.ob.yes .bx,.bx.y{background:var(--uv);border-color:var(--uv);color:#fff}
+.ob.no .bx,.bx.x{border-color:var(--red);color:var(--red)}
+.ob.no b{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px;color:var(--mute)}
+.ob b{font-weight:700}
+.ob small{display:block;color:var(--mute);font-size:13px;margin-top:2px}
+.tag{display:inline-block;font-size:12px;border-radius:6px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.t-only{background:var(--uvbg);color:var(--uv)}.t-elim{background:light-dark(#ffe3df,#3a1a18);color:var(--red)}.t-no{background:light-dark(#f1eef6,#26283a);color:var(--mute)}
+.simple{margin-top:18px}.sp0{color:var(--mute);margin:0 0 10px}#sh{display:block;font-size:13px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.sbox{border:1px solid var(--line);border-radius:12px;padding:8px 8px 4px}.sbox h4{margin:2px 6px 4px;font-size:16px;color:var(--uv)}
+@media(max-width:600px){.sgrid{grid-template-columns:minmax(0,1fr)}}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 6px;border-radius:10px}
+.row+.row{border-top:1px solid var(--line)}
+.row.yes{background:var(--uvbg)}.row.no{background:light-dark(#ffe9e6,#331a19)}
+.row b{font-weight:700}
+.row.no b{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px;color:var(--mute)}
+.row small{display:block;color:var(--mute);font-size:13px;margin-top:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--page);min-width:52px;min-height:44px;font-size:14px;font-weight:700;color:var(--mute)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg .y[aria-pressed=true]{background:var(--uv);color:#fff}
+.seg .n[aria-pressed=true]{background:var(--red);color:#fff}
+.row.off{opacity:.42}.row.off b{font-weight:400}.why2{font-style:italic}
+.seg button:disabled{cursor:not-allowed;background:transparent}
+.sbox.alloff h4{color:var(--mute)}
+.setp{margin-bottom:18px;padding:4px 18px 14px}
+.setp>summary h3{font-size:24px}
+.sgr{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px 14px;margin-top:4px}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mute)}
+.fld select{font:inherit;font-size:16px;min-height:44px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.eqt{font-size:14px;color:var(--mute);margin:14px 0 6px}
+.eqs{display:flex;flex-wrap:wrap;gap:6px}
+.eqc{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:20px;padding:6px 12px;min-height:40px;font-size:14px;cursor:pointer}
+.eqc input{width:18px;height:18px;accent-color:var(--uv)}
+.sinfo{margin:12px 0 0;font-size:14px;color:var(--uv)}
+.ob.na{opacity:.42}.ob:disabled{cursor:not-allowed}.ob.na:hover{background:transparent}
+.sbar{display:block;position:sticky;top:0;z-index:2;background:var(--page);padding:2px 0 12px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.slb{display:block;font-family:Kalam,cursive;font-weight:700;font-size:20px;color:var(--uv);margin-bottom:4px}
+.sin{position:relative;display:block}
+.sin svg{position:absolute;left:14px;top:50%;width:22px;height:22px;transform:translateY(-50%);color:var(--uv);pointer-events:none}
+.sin input{width:100%;font:inherit;font-size:17px;min-height:52px;padding:10px 14px 10px 46px;border-radius:12px;border:2px solid var(--uv);background:var(--uvbg);color:var(--ink)}
+.sin input::placeholder{color:var(--mute)}
+.sin input:focus{outline:none;box-shadow:0 0 0 4px light-dark(#d9ccff,#3a2c6b)}
+.hid{font-size:13px;color:var(--mute);margin:4px 0 8px 10px}
+.count{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.count strong{font-family:Kalam,cursive;font-size:clamp(40px,6vw,56px);line-height:1;color:var(--uv)}
+.ghosts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.g{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;align-items:center;text-align:left;padding:6px 8px;border-radius:9px;min-height:48px;background:transparent;border:1px solid var(--line)}
+.g .id{font-size:13px;font-weight:700;text-align:center;border-radius:7px;padding:3px 0;background:var(--uvbg);color:var(--uv);font-variant-numeric:tabular-nums}
+.g .gn{font-size:19px;line-height:1.05;display:block}
+.g .en{font-size:12px;color:var(--mute);display:block}
+.g.out{opacity:.55}
+.g.out .gn{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px}
+.g.out .id{background:transparent;color:var(--mute)}
+.why{font-size:12px;color:var(--red);display:block;line-height:1.25;margin-top:2px}
+.verdict{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:var(--uvbg);color:var(--uv);font-weight:700;display:none}
+.idf input{width:100%;font:inherit;font-size:16px;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);margin-top:14px}
+.idr{min-height:22px;font-size:15px;color:var(--mute);margin:6px 0}
+.idr b{color:var(--uv)}
+.idt{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:2px 10px;font-size:13px;color:var(--mute);margin-top:6px}
+.idt span b{display:inline-block;width:24px;text-align:right;margin-right:6px;color:var(--ink);font-variant-numeric:tabular-nums}
+.tests{margin-top:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:var(--page);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card h3{margin:0;font-size:24px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.card h3 .id{font-family:"Atkinson Hyperlegible",sans-serif;font-size:13px;color:var(--uv);background:var(--uvbg);border-radius:6px;padding:1px 7px}
+.card h3 .en{font-family:"Atkinson Hyperlegible",sans-serif;font-size:13px;color:var(--mute);font-weight:400}
+.card p{margin:8px 0 0;font-size:15px}
+.card .lb{font-weight:700;color:var(--uv)}
+.card .sp{color:var(--mute);font-size:14px}
+.empty{color:var(--mute)}
+.note{color:var(--mute);font-size:13px;margin-top:14px}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.side{position:static;order:-1}}
+@media(max-width:600px){.cards{grid-template-columns:minmax(0,1fr)}.g{grid-template-columns:minmax(0,1fr);gap:2px;padding:6px}.g .id{width:30px}.g .gn{font-size:17px}}
+@media(prefers-reduced-motion:no-preference){.g{transition:opacity .25s,background .25s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Journal sans preuves</h1>
+      <p>Comme dans le jeu : coche ce qu'il fait, barre ce qu'il ne fait pas. Les entités impossibles se barrent. Les tests simples sont sous le journal. Clique sur une entité pour la barrer à la main.</p>
+    </div>
+    <div class="tools">
+      <label class="sw"><input type="checkbox" id="mim"> Le Mimic copie tout</label>
+      <button id="reset" class="pri">Nouvelle partie</button>
+    </div>
+  </div>
+
+  <details class="pg setp" id="setp" open><summary><span><h3>Paramètres de la partie</h3><small class="fs" id="setsum"></small></span></summary><div id="sets"></div></details>
+
+  <div class="grid">
+    <div class="pg"><label class="sbar" for="fs"><span class="slb">Chercher un signe</span><span class="sin"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><input id="fs" type="search" placeholder="lumière, brume, vitesse, sel…" autocomplete="off"></span></label><div id="obs"></div></div>
+    <aside class="pg side">
+      <div class="count"><strong id="nb">30</strong><span id="nbt">entités possibles</span></div>
+      <div class="ghosts" id="gl"></div>
+      <div class="verdict" id="vd"></div>
+      <div class="idf"><input id="q" type="search" placeholder="Trouver le nom en anglais : Jumeaux, Wraith…" autocomplete="off"></div>
+      <div class="idr" id="qr">Tape un nom en français ou en anglais.</div>
+    </aside>
+  </div>
+
+  <section class="pg simple">
+    <h2>Tests simples</h2>
+    <p class="sp0">Un objet à poser ou à utiliser. Réponds Oui ou Non ; clique à nouveau pour effacer. Les tests devenus inutiles sont grisés, en bas de chaque groupe. <span id="sh"></span></p>
+    <div class="sgrid" id="sb"></div>
+  </section>
+
+  <section class="tests">
+    <h2 id="tt">Tests pour départager</h2>
+    <div class="cards" id="cards"></div>
+    <p class="note">Valeurs à jour de novembre 2026 (Deildegast incluse). Vitesse normale : 1,7 m/s, montée à environ 2,8 m/s quand l'entité te voit. « Garde » = seules ces entités restent, toutes les autres sont barrées ; « Exclut » = barre celles listées.</p>
+  </section>
+</div>
+
+<script>
+{
+const G=[
+{id:0,fr:"Esprit",en:"Spirit",t:"Encens, puis chrono : aucune chasse avant 180 s (90 s pour les autres, 60 s pour le Démon). Répète 2 ou 3 fois.",b:"Aucun autre signe : vitesse et comportement normaux.",c:"Ombre (test de présence), Démon (60 s)."},
+{id:1,fr:"Spectre",en:"Wraith",t:"Passe sur du sel sans le déranger. Il faut prouver le passage : chasse, événement fantôme ou détecteur juste derrière la ligne. Pas de crucifix ni d'encens avant le test.",b:"Téléportation : un EMF aux pieds d'un joueur, loin de sa pièce, sans aucune interaction.",c:"Gallu enragée (elle écrase toujours le premier tas), Mimic."},
+{id:2,fr:"Fantôme",en:"Phantom",t:"Photo pendant un événement fantôme : il disparaît aussitôt et n'apparaît pas sur la photo.",b:"Presque toujours invisible pendant les chasses.",c:"Obake (reste sur la photo)."},
+{id:3,fr:"Poltergeist",en:"Poltergeist",t:"Fais un tas d'une dizaine d'objets dans sa pièce : il en projette plusieurs d'un coup.",b:"Lance des objets presque en continu pendant les chasses.",c:"Les Jumeaux (deux interactions à deux endroits), Deildegast."},
+{id:4,fr:"Banshee",en:"Banshee",t:"Micro parabolique : cri aigu caractéristique. À plusieurs, en chasse, elle ignore un joueur visible qui n'est pas sa cible.",b:"Toujours féminine. Ne change jamais de pièce, mais se promène loin pour suivre sa cible.",c:"Kormos (ignore tous les joueurs immobiles), Goryo."},
+{id:5,fr:"Djinn",en:"Jinn",t:"Disjoncteur allumé : quand il te voit à plus de 3 m, il passe d'un coup à 2,5 m/s, puis ralentit près de toi. Disjoncteur coupé : vitesse normale.",b:"Ne coupe jamais le disjoncteur lui-même.",c:"Raiju : coupe le disjoncteur et garde ton électronique allumée."},
+{id:6,fr:"Cauchemar",en:"Mare",t:"Allume une lumière : il l'éteint parfois une ou deux secondes après. Il ne rallume jamais une lumière.",b:"Quitte sa pièce, ou en change, quand la lumière y est allumée.",c:"Goryo (reste dans sa pièce même allumée)."},
+{id:7,fr:"Revenant",en:"Revenant",t:"Caché, silencieux, électronique éteinte : pas très lents (1 m/s), puis 3 m/s d'un coup quand il te repère.",b:"Quand il te perd, il fonce jusqu'à ta dernière position, puis redevient lent.",c:"Thaye âgé, Hantu au chaud, Kormos, Deildegast."},
+{id:8,fr:"Ombre",en:"Shade",t:"Reste dans la même pièce qu'elle : elle ne peut pas lancer de chasse et interagit très peu.",b:"Très discrète, plus active quand vous êtes loin.",c:"Esprit (encens 180 s), Obambo calme, Goryo."},
+{id:9,fr:"Démon",en:"Demon",t:"Encens, puis chrono : une chasse est possible dès 60 s (90 s pour les autres).",b:"Le crucifix agit sur lui 50 % plus loin.",c:"Onryo (flammes), Thaye jeune, Gallu, Obambo agressif."},
+{id:10,fr:"Yurei",en:"Yurei",t:"Encens dans sa pièce : il y reste bloqué 90 s. Mets du sel et des détecteurs aux sorties.",b:"Seul à fermer la porte d'entrée hors chasse ET hors événement fantôme.",c:"Goryo (peut sortir pendant les 90 s), Ombre."},
+{id:11,fr:"Oni",en:"Oni",t:"Ne fait jamais l'événement brume.",b:"Très visible pendant les chasses, très actif près des joueurs.",c:"Kormos (pas de brume non plus, mais jamais d'événement de poursuite)."},
+{id:12,fr:"Yokai",en:"Yokai",t:"En chasse, il n'entend ta voix qu'à environ 2,5 m : caché à 4 ou 5 m, parle, il ne vient pas vers toi.",b:"Hors chasse, parler près de lui le rend plus agressif.",c:"Kormos (réagit aux pas, pas à la voix)."},
+{id:13,fr:"Hantu",en:"Hantu",t:"Vitesse liée à la température : lent au chaud (environ 1,4 m/s), rapide au froid (environ 2,7 m/s). N'accélère pas en te voyant.",b:"Disjoncteur coupé : souffle froid visible pendant la chasse.",c:"Revenant, Obambo calme."},
+{id:14,fr:"Goryo",en:"Goryo",t:"Ne fait que de courtes promenades : des détecteurs à plus de 4 m de sa pièce ne sonnent jamais hors chasse ni événement. Ne change jamais de pièce.",b:"Pas de test à 100 % sans preuves : on le garde quand tout le reste est éliminé.",c:"Banshee, Yurei, Ombre."},
+{id:15,fr:"Myling",en:"Myling",t:"Lampe allumée en chasse : elle clignote avant que tu entendes ses pas (audibles à environ 12 m au lieu de 20 m).",b:"Fait plus de bruits au micro parabolique.",c:"Raiju (accélère près de l'électronique), Revenant."},
+{id:16,fr:"Onryo",en:"Onryo",t:"Bougie allumée et crucifix côte à côte : il souffle la bougie au lieu de chasser, le crucifix ne brûle pas. Après la 3e flamme soufflée, il chasse.",b:"Rallume la bougie à chaque fois pour suivre le compte.",c:"Démon (chasse souvent, la flamme ne l'arrête pas)."},
+{id:17,fr:"Les Jumeaux",en:"The Twins",t:"Vitesse différente d'une chasse à l'autre (environ 1,5 ou 1,9 m/s), au hasard.",b:"Deux interactions presque simultanées à deux endroits.",c:"Obambo (sa vitesse suit un chrono), Poltergeist."},
+{id:18,fr:"Raiju",en:"Raiju",t:"Électronique allumée posée sur son trajet : il passe à 2,5 m/s près d'elle, même sans te voir.",b:"Fait clignoter ton électronique de plus loin que les autres.",c:"Djinn (dépend du disjoncteur), Myling, Dayan."},
+{id:19,fr:"Obake",en:"Obake",t:"Change d'apparence pendant une chasse.",b:"Empreintes à 6 doigts, qui disparaissent plus vite (si les UV sont actifs).",c:"Fantôme (disparaît sur la photo)."},
+{id:20,fr:"Le Mimic",en:"The Mimic",t:"Fait toujours apparaître des orbes à la caméra, même à 0 preuve. Pose une caméra dans sa pièce.",b:"Copie les capacités des autres et change de modèle en cours de partie.",c:"Toutes les entités."},
+{id:21,fr:"Moroï",en:"Moroi",t:"À 0 % : rapide sans te voir (environ 2,3 m/s), puis jusqu'à environ 3,7 m/s quand il te voit.",b:"Encens en chasse : aveuglé 7,5, 9 ou 10,5 s au lieu de 5, 6 ou 7 s (niveaux I, II, III).",c:"Dayan, Thaye jeune, Kormos, Deildegast, Aswang."},
+{id:22,fr:"Deogen",en:"Deogen",t:"Très rapide de loin (3 m/s), presque à l'arrêt tout près de toi (0,4 m/s).",b:"Sait toujours où sont les joueurs : se cacher ne sert à rien.",c:"Revenant (l'inverse), Dayan."},
+{id:23,fr:"Thayé",en:"Thaye",t:"Rapide en début de partie (environ 2,75 m/s), puis il ralentit en vieillissant jusqu'à 1 m/s. N'accélère jamais en te voyant.",b:"Il vieillit quand vous restez près de lui. La Ouija coûte de la santé mentale : à 0 %, risque de chasse maudite.",c:"Deildegast (objets), Obambo, Deogen."},
+{id:25,fr:"Gallu",en:"Gallu",t:"Sans crucifix, encens ni sel : vitesse normale. Après une protection : enragée et plus rapide (environ 1,96 m/s, jusqu'à 3,2 m/s). Après une chasse enragée : affaiblie et plus lente (environ 1,36 m/s).",b:"Enragée, elle peut traverser le sel sans le déranger.",c:"Spectre, Obambo, Démon."},
+{id:26,fr:"Dayan",en:"Dayan",t:"À moins de 10 m d'elle en chasse : immobile, elle tombe à 1,2 m/s ; si tu bouges, elle monte à 2,25 m/s.",b:"Toujours féminine.",c:"Kormos, Deogen, Revenant."},
+{id:27,fr:"Obambo",en:"Obambo",t:"Chrono depuis la première ouverture d'une porte de sortie : calme de 0 à 1 min, agressif de 1 à 3, puis il change toutes les 2 min. Calme environ 1,45 m/s, agressif environ 1,96 m/s.",b:"Les chasses lancées en état agressif sont 20 % plus courtes.",c:"Les Jumeaux, Gallu, Hantu."},
+{id:28,fr:"Kormos",en:"Kormos",t:"Presque aveugle en chasse : immobile et visible à plus de 5 m, il t'ignore. Il accélère vers le bruit de tes pas (jusqu'à environ 3,7 m/s).",b:"Ne fait jamais l'événement brume ni d'événement de poursuite.",c:"Dayan, Yokai, Oni, Banshee."},
+{id:29,fr:"Aswang",en:"Aswang",t:"Base lente (environ 1,53 m/s). En te voyant, il accélère plus vite que toutes les autres (environ 2,53 m/s en 9 s). S'il t'atteint dans une cachette officielle, la chasse s'arrête net.",b:"La chasse suivante démarre sans période de grâce, droit sur ta cachette.",c:"Les Jumeaux (vitesse lente), Moroï."},
+{id:30,fr:"Deildegast",en:"Deildegast",t:"3 m/s au début de chaque chasse, moins 0,1 m/s par objet différent de la maison déplacé avant la chasse (minimum 0,4). N'accélère pas en te voyant.",b:"Le compte repart à zéro après chaque chasse ou crucifix brûlé.",c:"Revenant, Deogen, Thaye, Moroï."}
+];
+
+const ORD=[29,4,26,30,9,22,25,14,13,5,28,6,21,15,19,27,11,16,2,3,18,7,8,0,23,20,17,1,12,10];
+G.sort((a,b)=>ORD.indexOf(a.id)-ORD.indexOf(b.id));
+const N=Object.fromEntries(G.map(g=>[g.id,g.fr]));
+const C=[
+{c:"Preuves",evc:1,l:[
+{k:"ev_emf",t:"EMF niveau 5",o:[0,1,5,8,11,14,15,17,18,19,25,26,30],n:{e:[0,1,5,8,11,14,15,17,18,19,25,26,30]},m:1},
+{k:"ev_sb",t:"Spirit Box",o:[0,1,2,3,6,12,16,17,20,21,22,25,26,28],n:{e:[0,1,2,3,6,12,16,17,20,21,22,25,26,28]},m:1},
+{k:"ev_uv",t:"Empreintes digitales (UV)",o:[2,3,4,5,9,13,14,15,19,20,25,27,28],n:{e:[2,3,4,5,9,13,14,15,19,20,25,27,28]},m:1},
+{k:"ev_orb",t:"Orbe fantomatique",s:"Le Mimic en montre toujours, même si ce n'est pas une de ses preuves.",o:[4,6,7,10,12,13,16,18,19,20,23,26,28],n:{e:[4,6,7,10,12,13,16,18,19,20,23,26,28]},m:1},
+{k:"ev_wr",t:"Écriture fantomatique",o:[0,3,6,7,8,9,15,21,22,23,27,29,30],n:{e:[0,3,6,7,8,9,15,21,22,23,27,29,30]},m:1},
+{k:"ev_fr",t:"Températures glaciales",o:[5,7,8,9,10,11,13,16,17,20,21,29],n:{e:[5,7,8,9,10,11,13,16,17,20,21,29]},m:1},
+{k:"ev_dots",t:"D.O.T.S.",o:[1,2,4,10,11,12,14,18,22,23,27,29,30],n:{e:[1,2,4,10,11,12,14,18,22,23,27,29,30]},m:1}
+]},
+{c:"Vitesse et chasse",l:[
+{k:"los",t:"Accélère peu à peu quand il me voit",s:"Montée progressive en ligne de vue.",e:[7,13,22,23,30],n:{o:[7,13,22,23,28,30]}},
+{k:"norm",t:"Vitesse normale sans me voir, toute la chasse",s:"Comme ta marche, sans changement.",e:[7,22],z:[21],n:{e:[0,1,2,3,4,5,6,8,9,10,11,12,14,15,16,19]}},
+{k:"slow",t:"Nettement plus lent que la normale sans me voir",s:"Plus lent que ta marche.",o:[7,13,17,22,23,25,26,27,29,30],nz:[21],n:{e:[7]}},
+{k:"fast",t:"Nettement plus rapide que la normale sans me voir",o:[7,13,17,18,21,22,23,25,26,27,28,30],n:{e:[22],z:[21]}},
+{k:"jump",t:"Passe d'un coup de très lent à très rapide",s:"Saut instantané quand il te repère.",o:[7,28]},
+{k:"brake",t:"Ralentit nettement en arrivant près de moi",o:[5,22,26],n:{e:[22]}},
+{k:"still",t:"Sa vitesse change quand je m'immobilise ou repars",s:"À moins de 10 m de lui.",o:[26,28],n:{e:[26]}},
+{k:"vary",t:"Vitesse différente d'une chasse à l'autre",s:"Sans changement de température ni d'électronique.",o:[17,21,23,25,27,30]},
+{k:"cold",t:"Plus rapide dans les pièces froides, lent au chaud",o:[13],n:{e:[13]}},
+{k:"breath",t:"Souffle froid visible en chasse",s:"Disjoncteur coupé.",o:[13],n:{e:[13]}},
+{k:"jinn",t:"Fonce à 2,5 m/s en me voyant de loin, courant allumé",o:[5,18],n:{e:[5]}},
+{k:"ign",t:"M'a ignoré, immobile et visible à plus de 5 m",o:[4,28],n:{e:[28]}},
+{k:"steps",t:"Accélère vers le bruit de mes pas ou quand je cours",h:[28,26]},
+{k:"hide",t:"La chasse s'est arrêtée net quand il m'a atteint caché",s:"Cachette officielle. Barré : il m'a tué dans la cachette.",o:[29],n:{e:[29]}},
+{k:"nograce",t:"Chasse sans période de grâce, droit sur ma cachette",o:[29]},
+{k:"found",t:"M'a trouvé directement alors que j'étais caché",s:"Sans t'avoir vu entrer.",h:[22,29]},
+{k:"losfast",t:"Accélère très vite en me voyant, plus que d'habitude",h:[29,21]}
+]},
+{c:"Lumières et courant",l:[
+{k:"lighton",t:"A allumé une lumière",s:"Lampe ou interrupteur, hors chasse.",e:[6]},
+{k:"instoff",t:"Éteint une lumière une ou deux secondes après que je l'ai allumée",h:[6]},
+{k:"leave",t:"Quitte sa pièce quand la lumière y est allumée",h:[6]},
+{k:"fuse",t:"A coupé le disjoncteur lui-même",s:"Pas une surcharge de lumières.",e:[5]}
+]},
+{c:"Événements et apparence",l:[
+{k:"mist",t:"Événement brume",e:[11,28],n:{h:[11,28]}},
+{k:"chase",t:"Événement de poursuite",s:"Il te suit, les portes se ferment.",e:[28],n:{h:[28]}},
+{k:"photo",t:"Disparaît quand je le photographie en événement",s:"Barré : il est resté visible sur la photo.",o:[2],n:{e:[2]}},
+{k:"shape",t:"Change d'apparence pendant une chasse",o:[19]},
+{k:"vis",t:"Très visible en chasse, clignote peu",h:[11]},
+{k:"invis",t:"Presque invisible en chasse",h:[2]},
+{k:"male",t:"Le journal indique une entité masculine",e:[4,26]},
+{k:"scream",t:"Cri aigu au micro parabolique",o:[4]},
+{k:"target",t:"Vise toujours le même joueur",s:"Barré : il s'en prend à plusieurs joueurs.",h:[4],n:{e:[4]}}
+]},
+{c:"Sel, portes et déplacements",l:[
+{k:"salt",t:"Marche dans le sel",s:"Barré : passage prouvé sur le sel, tas intact.",e:[1],n:{o:[1,25]}},
+{k:"salt3",t:"Le sel de niveau III le ralentit en chasse",e:[1],n:{o:[1]}},
+{k:"tp",t:"EMF aux pieds d'un joueur loin de sa pièce, sans interaction",h:[1]},
+{k:"door",t:"Ferme la porte d'entrée hors chasse et hors événement",o:[10]},
+{k:"far",t:"Déclenche un détecteur à plus de 4 m de sa pièce",s:"Hors chasse et hors événement.",e:[14],n:{h:[14]}},
+{k:"room",t:"A changé de pièce favorite",e:[4,14]},
+{k:"same",t:"A lancé une chasse alors que j'étais dans sa pièce, avec lui",e:[8]},
+{k:"shy",t:"Rien ne bouge quand je suis dans sa pièce",h:[8]},
+{k:"two",t:"Deux interactions presque en même temps à deux endroits",h:[17]}
+]},
+{c:"Encens, crucifix et flammes",l:[
+{k:"i60",t:"Chasse entre 60 et 90 s après l'encens",o:[9]},
+{k:"i90",t:"Chasse entre 90 et 180 s après l'encens",e:[0]},
+{k:"i180",t:"Aucune chasse pendant 180 s après l'encens, plusieurs fois",h:[0]},
+{k:"iout",t:"Sort de sa pièce dans les 90 s après l'encens",s:"Sel écrasé ou détecteur, hors événement. Barré : resté bloqué 90 s.",e:[10],n:{h:[10,14]}},
+{k:"blind",t:"Aveuglé par l'encens bien plus longtemps que d'habitude",s:"En chasse.",o:[21],n:{e:[21]}},
+{k:"rage",t:"Plus rapide après un crucifix, de l'encens ou du sel",o:[25],n:{e:[25]}},
+{k:"crux",t:"Crucifix brûlé plus loin que sa portée normale",o:[9]},
+{k:"flame",t:"Souffle une flamme au lieu de chasser",s:"Barré : il a chassé avec une flamme allumée tout près.",o:[16],n:{e:[16]}},
+{k:"cruxfl",t:"Crucifix brûlé alors qu'une flamme était allumée tout près",e:[16]},
+{k:"third",t:"Chasse juste après la 3e flamme soufflée",h:[16]}
+]},
+{c:"Sons et électronique",l:[
+{k:"lamp",t:"Ma lampe clignote avant que j'entende ses pas en chasse",s:"Barré : ses pas entendus d'abord.",o:[15],n:{e:[15]}},
+{k:"elec",t:"Plus rapide en passant près d'électronique allumée",o:[18],n:{e:[18]}},
+{k:"voice",t:"N'a pas réagi à ma voix à 4 ou 5 m en chasse",h:[12,28]}
+]},
+{c:"Objets et temps",l:[
+{k:"multi",t:"Projette plusieurs objets d'un coup",o:[3]},
+{k:"objslow",t:"Plus lent après qu'on a déplacé beaucoup d'objets",o:[30],n:{e:[30]}},
+{k:"age",t:"Ralentit au fil de la partie, sans déplacer d'objets",s:"Barré : resté longtemps près de lui, toujours aussi rapide.",o:[23],n:{e:[23]}},
+{k:"cycle",t:"Activité et vitesse qui alternent toutes les 2 min",s:"Calé sur la première ouverture de la porte.",o:[27],n:{e:[27]}}
+]},
+{c:"Le Mimic",l:[
+{k:"orb",t:"Orbe visible à la caméra (partie à 0 preuve)",s:"Barré : aucun orbe après une longue observation.",o:[20],m:1,n:{e:[20]}}
+]},
+{c:"Seuils de chasse",sane:1,l:[
+{k:"th50",t:"A chassé au-dessus de 50 % de santé moyenne",o:[4,6,9,12,16,18,23,25,26,27,28]},
+{k:"th35",t:"Aucune chasse avant 35 % de santé moyenne",h:[8,22,27]}
+]}
+];
+
+const F=[
+{k:"P",t:"Preuves",s:"Les preuves classiques, quand ta partie en donne."},
+{k:"H",t:"Hors chasse",s:"Ce que tu remarques pendant l'enquête, sans chasse en cours."},
+{k:"C",t:"En chasse",s:"Sa vitesse, son apparence, ce que tu entends. Plus risqué."},
+{k:"D",t:"Sur la durée",s:"À confirmer sur plusieurs minutes ou plusieurs chasses."}];
+const FAM={ev_emf:"P",ev_sb:"P",ev_uv:"P",ev_orb:"P",ev_wr:"P",ev_dots:"P",ev_fr:"P",lighton:"H",fuse:"H",mist:"H",chase:"H",male:"H",two:"H",target:"H",room:"H",door:"H",multi:"H",shy:"H",
+norm:"C",slow:"C",fast:"C",los:"C",shape:"C",vis:"C",invis:"C",same:"C",jump:"C",brake:"C",still:"C",jinn:"C",ign:"C",steps:"C",hide:"C",nograce:"C",found:"C",losfast:"C",breath:"C",lamp:"C",voice:"C",blind:"C",salt3:"C",
+salt:"B",photo:"B",instoff:"B",leave:"B",i60:"B",i90:"B",i180:"B",iout:"B",flame:"B",cruxfl:"B",third:"B",crux:"B",rage:"B",far:"B",scream:"B",elec:"B",orb:"B",
+vary:"D",cold:"D",age:"D",cycle:"D",objslow:"D",tp:"D",th50:"D",th35:"D"};
+const ALL=C.flatMap(x=>x.l.map(o=>Object.assign(o,{cat:x.c,sane:x.sane,evc:x.evc})));
+/* barré = exclusion directe, même pour les signes rares */
+const NOAUTO=new Set(["male","th50"]);
+ALL.forEach(o=>{if(o.n||NOAUTO.has(o.k))return;if(o.o)o.n={e:o.o.slice()};else if(o.h)o.n={e:o.h.slice()};else if(o.e)o.n={o:o.e.slice()}});
+/* signes incompatibles : en cocher un barre les autres */
+const EXCL=[["th50","th35"],["norm","slow","fast"],["vis","invis"]];
+const EQ=[["sel","Sel"],["encens","Encens"],["crucifix","Crucifix"],["bougie","Bougie et briquet"],["photo","Appareil photo"],["micro","Micro parabolique"],["detect","Détecteurs de mouvement"],["camera","Caméra vidéo"]];
+const EQN=Object.fromEntries(EQ);
+const DEF={start:0,pills:0,drain:0,ev:0,fuse:"ok",pl:"group",eq:Object.fromEntries(EQ.map(e=>[e[0],1]))};
+const REQ={lighton:{fuse:1},instoff:{fuse:1},leave:{fuse:1},fuse:{fuse:1},jinn:{fuse:1},target:{group:1},
+salt:{eq:["sel"]},salt3:{eq:["sel"]},photo:{eq:["photo"]},i60:{eq:["encens"]},i90:{eq:["encens"]},i180:{eq:["encens"]},iout:{eq:["encens"]},blind:{eq:["encens"]},
+rage:{eq:["sel","encens","crucifix"]},crux:{eq:["crucifix"]},cruxfl:{all:["crucifix","bougie"]},flame:{eq:["bougie"]},third:{eq:["bougie"]},far:{eq:["detect"]},scream:{eq:["micro"]},orb:{eq:["camera"],ev0:1}};
+let st={on:{},man:{},zero:true,mim:true,set:null};
+try{const s=JSON.parse(localStorage.getItem("phj3")||"null");if(s)st=Object.assign(st,s)}catch(e){}
+const qv=()=>{const e=document.getElementById("fs");return e&&e.value?e.value.trim().toLowerCase():""};
+const fixSet=()=>{st.set=Object.assign({},DEF,st.set||{});st.set.eq=Object.assign({},DEF.eq,(st.set&&st.set.eq)||{});st.zero=+st.set.start===0&&+st.set.pills===0};fixSet();
+const save=()=>{try{localStorage.setItem("phj3",JSON.stringify(st))}catch(e){}};
+const $=s=>document.querySelector(s);
+const val=k=>st.on[k]||0;
+const vis=o=>!(o.sane&&st.zero)&&!(o.evc&&!+st.set.ev);
+function na(o){const r=REQ[o.k];if(!r)return "";const s=st.set;
+  if(r.fuse&&s.fuse==="broken")return "Impossible : disjoncteur cassé.";
+  if(r.group&&s.pl==="solo")return "Impossible en solo.";
+  if(r.ev0&&+s.ev>0)return "Inutilisable quand des preuves sont données.";
+  if(r.eq&&!r.eq.some(e=>s.eq[e]))return "Il te manque : "+r.eq.map(e=>EQN[e]).join(" ou ")+".";
+  if(r.all&&!r.all.every(e=>s.eq[e]))return "Il te manque : "+r.all.filter(e=>!s.eq[e]).map(e=>EQN[e]).join(" et ")+".";
+  return ""}
+const keepOf=x=>{let a=x.o?x.o.slice():x.h?x.h.slice():null;if(a&&x.nz&&!st.zero)a=a.concat(x.nz);return a};
+const elimOf=x=>{let a=x.e?x.e.slice():null;if(a&&x.z&&st.zero)a=a.concat(x.z);return a};
+const eff=x=>{const k=keepOf(x);return k?'garde '+(k.length>6?k.length:k.map(i=>N[i]).join(", ")):'exclut '+elimOf(x).map(i=>N[i]).join(", ")};
+const tag=o=>'<span class="tag '+(o.e?"t-elim":"t-only")+'">Coché : '+eff(o)+'</span>'+(o.n?'<span class="tag t-no">Barré : '+eff(o.n)+'</span>':'');
+const targets=o=>{const s=new Set();[o,o.n].forEach(x=>{if(!x)return;["o","e","h","z","nz"].forEach(f=>(x[f]||[]).forEach(i=>s.add(i)))});return [...s]};
+function calc(){
+  const act=ALL.filter(o=>val(o.k)&&vis(o)).map(o=>val(o.k)>0?{o,x:o,lb:o.t}:o.n?{o,x:o.n,lb:"Ne le fait pas : "+o.t}:null).filter(Boolean);
+  return G.map(g=>{const why=[];
+    act.forEach(a=>{if(st.mim&&g.id===20&&!a.o.m)return;
+      const k=keepOf(a.x),e=elimOf(a.x);
+      if(k&&!k.includes(g.id))why.push(a.lb);
+      if(e&&e.includes(g.id))why.push(a.lb)});
+    if(st.man[g.id])why.unshift("Barrée à la main");
+    return {g,why}});
+}
+const obH=o=>{const v=val(o.k),w=v?"":na(o);return '<button type="button" class="ob'+(v>0?" yes":v<0?" no":"")+(w?" na":"")+'" data-k="'+o.k+'"'+(w?" disabled":"")+'><span class="bx">'+(v>0?"✓":v<0?"✗":"")+'</span><span><b>'+o.t+'</b>'+tag(o)+(o.s?'<small>'+o.s+'</small>':'')+(w?'<small class="why2">'+w+'</small>':'')+'</span></button>'};
+const obYN=(o,off)=>{const v=val(o.k),w=v?"":na(o);if(w)off=true;const d=off?" disabled":"";return '<div class="row'+(v>0?" yes":v<0?" no":"")+(off?" off":"")+'"><div><b>'+o.t+'</b>'+tag(o).replace('Coché :','Oui :').replace('Barré :','Non :')+(o.s?'<small>'+o.s+'</small>':'')+(off?'<small class="why2">'+(w||"Inutile : ne concerne que des entités déjà barrées.")+'</small>':'')+'</div><div class="seg" role="group" aria-label="'+o.t.replace(/"/g,"")+'"><button type="button" class="y" data-k="'+o.k+'" data-v="1" aria-pressed="'+(v>0)+'"'+d+'>Oui</button><button type="button" class="n" data-k="'+o.k+'" data-v="-1" aria-pressed="'+(v<0)+'"'+d+'>Non</button></div></div>'};
+function drawObs(left){
+  const open={};document.querySelectorAll("#obs details[data-id]").forEach(d=>open[d.dataset.id]=d.open);
+  const isOpen=(id,def)=>id in open?open[id]:def;
+  const R=new Set(left.map(x=>x.g.id));
+  const useful=o=>val(o.k)!==0||targets(o).some(i=>R.has(i)&&!(i===20&&st.mim&&!o.m));
+  $("#obs").innerHTML='<div class="leg"><span><span class="bx y">✓</span>1 clic : il le fait</span><span><span class="bx x">✗</span>2 clics : il ne le fait pas</span><span><span class="bx"></span>3 clics : effacer</span></div>'+
+  F.map((f,fi)=>{
+    const q=qv();const subs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]===f.k&&vis(o)&&(!q||(o.t+" "+(o.s||"")+" "+x.c).toLowerCase().includes(q)))})).filter(y=>y.l.length);
+    if(!subs.length)return "";
+    const fid="f"+f.k;
+    const cnt=ALL.filter(o=>FAM[o.k]===f.k&&vis(o)&&val(o.k)).length;
+    return '<details class="fam" data-id="'+fid+'"'+(q||isOpen(fid,f.k==="P"||f.k==="H")?" open":"")+'><summary><span><h3>'+f.t+'</h3><small class="fs">'+f.s+'</small></span><span class="n">'+(cnt?cnt+" réponse"+(cnt>1?"s":""):subs.reduce((a,y)=>a+y.l.length,0)+" signes")+'</span></summary>'+
+      subs.map(y=>{const sid=fid+"-"+y.x.c;return '<details class="sub" data-id="'+sid+'"'+(q||isOpen(sid,true)?" open":"")+'><summary><h4>'+y.x.c+'</h4></summary>'+y.l.map(obH).join("")+'</details>'}).join("")+'</details>'}).join("");
+  let hidden=0;
+  const bs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]==="B"&&vis(o))})).filter(y=>y.l.length).map(y=>{const ok=o=>useful(o)&&!(na(o)&&!val(o.k));const u=y.l.filter(ok),off=y.l.filter(o=>!ok(o));hidden+=off.length;return {x:y.x,u,off}});
+  $("#sb").innerHTML=bs.map(y=>'<div class="sbox'+(y.u.length?"":" alloff")+'"><h4>'+y.x.c+'</h4>'+y.u.map(o=>obYN(o,false)).join("")+y.off.map(o=>obYN(o,true)).join("")+'</div>').join("");
+  $("#sh").textContent=hidden?hidden+" test"+(hidden>1?"s":"")+" grisé"+(hidden>1?"s":"")+" : inutile"+(hidden>1?"s":"")+" ou impossible"+(hidden>1?"s":"")+" avec tes paramètres.":"";
+}
+function draw(){
+  const r=calc(),left=r.filter(x=>!x.why.length);
+  drawObs(left);
+  $("#nb").textContent=left.length;$("#nbt").textContent=left.length===1?"entité possible":"entités possibles";
+  $("#gl").innerHTML=r.map(x=>'<button class="g'+(x.why.length?" out":"")+'" data-g="'+x.g.id+'" title="'+(x.why.length?x.why.join(" · ").replace(/"/g,""):"Clique pour barrer")+'"><span><span class="gn">'+x.g.fr+'</span><span class="en">'+(x.why.length?'':x.g.en)+'</span>'+(x.why.length?'<span class="why">'+x.why[0]+'</span>':'')+'</span></button>').join("");
+  const vd=$("#vd");
+  if(left.length===1){vd.style.display="block";vd.textContent="Il ne reste que : "+left[0].g.fr+". Vérifie avec son test avant de valider."}
+  else if(!left.length){vd.style.display="block";vd.textContent="Plus aucune entité possible : une case est sans doute fausse."}
+  else vd.style.display="none";
+  $("#tt").textContent=left.length?"Tests pour départager les "+left.length+" restantes":"Tests pour départager";
+  $("#cards").innerHTML=left.length?left.map(x=>'<article class="card"><h3>'+x.g.fr+'<span class="en">'+x.g.en+'</span></h3><p><span class="lb">Test : </span>'+x.g.t+'</p><p class="sp">'+x.g.b+'</p><p class="sp"><b>À ne pas confondre avec :</b> '+x.g.c+'</p></article>').join(""):'<p class="empty">Décoche une case pour retrouver des entités.</p>';
+}
+function idFind(){const v=$("#q").value.trim(),out=$("#qr");
+  if(!v){out.textContent="Tape un nom en français ou en anglais.";return}
+  if(v==="24"){out.innerHTML="<b>24</b> : None, ce n'est pas une entité.";return}
+  const nrm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+  const m=G.filter(g=>String(g.id)===v||nrm(g.fr).includes(nrm(v))||nrm(g.en).includes(nrm(v)));
+  out.innerHTML=m.length?m.slice(0,4).map(g=>"<b>"+g.fr+"</b> = "+g.en+" (ID "+g.id+")").join(" · "):"Aucune entité ne correspond."}
+const onOb=e=>{const b=e.target.closest(".ob");if(!b)return;const k=b.dataset.k,v=val(k);
+  if(v===0){st.on[k]=1;EXCL.forEach(g=>{if(g.includes(k))g.forEach(x=>{if(x!==k)st.on[x]=-1})})}else if(v>0)st.on[k]=-1;else delete st.on[k];
+  save();draw();const nb=document.querySelector('.ob[data-k="'+k+'"]');if(nb)nb.focus()};
+$("#obs").addEventListener("click",onOb);$("#sb").addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;const k=b.dataset.k,v=+b.dataset.v;
+  if(val(k)===v)delete st.on[k];else{st.on[k]=v;if(v>0)EXCL.forEach(g=>{if(g.includes(k))g.forEach(x=>{if(x!==k)st.on[x]=-1})})}save();draw();
+  const nb=document.querySelector('#sb [data-k="'+k+'"][data-v="'+v+'"]');if(nb)nb.focus()});
+$("#gl").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;const id=b.dataset.g;if(st.man[id])delete st.man[id];else st.man[id]=1;save();draw()});
+$("#mim").checked=st.mim;
+$("#fs").addEventListener("input",()=>drawObs(calc().filter(x=>!x.why.length)));
+const SEL=[["start","Santé mentale de départ",[[0,"0 %"],[25,"25 %"],[50,"50 %"],[75,"75 %"],[100,"100 %"]]],
+["pills","Pilules de santé mentale",[[0,"Aucune"],[1,"Oui"]]],
+["drain","Perte de santé mentale",[[0,"Aucune"],[0.5,"Lente"],[1,"Normale"],[2,"Rapide"]]],
+["ev","Preuves données",[[0,"0"],[1,"1"],[2,"2"],[3,"3"]]],
+["fuse","Disjoncteur",[["ok","Fonctionne"],["broken","Cassé, pas de courant"]]],
+["pl","Joueurs",[["solo","Solo"],["group","À plusieurs"]]]];
+function drawSets(){const s=st.set;
+  $("#sets").innerHTML='<div class="sgr">'+SEL.map(f=>'<label class="fld"><span>'+f[1]+'</span><select data-s="'+f[0]+'">'+f[2].map(o=>'<option value="'+o[0]+'"'+(String(s[f[0]])===String(o[0])?" selected":"")+'>'+o[1]+'</option>').join("")+'</select></label>').join("")+'</div>'+
+  '<div class="eqt">Équipement disponible</div><div class="eqs">'+EQ.map(e=>'<label class="eqc"><input type="checkbox" data-eq="'+e[0]+'"'+(s.eq[e[0]]?" checked":"")+'> '+e[1]+'</label>').join("")+'</div><p class="sinfo">'+info()+'</p>';
+  $("#setsum").textContent=(s.pl==="solo"?"Solo":"À plusieurs")+" · "+s.ev+" preuve"+(+s.ev>1?"s":"")+" · santé "+s.start+" %"+(+s.pills?" avec pilules":"")+" · disjoncteur "+(s.fuse==="broken"?"cassé":"OK")}
+function info(){const s=st.set,m=[];
+  if(st.zero)m.push("Santé mentale bloquée à 0 % : les seuils de chasse sont masqués, et le Moroï est toujours rapide.");
+  else if(+s.drain===0)m.push("La santé mentale ne baisse pas : l'entité chassera peu ou pas. Les seuils de chasse (onglet Sur la durée) restent utiles.");
+  else m.push("Les seuils de chasse sont pris en compte dans l'onglet Sur la durée. Le Moroï peut être lent tant que la santé mentale est haute.");
+  if(+s.ev>0)m.push("Avec des preuves, le test des orbes du Mimic ne marche plus.");
+  if(s.fuse==="broken")m.push("Sans courant : les tests de lumière et du Djinn sont impossibles.");
+  if(s.pl==="solo")m.push("En solo, tu es toujours la cible de la Banshee.");
+  return m.join(" ")}
+$("#sets").addEventListener("change",e=>{const el=e.target;
+  if(el.dataset.s){const v=el.value;st.set[el.dataset.s]=isNaN(+v)?v:+v}
+  if(el.dataset.eq)st.set.eq[el.dataset.eq]=el.checked?1:0;
+  fixSet();save();drawSets();draw()});
+drawSets();
+$("#mim").addEventListener("change",e=>{st.mim=e.target.checked;save();draw()});
+$("#reset").addEventListener("click",()=>{st.on={};st.man={};save();draw()});
+$("#q").addEventListener("input",idFind);
+draw();
+}
+</script>
+</body>
+</html>
