@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Journal sans preuves</title>
+<title>Phasmo Zero</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -80,7 +80,13 @@ details[open]>summary::after{content:"−"}
 .row.off{opacity:.42}.row.off b{font-weight:400}.why2{font-style:italic}
 .seg button:disabled{cursor:not-allowed;background:transparent}
 .sbox.alloff h4{color:var(--mute)}
-.setp{margin-bottom:18px;padding:4px 18px 14px}
+.setp{margin-bottom:18px;padding:4px 18px 14px;--rd:light-dark(#a8443b,#d4837a);border:2px solid var(--rd);background:light-dark(#fcf1ef,#22171a)}
+.setp>summary h3{color:var(--rd)}.setp .fs{color:light-dark(#7d4a44,#c9a39e)}
+.setp .fld span,.setp .eqt{color:light-dark(#7d4a44,#c9a39e)}
+.setp .fld select{border-color:light-dark(#e2bdb7,#5a3632);background:var(--page)}
+.setp .eqc{border-color:light-dark(#e2bdb7,#5a3632);background:var(--page)}.setp .eqc input{accent-color:var(--rd)}
+.setp .sinfo{color:var(--rd)}.setp>summary::after{color:var(--rd)}
+.lng select{font:inherit;font-size:15px;border:0;background:transparent;color:var(--ink);min-height:30px;cursor:pointer}
 .setp>summary h3{font-size:24px}
 .sgr{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px 14px;margin-top:4px}
 .fld{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mute)}
@@ -136,38 +142,39 @@ details[open]>summary::after{content:"−"}
 <div class="wrap">
   <div class="top">
     <div>
-      <h1>Journal sans preuves</h1>
-      <p>Comme dans le jeu : coche ce qu'il fait, barre ce qu'il ne fait pas. Les entités impossibles se barrent. Les tests simples sont sous le journal. Clique sur une entité pour la barrer à la main.</p>
+      <h1>Phasmo Zero</h1>
+      <p><b data-i="tag"></b> <span data-i="intro"></span></p>
     </div>
     <div class="tools">
-      <label class="sw"><input type="checkbox" id="mim"> Le Mimic copie tout</label>
-      <button id="reset" class="pri">Nouvelle partie</button>
+      <label class="sw lng"><span data-i="lang"></span><select id="lng"></select></label>
+      <label class="sw"><input type="checkbox" id="mim"> <span data-i="mim"></span></label>
+      <button id="reset" class="pri" data-i="reset"></button>
     </div>
   </div>
 
-  <details class="pg setp" id="setp" open><summary><span><h3>Paramètres de la partie</h3><small class="fs" id="setsum"></small></span></summary><div id="sets"></div></details>
+  <details class="pg setp" id="setp" open><summary><span><h3 data-i="settings"></h3><small class="fs" id="setsum"></small></span></summary><div id="sets"></div></details>
 
   <div class="grid">
-    <div class="pg"><label class="sbar" for="fs"><span class="slb">Chercher un signe</span><span class="sin"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><input id="fs" type="search" placeholder="lumière, brume, vitesse, sel…" autocomplete="off"></span></label><div id="obs"></div></div>
+    <div class="pg"><label class="sbar" for="fs"><span class="slb" data-i="searchLbl"></span><span class="sin"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><input id="fs" type="search" data-ip="searchPh" autocomplete="off"></span></label><div id="obs"></div></div>
     <aside class="pg side">
-      <div class="count"><strong id="nb">30</strong><span id="nbt">entités possibles</span></div>
+      <div class="count"><strong id="nb">30</strong><span id="nbt"></span></div>
       <div class="ghosts" id="gl"></div>
       <div class="verdict" id="vd"></div>
-      <div class="idf"><input id="q" type="search" placeholder="Trouver le nom en anglais : Jumeaux, Wraith…" autocomplete="off"></div>
-      <div class="idr" id="qr">Tape un nom en français ou en anglais.</div>
+      <div class="idf"><input id="q" type="search" data-ip="findPh" autocomplete="off"></div>
+      <div class="idr" id="qr"></div>
     </aside>
   </div>
 
   <section class="pg simple">
-    <h2>Tests simples</h2>
-    <p class="sp0">Un objet à poser ou à utiliser. Réponds Oui ou Non ; clique à nouveau pour effacer. Les tests devenus inutiles sont grisés, en bas de chaque groupe. <span id="sh"></span></p>
+    <h2 data-i="simpleH"></h2>
+    <p class="sp0"><span data-i="simpleP"></span> <span id="sh"></span></p>
     <div class="sgrid" id="sb"></div>
   </section>
 
   <section class="tests">
-    <h2 id="tt">Tests pour départager</h2>
+    <h2 id="tt"></h2>
     <div class="cards" id="cards"></div>
-    <p class="note">Valeurs à jour de novembre 2026 (Deildegast incluse). Vitesse normale : 1,7 m/s, montée à environ 2,8 m/s quand l'entité te voit. « Garde » = seules ces entités restent, toutes les autres sont barrées ; « Exclut » = barre celles listées.</p>
+    <p class="note" data-i="note"></p>
   </section>
 </div>
 
@@ -208,7 +215,7 @@ const G=[
 
 const ORD=[29,4,26,30,9,22,25,14,13,5,28,6,21,15,19,27,11,16,2,3,18,7,8,0,23,20,17,1,12,10];
 G.sort((a,b)=>ORD.indexOf(a.id)-ORD.indexOf(b.id));
-const N=Object.fromEntries(G.map(g=>[g.id,g.fr]));
+const GB=Object.fromEntries(G.map(g=>[g.id,g]));
 const C=[
 {c:"Preuves",evc:1,l:[
 {k:"ev_emf",t:"EMF niveau 5",o:[0,1,5,8,11,14,15,17,18,19,25,26,30],n:{e:[0,1,5,8,11,14,15,17,18,19,25,26,30]},m:1},
@@ -298,6 +305,278 @@ const C=[
 ]}
 ];
 
+const I={
+fr:{u:{tag:"Le journal sans preuves.",intro:"Comme dans le jeu : coche ce qu'il fait, barre ce qu'il ne fait pas. Les entités impossibles se barrent. Les tests simples sont sous le journal. Clique sur une entité pour la barrer à la main.",
+mim:"Le Mimic copie tout",reset:"Nouvelle partie",settings:"Paramètres de la partie",searchLbl:"Chercher un signe",searchPh:"lumière, brume, vitesse, sel…",
+poss1:"entité possible",possN:"entités possibles",findPh:"Trouver le nom en anglais : Jumeaux, Wraith…",findHelp:"Tape un nom en français ou en anglais.",noMatch:"Aucune entité ne correspond.",none24:"None, ce n'est pas une entité.",
+simpleH:"Tests simples",simpleP:"Un objet à poser ou à utiliser. Réponds Oui ou Non ; clique à nouveau pour effacer. Les tests devenus inutiles sont grisés, en bas de chaque groupe.",
+greyed:n=>n+" test"+(n>1?"s":"")+" grisé"+(n>1?"s":"")+" : inutile"+(n>1?"s":"")+" ou impossible"+(n>1?"s":"")+" avec tes paramètres.",
+testsH:"Tests pour départager",testsN:n=>"Tests pour départager les "+n+" restantes",testLb:"Test : ",confuse:"À ne pas confondre avec :",empty:"Décoche une case pour retrouver des entités.",
+note:"Valeurs à jour de novembre 2026 (Deildegast incluse). Vitesse normale : 1,7 m/s, montée à environ 2,8 m/s quand l'entité te voit. « Garde » = seules ces entités restent, toutes les autres sont barrées ; « Exclut » = barre celles listées.",
+v1:x=>"Il ne reste que : "+x+". Vérifie avec son test avant de valider.",v0:"Plus aucune entité possible : une case est sans doute fausse.",
+leg1:"1 clic : il le fait",leg2:"2 clics : il ne le fait pas",leg3:"3 clics : effacer",yes:"Oui",no:"Non",chk:"Coché :",strk:"Barré :",keep:"garde",excl:"exclut",
+useless:"Inutile : ne concerne que des entités déjà barrées.",evfull:n=>"Tu as déjà tes "+n+" preuve"+(n>1?"s":"")+" sur "+n+".",answers:n=>n+" réponse"+(n>1?"s":""),signs:n=>n+" signes",
+manual:"Barrée à la main",notdo:"Ne le fait pas : ",clickStrike:"Clique pour barrer",rFuse:"Impossible : disjoncteur cassé.",rSolo:"Impossible en solo.",rEv:"Inutilisable quand des preuves sont données.",rMiss:"Il te manque : ",or:" ou ",and:" et ",
+lang:"Langue",lStart:"Santé mentale de départ",lPills:"Pilules de santé mentale",oNone:"Aucune",oYes:"Oui",lDrain:"Perte de santé mentale",oSlow:"Lente",oNormal:"Normale",oFast:"Rapide",lEv:"Preuves données",lFuse:"Disjoncteur",oFuseOk:"Fonctionne",oFuseBroken:"Cassé, pas de courant",lPl:"Joueurs",oSolo:"Solo",oGroup:"À plusieurs",eqTitle:"Équipement disponible",
+sum:s=>(s.pl==="solo"?"Solo":"À plusieurs")+" · "+s.ev+" preuve"+(+s.ev>1?"s":"")+" · santé "+s.start+" %"+(+s.pills?" avec pilules":"")+" · disjoncteur "+(s.fuse==="broken"?"cassé":"OK"),
+iZero:"Santé mentale bloquée à 0 % : les seuils de chasse sont masqués, et le Moroï est toujours rapide.",iDrain0:"La santé mentale ne baisse pas : l'entité chassera peu ou pas. Les seuils de chasse (Sur la durée) restent utiles.",iNorm:"Les seuils de chasse sont pris en compte dans Sur la durée. Le Moroï peut être lent tant que la santé mentale est haute.",iEv:"Avec des preuves, le test des orbes du Mimic ne marche plus.",iFuse:"Sans courant : les tests de lumière et du Djinn sont impossibles.",iSolo:"En solo, tu es toujours la cible de la Banshee."},
+eq:{sel:"Sel",encens:"Encens",crucifix:"Crucifix",bougie:"Bougie et briquet",photo:"Appareil photo",micro:"Micro parabolique",detect:"Détecteurs de mouvement",camera:"Caméra vidéo"},
+fam:{P:["Preuves","Les preuves classiques, quand ta partie en donne."],H:["Hors chasse","Ce que tu remarques pendant l'enquête, sans chasse en cours."],C:["En chasse","Sa vitesse, son apparence, ce que tu entends. Plus risqué."],D:["Sur la durée","À confirmer sur plusieurs minutes ou plusieurs chasses."]}},
+
+en:{u:{tag:"The no-evidence journal.",intro:"Just like in the game: tick what it does, cross out what it doesn't. Impossible ghosts get crossed out. Simple tests are below the journal. Click a ghost to cross it out by hand.",
+mim:"The Mimic copies everything",reset:"New game",settings:"Game settings",searchLbl:"Search a sign",searchPh:"light, mist, speed, salt…",
+poss1:"possible ghost",possN:"possible ghosts",findPh:"Find a name: Twins, Esprit…",findHelp:"Type a name in English or French.",noMatch:"No ghost matches.",none24:"None, not a ghost.",
+simpleH:"Simple tests",simpleP:"An item to place or use. Answer Yes or No; click again to clear. Tests that became useless are greyed out at the bottom of each group.",
+greyed:n=>n+" test"+(n>1?"s":"")+" greyed out: useless or impossible with your settings.",
+testsH:"Tests to tell them apart",testsN:n=>"Tests to tell the "+n+" remaining apart",testLb:"Test: ",confuse:"Don't confuse with:",empty:"Untick a box to bring ghosts back.",
+note:"Values as of November 2026 (Deildegast included). Normal speed: 1.7 m/s, up to about 2.8 m/s when the ghost sees you. “Keeps” = only these ghosts remain, all others are crossed out; “Rules out” = crosses out the listed ones.",
+v1:x=>"Only one left: "+x+". Check with its test before you lock it in.",v0:"No ghost left: one of your answers is probably wrong.",
+leg1:"1 click: it does it",leg2:"2 clicks: it doesn't",leg3:"3 clicks: clear",yes:"Yes",no:"No",chk:"Ticked:",strk:"Crossed:",keep:"keeps",excl:"rules out",
+useless:"Useless: only concerns ghosts already crossed out.",evfull:n=>"You already have your "+n+" piece"+(n>1?"s":"")+" of evidence out of "+n+".",answers:n=>n+" answer"+(n>1?"s":""),signs:n=>n+" signs",
+manual:"Crossed out by hand",notdo:"Doesn't: ",clickStrike:"Click to cross out",rFuse:"Impossible: fuse box broken.",rSolo:"Impossible in solo.",rEv:"Not usable when evidence is given.",rMiss:"You're missing: ",or:" or ",and:" and ",
+lang:"Language",lStart:"Starting sanity",lPills:"Sanity pills",oNone:"None",oYes:"Yes",lDrain:"Sanity drain",oSlow:"Slow",oNormal:"Normal",oFast:"Fast",lEv:"Evidence given",lFuse:"Fuse box",oFuseOk:"Working",oFuseBroken:"Broken, no power",lPl:"Players",oSolo:"Solo",oGroup:"Group",eqTitle:"Available equipment",
+sum:s=>(s.pl==="solo"?"Solo":"Group")+" · "+s.ev+" evidence · sanity "+s.start+"%"+(+s.pills?" with pills":"")+" · fuse box "+(s.fuse==="broken"?"broken":"OK"),
+iZero:"Sanity locked at 0%: hunt thresholds are hidden and the Moroi is always fast.",iDrain0:"Sanity doesn't drop: the ghost will hunt little or not at all. Hunt thresholds (Over time) stay useful.",iNorm:"Hunt thresholds are included under Over time. The Moroi can be slow while sanity is high.",iEv:"With evidence on, the Mimic orb test no longer works.",iFuse:"No power: light tests and the Jinn test are impossible.",iSolo:"In solo, you are always the Banshee's target."},
+eq:{sel:"Salt",encens:"Incense",crucifix:"Crucifix",bougie:"Candle and lighter",photo:"Photo camera",micro:"Parabolic microphone",detect:"Motion sensors",camera:"Video camera"},
+fam:{P:["Evidence","The classic evidence, when your game gives some."],H:["Outside hunts","What you notice while investigating, with no hunt going on."],C:["During hunts","Its speed, its look, what you hear. Riskier."],D:["Over time","To confirm over several minutes or several hunts."]},
+cat:["Evidence","Speed and hunts","Lights and power","Events and appearance","Salt, doors and movement","Incense, crucifix and flames","Sounds and electronics","Objects and time","The Mimic","Hunt thresholds"],
+s:{ev_emf:["EMF level 5"],ev_sb:["Spirit Box"],ev_uv:["Fingerprints (UV)"],ev_orb:["Ghost orb","The Mimic always shows them, even though it's not one of its evidences."],ev_wr:["Ghost writing"],ev_fr:["Freezing temperatures"],ev_dots:["D.O.T.S."],
+los:["Speeds up gradually when it sees me","Gradual increase with line of sight."],norm:["Normal speed without seeing me, the whole hunt","Like your walking speed, no change."],slow:["Clearly slower than normal without seeing me","Slower than your walk."],fast:["Clearly faster than normal without seeing me"],
+jump:["Goes from very slow to very fast in one go","Instant jump when it spots you."],brake:["Slows down clearly as it gets close to me"],still:["Its speed changes when I stand still or move again","Within 10 m of it."],vary:["Different speed from one hunt to the next","Without any change in temperature or electronics."],
+cold:["Faster in cold rooms, slow in warm ones"],breath:["Cold breath visible during hunts","Fuse box off."],jinn:["Rushes at 2.5 m/s when it sees me from afar, power on"],ign:["Ignored me while I stood still and visible more than 5 m away"],steps:["Speeds up toward my footsteps or when I run"],
+hide:["The hunt stopped dead when it reached me in hiding","Official hiding spot. Crossed: it killed me in the hiding spot."],nograce:["Hunt with no grace period, straight to my hiding spot"],found:["Found me right away while I was hiding","Without seeing you go in."],losfast:["Speeds up very fast when it sees me, more than usual"],
+lighton:["Turned a light on","Lamp or switch, outside hunts."],instoff:["Turns a light off one or two seconds after I turned it on"],leave:["Leaves its room when the light there is on"],fuse:["Turned the fuse box off itself","Not a light overload."],
+mist:["Mist event"],chase:["Chase event","It follows you, doors close."],photo:["Vanishes when I photograph it during an event","Crossed: it stayed visible on the photo."],shape:["Changes appearance during a hunt"],vis:["Very visible during hunts, rarely flickers"],invis:["Almost invisible during hunts"],
+male:["The journal shows a male ghost"],scream:["High-pitched scream on the parabolic microphone"],target:["Always goes after the same player","Crossed: it goes after several players."],
+salt:["Steps in salt","Crossed: proven walk over salt, pile untouched."],salt3:["Tier III salt slows it during hunts"],tp:["EMF at a player's feet far from its room, with no interaction"],door:["Closes the front door outside hunts and events"],
+far:["Triggers a sensor more than 4 m from its room","Outside hunts and events."],room:["Changed favourite room"],same:["Started a hunt while I was in its room with it"],shy:["Nothing moves when I'm in its room"],two:["Two interactions almost at once in two places"],
+i60:["Hunt between 60 and 90 s after incense"],i90:["Hunt between 90 and 180 s after incense"],i180:["No hunt for 180 s after incense, several times"],iout:["Leaves its room within 90 s after incense","Salt crushed or sensor, outside events. Crossed: stayed stuck for 90 s."],
+blind:["Blinded by incense much longer than usual","During hunts."],rage:["Faster after a crucifix, incense or salt"],crux:["Crucifix burned further than its normal range"],flame:["Blows out a flame instead of hunting","Crossed: it hunted with a lit flame right next to it."],
+cruxfl:["Crucifix burned while a flame was lit right next to it"],third:["Hunt right after the 3rd flame blown out"],lamp:["My flashlight flickers before I hear its steps during hunts","Crossed: steps heard first."],elec:["Faster when passing near active electronics"],voice:["Didn't react to my voice at 4 or 5 m during a hunt"],
+multi:["Throws several objects at once"],objslow:["Slower after we moved many objects"],age:["Slows down as the game goes on, without moving objects","Crossed: stayed near it for a long time, still just as fast."],cycle:["Activity and speed alternating every 2 min","Timed from the first time the door was opened."],
+orb:["Orb visible on camera (0-evidence game)","Crossed: no orb after a long watch."],th50:["Hunted above 50% average sanity"],th35:["No hunt before 35% average sanity"]},
+g:{0:["Incense, then timer: no hunt before 180 s (90 s for the others, 60 s for the Demon). Repeat 2 or 3 times.","No other sign: normal speed and behaviour.","Shade (presence test), Demon (60 s)."],
+1:["Walks over salt without disturbing it. Prove the walk: hunt, ghost event or sensor right behind the line. No crucifix or incense before the test.","Teleport: EMF at a player's feet, far from its room, with no interaction.","Enraged Gallu (always crushes the first pile), Mimic."],
+2:["Photo during a ghost event: it vanishes at once and doesn't show on the photo.","Almost always invisible during hunts.","Obake (stays on the photo)."],
+3:["Make a pile of about ten objects in its room: it throws several at once.","Throws objects almost non-stop during hunts.","The Twins (two interactions in two places), Deildegast."],
+4:["Parabolic microphone: distinctive high-pitched scream. In a group, during a hunt, it ignores a visible player who isn't its target.","Always female. Never changes room but roams far to follow its target.","Kormos (ignores all still players), Goryo."],
+5:["Fuse box on: when it sees you more than 3 m away, it jumps to 2.5 m/s, then slows near you. Fuse box off: normal speed.","Never turns the fuse box off itself.","Raiju: turn the fuse box off and keep your electronics on."],
+6:["Turn a light on: it sometimes turns it off one or two seconds later. It never turns a light on.","Leaves or changes room when the light there is on.","Goryo (stays in its room even when lit)."],
+7:["Hidden, silent, electronics off: very slow steps (1 m/s), then 3 m/s in one go when it spots you.","When it loses you, it rushes to your last position, then slows down again.","Old Thaye, Hantu in warm rooms, Kormos, Deildegast."],
+8:["Stay in the same room as it: it can't start a hunt and barely interacts.","Very shy, more active when you're far away.","Spirit (incense 180 s), calm Obambo, Goryo."],
+9:["Incense, then timer: a hunt is possible from 60 s (90 s for the others).","The crucifix works on it 50% further.","Onryo (flames), young Thaye, Gallu, aggressive Obambo."],
+10:["Incense in its room: it stays stuck there for 90 s. Put salt and sensors at the exits.","Only ghost that closes the front door outside hunts AND outside ghost events.","Goryo (can leave during the 90 s), Shade."],
+11:["Never does the mist event.","Very visible during hunts, very active near players.","Kormos (no mist either, but never a chase event)."],
+12:["During hunts it only hears your voice at about 2.5 m: hidden 4 or 5 m away, talk, it doesn't come to you.","Outside hunts, talking near it makes it more aggressive.","Kormos (reacts to steps, not voice)."],
+13:["Speed tied to temperature: slow in warm rooms (about 1.4 m/s), fast in cold ones (about 2.7 m/s). Doesn't speed up when it sees you.","Fuse box off: cold breath visible during hunts.","Revenant, calm Obambo."],
+14:["Only does short roams: sensors more than 4 m from its room never trigger outside hunts or events. Never changes room.","No 100% test without evidence: keep it when everything else is ruled out.","Banshee, Yurei, Shade."],
+15:["Flashlight on during a hunt: it flickers before you hear its steps (heard at about 12 m instead of 20 m).","Makes more sounds on the parabolic microphone.","Raiju (speeds up near electronics), Revenant."],
+16:["Lit candle and crucifix side by side: it blows out the candle instead of hunting, the crucifix doesn't burn. After the 3rd flame blown out, it hunts.","Relight the candle each time to keep count.","Demon (hunts often, the flame doesn't stop it)."],
+17:["Different speed from one hunt to the next (about 1.5 or 1.9 m/s), at random.","Two interactions almost at once in two places.","Obambo (its speed follows a timer), Poltergeist."],
+18:["Active electronics placed on its path: it goes to 2.5 m/s near them, even without seeing you.","Makes your electronics flicker from further away than others.","Jinn (depends on the fuse box), Myling, Dayan."],
+19:["Changes appearance during a hunt.","6-finger prints that fade faster (if UV is on).","Phantom (vanishes on photo)."],
+20:["Always shows orbs on camera, even with 0 evidence. Put a camera in its room.","Copies other ghosts' abilities and changes model during the game.","All ghosts."],
+21:["At 0%: fast without seeing you (about 2.3 m/s), then up to about 3.7 m/s when it sees you.","Incense during a hunt: blinded 7.5, 9 or 10.5 s instead of 5, 6 or 7 s (tiers I, II, III).","Dayan, young Thaye, Kormos, Deildegast, Aswang."],
+22:["Very fast from afar (3 m/s), almost stopped right next to you (0.4 m/s).","Always knows where players are: hiding is useless.","Revenant (the opposite), Dayan."],
+23:["Fast early in the game (about 2.75 m/s), then slows as it ages, down to 1 m/s. Never speeds up when it sees you.","It ages when you stay near it. The Ouija costs sanity: at 0%, risk of a cursed hunt.","Deildegast (objects), Obambo, Deogen."],
+25:["Without crucifix, incense or salt: normal speed. After a protection: enraged and faster (about 1.96 m/s, up to 3.2 m/s). After an enraged hunt: weakened and slower (about 1.36 m/s).","Enraged, it can walk over salt without disturbing it.","Wraith, Obambo, Demon."],
+26:["Within 10 m during a hunt: standing still, it drops to 1.2 m/s; if you move, it goes up to 2.25 m/s.","Always female.","Kormos, Deogen, Revenant."],
+27:["Timer from the first opening of an exit door: calm from 0 to 1 min, aggressive from 1 to 3, then switches every 2 min. Calm about 1.45 m/s, aggressive about 1.96 m/s.","Hunts started while aggressive are 20% shorter.","The Twins, Gallu, Hantu."],
+28:["Almost blind during hunts: standing still and visible more than 5 m away, it ignores you. It speeds up toward your footsteps (up to about 3.7 m/s).","Never does the mist event or a chase event.","Dayan, Yokai, Oni, Banshee."],
+29:["Slow base speed (about 1.53 m/s). When it sees you, it speeds up faster than any other ghost (about 2.53 m/s in 9 s). If it reaches you in an official hiding spot, the hunt stops dead.","The next hunt starts with no grace period, straight to your hiding spot.","The Twins (slow speed), Moroi."],
+30:["3 m/s at the start of each hunt, minus 0.1 m/s for each different house object moved before the hunt (minimum 0.4). Doesn't speed up when it sees you.","The count resets after each hunt or burned crucifix.","Revenant, Deogen, Thaye, Moroi."]}},
+
+de:{u:{tag:"Das Journal ohne Beweise.",intro:"Wie im Spiel: Hake ab, was es tut, streiche, was es nicht tut. Unmögliche Geister werden durchgestrichen. Die einfachen Tests stehen unter dem Journal. Klicke auf einen Geist, um ihn von Hand zu streichen.",
+mim:"Der Mimic kopiert alles",reset:"Neues Spiel",settings:"Spieleinstellungen",searchLbl:"Zeichen suchen",searchPh:"Licht, Nebel, Tempo, Salz…",
+poss1:"möglicher Geist",possN:"mögliche Geister",findPh:"Namen finden: Twins, Esprit…",findHelp:"Gib einen Namen auf Englisch oder Französisch ein.",noMatch:"Kein Geist passt.",none24:"None, kein Geist.",
+simpleH:"Einfache Tests",simpleP:"Ein Gegenstand zum Platzieren oder Benutzen. Antworte Ja oder Nein; nochmal klicken zum Löschen. Nutzlos gewordene Tests sind ausgegraut, unten in jeder Gruppe.",
+greyed:n=>n+" Test"+(n>1?"s":"")+" ausgegraut: nutzlos oder mit deinen Einstellungen unmöglich.",
+testsH:"Tests zum Unterscheiden",testsN:n=>"Tests zum Unterscheiden der "+n+" übrigen",testLb:"Test: ",confuse:"Nicht verwechseln mit:",empty:"Entferne einen Haken, um Geister zurückzuholen.",
+note:"Stand November 2026 (inklusive Deildegast). Normales Tempo: 1,7 m/s, bis etwa 2,8 m/s, wenn der Geist dich sieht. „Behält“ = nur diese Geister bleiben, alle anderen werden gestrichen; „Schließt aus“ = streicht die genannten.",
+v1:x=>"Nur noch einer übrig: "+x+". Prüfe ihn mit seinem Test, bevor du ihn einträgst.",v0:"Kein Geist mehr möglich: Eine deiner Antworten ist wohl falsch.",
+leg1:"1 Klick: tut es",leg2:"2 Klicks: tut es nicht",leg3:"3 Klicks: löschen",yes:"Ja",no:"Nein",chk:"Abgehakt:",strk:"Gestrichen:",keep:"behält",excl:"schließt aus",
+useless:"Nutzlos: betrifft nur bereits gestrichene Geister.",evfull:n=>"Du hast schon deine "+n+" von "+n+" Beweisen.",answers:n=>n+" Antwort"+(n>1?"en":""),signs:n=>n+" Zeichen",
+manual:"Von Hand gestrichen",notdo:"Tut es nicht: ",clickStrike:"Klicken zum Streichen",rFuse:"Unmöglich: Sicherungskasten kaputt.",rSolo:"Allein unmöglich.",rEv:"Nicht nutzbar, wenn Beweise gegeben werden.",rMiss:"Dir fehlt: ",or:" oder ",and:" und ",
+lang:"Sprache",lStart:"Start-Verstand",lPills:"Verstandspillen",oNone:"Keine",oYes:"Ja",lDrain:"Verstandsverlust",oSlow:"Langsam",oNormal:"Normal",oFast:"Schnell",lEv:"Gegebene Beweise",lFuse:"Sicherungskasten",oFuseOk:"Funktioniert",oFuseBroken:"Kaputt, kein Strom",lPl:"Spieler",oSolo:"Allein",oGroup:"Gruppe",eqTitle:"Verfügbare Ausrüstung",
+sum:s=>(s.pl==="solo"?"Allein":"Gruppe")+" · "+s.ev+" Beweis"+(+s.ev===1?"":"e")+" · Verstand "+s.start+" %"+(+s.pills?" mit Pillen":"")+" · Sicherungskasten "+(s.fuse==="broken"?"kaputt":"OK"),
+iZero:"Verstand fest bei 0 %: Jagdschwellen sind ausgeblendet, der Moroi ist immer schnell.",iDrain0:"Der Verstand sinkt nicht: Der Geist jagt wenig oder gar nicht. Die Jagdschwellen (Über die Zeit) bleiben nützlich.",iNorm:"Jagdschwellen sind unter Über die Zeit enthalten. Der Moroi kann langsam sein, solange der Verstand hoch ist.",iEv:"Mit Beweisen funktioniert der Orb-Test für den Mimic nicht mehr.",iFuse:"Ohne Strom sind Licht-Tests und der Jinn-Test unmöglich.",iSolo:"Allein bist du immer das Ziel der Banshee."},
+eq:{sel:"Salz",encens:"Räucherstäbchen",crucifix:"Kruzifix",bougie:"Kerze und Feuerzeug",photo:"Fotokamera",micro:"Parabolmikrofon",detect:"Bewegungsmelder",camera:"Videokamera"},
+fam:{P:["Beweise","Die klassischen Beweise, wenn dein Spiel welche gibt."],H:["Außerhalb der Jagd","Was dir bei der Untersuchung auffällt, ohne laufende Jagd."],C:["Während der Jagd","Tempo, Aussehen, was du hörst. Riskanter."],D:["Über die Zeit","Über mehrere Minuten oder Jagden bestätigen."]},
+cat:["Beweise","Tempo und Jagd","Licht und Strom","Ereignisse und Aussehen","Salz, Türen und Bewegung","Räucherwerk, Kruzifix und Flammen","Geräusche und Elektronik","Gegenstände und Zeit","Der Mimic","Jagdschwellen"],
+s:{ev_emf:["EMF Stufe 5"],ev_sb:["Spirit Box"],ev_uv:["Fingerabdrücke (UV)"],ev_orb:["Geisterorb","Der Mimic zeigt sie immer, obwohl es keiner seiner Beweise ist."],ev_wr:["Geisterschrift"],ev_fr:["Eiskalte Temperaturen"],ev_dots:["D.O.T.S."],
+los:["Wird allmählich schneller, wenn er mich sieht","Langsamer Anstieg bei Sichtkontakt."],norm:["Normales Tempo ohne mich zu sehen, die ganze Jagd","Wie dein Gehtempo, ohne Änderung."],slow:["Deutlich langsamer als normal, ohne mich zu sehen","Langsamer als dein Gehen."],fast:["Deutlich schneller als normal, ohne mich zu sehen"],
+jump:["Wechselt schlagartig von sehr langsam zu sehr schnell","Sofortiger Sprung, wenn er dich entdeckt."],brake:["Wird deutlich langsamer, wenn er mir nahe kommt"],still:["Sein Tempo ändert sich, wenn ich stehen bleibe oder losgehe","Innerhalb von 10 m."],vary:["Anderes Tempo von Jagd zu Jagd","Ohne Änderung von Temperatur oder Elektronik."],
+cold:["Schneller in kalten Räumen, langsam in warmen"],breath:["Kalter Atem während der Jagd sichtbar","Sicherungskasten aus."],jinn:["Rast mit 2,5 m/s los, wenn er mich von weitem sieht, Strom an"],ign:["Hat mich ignoriert, still und sichtbar auf mehr als 5 m"],steps:["Wird schneller zu meinen Schritten hin oder wenn ich renne"],
+hide:["Die Jagd endete sofort, als er mich im Versteck erreichte","Offizielles Versteck. Gestrichen: Er hat mich im Versteck getötet."],nograce:["Jagd ohne Schonfrist, direkt zu meinem Versteck"],found:["Hat mich sofort gefunden, obwohl ich versteckt war","Ohne dich hineingehen zu sehen."],losfast:["Wird sehr schnell schneller, wenn er mich sieht, mehr als üblich"],
+lighton:["Hat ein Licht eingeschaltet","Lampe oder Schalter, außerhalb der Jagd."],instoff:["Schaltet ein Licht ein bis zwei Sekunden nach mir wieder aus"],leave:["Verlässt seinen Raum, wenn dort Licht an ist"],fuse:["Hat den Sicherungskasten selbst ausgeschaltet","Keine Überlastung durch Lichter."],
+mist:["Nebel-Ereignis"],chase:["Verfolgungs-Ereignis","Er folgt dir, Türen schließen sich."],photo:["Verschwindet, wenn ich ihn beim Ereignis fotografiere","Gestrichen: blieb auf dem Foto sichtbar."],shape:["Ändert sein Aussehen während der Jagd"],vis:["Sehr sichtbar während der Jagd, flackert kaum"],invis:["Fast unsichtbar während der Jagd"],
+male:["Das Journal zeigt einen männlichen Geist"],scream:["Hoher Schrei im Parabolmikrofon"],target:["Geht immer auf denselben Spieler los","Gestrichen: geht auf mehrere Spieler los."],
+salt:["Tritt ins Salz","Gestrichen: Gang übers Salz bewiesen, Haufen unberührt."],salt3:["Salz Stufe III bremst ihn während der Jagd"],tp:["EMF an den Füßen eines Spielers weit weg von seinem Raum, ohne Interaktion"],door:["Schließt die Haustür außerhalb von Jagd und Ereignis"],
+far:["Löst einen Melder mehr als 4 m von seinem Raum aus","Außerhalb von Jagd und Ereignis."],room:["Hat den Lieblingsraum gewechselt"],same:["Hat eine Jagd gestartet, während ich mit ihm in seinem Raum war"],shy:["Nichts bewegt sich, wenn ich in seinem Raum bin"],two:["Zwei Interaktionen fast gleichzeitig an zwei Orten"],
+i60:["Jagd 60 bis 90 s nach dem Räuchern"],i90:["Jagd 90 bis 180 s nach dem Räuchern"],i180:["Keine Jagd für 180 s nach dem Räuchern, mehrmals"],iout:["Verlässt seinen Raum innerhalb von 90 s nach dem Räuchern","Salz zertreten oder Melder, außerhalb von Ereignissen. Gestrichen: 90 s festgehalten."],
+blind:["Viel länger als üblich vom Räucherwerk geblendet","Während der Jagd."],rage:["Schneller nach Kruzifix, Räucherwerk oder Salz"],crux:["Kruzifix weiter als normal verbrannt"],flame:["Bläst eine Flamme aus, statt zu jagen","Gestrichen: hat mit brennender Flamme direkt daneben gejagt."],
+cruxfl:["Kruzifix verbrannt, obwohl direkt daneben eine Flamme brannte"],third:["Jagd direkt nach der 3. ausgeblasenen Flamme"],lamp:["Meine Taschenlampe flackert, bevor ich seine Schritte höre","Gestrichen: Schritte zuerst gehört."],elec:["Schneller in der Nähe eingeschalteter Elektronik"],voice:["Reagierte bei der Jagd nicht auf meine Stimme aus 4 oder 5 m"],
+multi:["Wirft mehrere Gegenstände auf einmal"],objslow:["Langsamer, nachdem wir viele Gegenstände bewegt haben"],age:["Wird im Lauf des Spiels langsamer, ohne Gegenstände zu bewegen","Gestrichen: lange bei ihm geblieben, immer noch gleich schnell."],cycle:["Aktivität und Tempo wechseln alle 2 Min.","Ab dem ersten Öffnen der Tür gemessen."],
+orb:["Orb auf der Kamera sichtbar (Spiel mit 0 Beweisen)","Gestrichen: kein Orb nach langer Beobachtung."],th50:["Hat über 50 % Durchschnittsverstand gejagt"],th35:["Keine Jagd vor 35 % Durchschnittsverstand"]},
+g:{0:["Räuchern, dann Timer: keine Jagd vor 180 s (90 s bei den anderen, 60 s beim Demon). 2- bis 3-mal wiederholen.","Kein anderes Zeichen: normales Tempo und Verhalten.","Shade (Anwesenheitstest), Demon (60 s)."],
+1:["Geht über Salz, ohne es zu stören. Beweise den Gang: Jagd, Geisterereignis oder Melder direkt hinter der Linie. Vorher kein Kruzifix und kein Räucherwerk.","Teleport: EMF an den Füßen eines Spielers, weit weg von seinem Raum, ohne Interaktion.","Wütende Gallu (zertritt immer den ersten Haufen), Mimic."],
+2:["Foto während eines Geisterereignisses: Er verschwindet sofort und ist nicht auf dem Foto.","Während der Jagd fast immer unsichtbar.","Obake (bleibt auf dem Foto)."],
+3:["Mach einen Haufen aus etwa zehn Gegenständen in seinem Raum: Er wirft mehrere auf einmal.","Wirft während der Jagd fast ständig Gegenstände.","The Twins (zwei Interaktionen an zwei Orten), Deildegast."],
+4:["Parabolmikrofon: typischer hoher Schrei. In der Gruppe ignoriert sie bei der Jagd einen sichtbaren Spieler, der nicht ihr Ziel ist.","Immer weiblich. Wechselt nie den Raum, wandert aber weit zu ihrem Ziel.","Kormos (ignoriert alle stillstehenden Spieler), Goryo."],
+5:["Sicherungskasten an: Sieht er dich auf mehr als 3 m, springt er auf 2,5 m/s und wird bei dir langsamer. Sicherungskasten aus: normales Tempo.","Schaltet den Sicherungskasten nie selbst aus.","Raiju: Sicherungskasten aus, Elektronik an lassen."],
+6:["Mach ein Licht an: Er schaltet es manchmal ein bis zwei Sekunden später aus. Er schaltet nie ein Licht ein.","Verlässt oder wechselt den Raum, wenn dort Licht an ist.","Goryo (bleibt auch bei Licht in seinem Raum)."],
+7:["Versteckt, leise, Elektronik aus: sehr langsame Schritte (1 m/s), dann schlagartig 3 m/s, wenn er dich entdeckt.","Verliert er dich, rast er zu deiner letzten Position und wird dann wieder langsam.","Alter Thaye, Hantu im Warmen, Kormos, Deildegast."],
+8:["Bleib mit ihr im selben Raum: Sie kann keine Jagd starten und interagiert kaum.","Sehr scheu, aktiver, wenn ihr weit weg seid.","Spirit (Räucherwerk 180 s), ruhiger Obambo, Goryo."],
+9:["Räuchern, dann Timer: Jagd schon ab 60 s möglich (90 s bei den anderen).","Das Kruzifix wirkt auf ihn 50 % weiter.","Onryo (Flammen), junger Thaye, Gallu, aggressiver Obambo."],
+10:["Räuchern in seinem Raum: Er bleibt dort 90 s gefangen. Salz und Melder an die Ausgänge.","Einziger, der die Haustür außerhalb von Jagd UND Ereignis schließt.","Goryo (kann in den 90 s raus), Shade."],
+11:["Macht nie das Nebel-Ereignis.","Während der Jagd sehr sichtbar, sehr aktiv bei Spielern.","Kormos (auch kein Nebel, aber nie ein Verfolgungs-Ereignis)."],
+12:["Hört deine Stimme bei der Jagd nur auf etwa 2,5 m: versteckt in 4 bis 5 m reden, er kommt nicht zu dir.","Außerhalb der Jagd macht ihn Reden in seiner Nähe aggressiver.","Kormos (reagiert auf Schritte, nicht auf Stimme)."],
+13:["Tempo hängt von der Temperatur ab: langsam im Warmen (etwa 1,4 m/s), schnell im Kalten (etwa 2,7 m/s). Wird nicht schneller, wenn er dich sieht.","Sicherungskasten aus: kalter Atem während der Jagd sichtbar.","Revenant, ruhiger Obambo."],
+14:["Macht nur kurze Streifzüge: Melder mehr als 4 m von seinem Raum lösen außerhalb von Jagd und Ereignis nie aus. Wechselt nie den Raum.","Ohne Beweise kein 100-%-Test: Er bleibt übrig, wenn alles andere ausgeschlossen ist.","Banshee, Yurei, Shade."],
+15:["Taschenlampe bei der Jagd an: Sie flackert, bevor du seine Schritte hörst (hörbar auf etwa 12 m statt 20 m).","Macht mehr Geräusche im Parabolmikrofon.","Raiju (schneller bei Elektronik), Revenant."],
+16:["Brennende Kerze und Kruzifix nebeneinander: Er bläst die Kerze aus, statt zu jagen, das Kruzifix brennt nicht. Nach der 3. ausgeblasenen Flamme jagt er.","Kerze jedes Mal neu anzünden, um mitzuzählen.","Demon (jagt oft, die Flamme stoppt ihn nicht)."],
+17:["Anderes Tempo von Jagd zu Jagd (etwa 1,5 oder 1,9 m/s), zufällig.","Zwei Interaktionen fast gleichzeitig an zwei Orten.","Obambo (sein Tempo folgt einem Timer), Poltergeist."],
+18:["Eingeschaltete Elektronik auf seinem Weg: Er wird dort 2,5 m/s schnell, auch ohne dich zu sehen.","Lässt deine Elektronik aus größerer Entfernung flackern.","Jinn (hängt vom Sicherungskasten ab), Myling, Dayan."],
+19:["Ändert während der Jagd sein Aussehen.","Abdrücke mit 6 Fingern, die schneller verblassen (wenn UV aktiv).","Phantom (verschwindet auf dem Foto)."],
+20:["Zeigt immer Orbs auf der Kamera, auch bei 0 Beweisen. Stell eine Kamera in seinen Raum.","Kopiert die Fähigkeiten anderer Geister und wechselt im Spiel das Modell.","Alle Geister."],
+21:["Bei 0 %: schnell ohne dich zu sehen (etwa 2,3 m/s), dann bis etwa 3,7 m/s, wenn er dich sieht.","Räucherwerk bei der Jagd: 7,5, 9 oder 10,5 s geblendet statt 5, 6 oder 7 s (Stufe I, II, III).","Dayan, junger Thaye, Kormos, Deildegast, Aswang."],
+22:["Von weitem sehr schnell (3 m/s), direkt bei dir fast stehend (0,4 m/s).","Weiß immer, wo die Spieler sind: Verstecken bringt nichts.","Revenant (das Gegenteil), Dayan."],
+23:["Früh im Spiel schnell (etwa 2,75 m/s), wird dann mit dem Alter langsamer, bis 1 m/s. Wird nie schneller, wenn er dich sieht.","Er altert, wenn ihr in seiner Nähe bleibt. Das Ouija kostet Verstand: bei 0 % droht eine verfluchte Jagd.","Deildegast (Gegenstände), Obambo, Deogen."],
+25:["Ohne Kruzifix, Räucherwerk oder Salz: normales Tempo. Nach einem Schutz: wütend und schneller (etwa 1,96 m/s, bis 3,2 m/s). Nach einer wütenden Jagd: geschwächt und langsamer (etwa 1,36 m/s).","Wütend kann sie über Salz gehen, ohne es zu stören.","Wraith, Obambo, Demon."],
+26:["Innerhalb von 10 m bei der Jagd: Stehst du still, fällt sie auf 1,2 m/s; bewegst du dich, steigt sie auf 2,25 m/s.","Immer weiblich.","Kormos, Deogen, Revenant."],
+27:["Timer ab dem ersten Öffnen einer Ausgangstür: ruhig von 0 bis 1 Min., aggressiv von 1 bis 3, dann Wechsel alle 2 Min. Ruhig etwa 1,45 m/s, aggressiv etwa 1,96 m/s.","Im aggressiven Zustand gestartete Jagden sind 20 % kürzer.","The Twins, Gallu, Hantu."],
+28:["Bei der Jagd fast blind: Stehst du still und sichtbar auf mehr als 5 m, ignoriert er dich. Wird zu deinen Schritten hin schneller (bis etwa 3,7 m/s).","Macht nie das Nebel- oder Verfolgungs-Ereignis.","Dayan, Yokai, Oni, Banshee."],
+29:["Langsames Grundtempo (etwa 1,53 m/s). Sieht er dich, wird er schneller als jeder andere Geist (etwa 2,53 m/s in 9 s). Erreicht er dich in einem offiziellen Versteck, endet die Jagd sofort.","Die nächste Jagd beginnt ohne Schonfrist, direkt zu deinem Versteck.","The Twins (langsames Tempo), Moroi."],
+30:["3 m/s zu Beginn jeder Jagd, minus 0,1 m/s für jeden verschiedenen Hausgegenstand, der vor der Jagd bewegt wurde (mindestens 0,4). Wird nicht schneller, wenn er dich sieht.","Der Zähler wird nach jeder Jagd oder jedem verbrannten Kruzifix zurückgesetzt.","Revenant, Deogen, Thaye, Moroi."]}},
+
+it:{u:{tag:"Il diario senza prove.",intro:"Come nel gioco: spunta quello che fa, barra quello che non fa. Le entità impossibili vengono barrate. I test semplici sono sotto il diario. Clicca su un'entità per barrarla a mano.",
+mim:"Il Mimic copia tutto",reset:"Nuova partita",settings:"Impostazioni della partita",searchLbl:"Cerca un segno",searchPh:"luce, nebbia, velocità, sale…",
+poss1:"entità possibile",possN:"entità possibili",findPh:"Trova un nome: Twins, Esprit…",findHelp:"Scrivi un nome in inglese o in francese.",noMatch:"Nessuna entità corrisponde.",none24:"None, non è un'entità.",
+simpleH:"Test semplici",simpleP:"Un oggetto da posare o usare. Rispondi Sì o No; clicca di nuovo per cancellare. I test diventati inutili sono in grigio, in fondo a ogni gruppo.",
+greyed:n=>n+" test in grigio: inutili o impossibili con le tue impostazioni.",
+testsH:"Test per distinguerle",testsN:n=>"Test per distinguere le "+n+" rimaste",testLb:"Test: ",confuse:"Da non confondere con:",empty:"Togli una spunta per ritrovare delle entità.",
+note:"Valori aggiornati a novembre 2026 (Deildegast inclusa). Velocità normale: 1,7 m/s, fino a circa 2,8 m/s quando l'entità ti vede. «Tiene» = restano solo queste entità, tutte le altre vengono barrate; «Esclude» = barra quelle elencate.",
+v1:x=>"Ne resta solo una: "+x+". Verificala con il suo test prima di confermare.",v0:"Nessuna entità possibile: una risposta è probabilmente sbagliata.",
+leg1:"1 clic: lo fa",leg2:"2 clic: non lo fa",leg3:"3 clic: cancella",yes:"Sì",no:"No",chk:"Spuntato:",strk:"Barrato:",keep:"tiene",excl:"esclude",
+useless:"Inutile: riguarda solo entità già barrate.",evfull:n=>"Hai già le tue "+n+" prove su "+n+".",answers:n=>n+" rispost"+(n>1?"e":"a"),signs:n=>n+" segni",
+manual:"Barrata a mano",notdo:"Non lo fa: ",clickStrike:"Clicca per barrare",rFuse:"Impossibile: quadro elettrico rotto.",rSolo:"Impossibile da solo.",rEv:"Non utilizzabile quando le prove sono attive.",rMiss:"Ti manca: ",or:" o ",and:" e ",
+lang:"Lingua",lStart:"Sanità mentale iniziale",lPills:"Pillole di sanità",oNone:"Nessuna",oYes:"Sì",lDrain:"Perdita di sanità",oSlow:"Lenta",oNormal:"Normale",oFast:"Rapida",lEv:"Prove date",lFuse:"Quadro elettrico",oFuseOk:"Funziona",oFuseBroken:"Rotto, niente corrente",lPl:"Giocatori",oSolo:"Da solo",oGroup:"In gruppo",eqTitle:"Equipaggiamento disponibile",
+sum:s=>(s.pl==="solo"?"Da solo":"In gruppo")+" · "+s.ev+" prov"+(+s.ev===1?"a":"e")+" · sanità "+s.start+"%"+(+s.pills?" con pillole":"")+" · quadro "+(s.fuse==="broken"?"rotto":"OK"),
+iZero:"Sanità bloccata a 0%: le soglie di caccia sono nascoste e il Moroi è sempre veloce.",iDrain0:"La sanità non scende: l'entità caccerà poco o per niente. Le soglie di caccia (Nel tempo) restano utili.",iNorm:"Le soglie di caccia sono incluse in Nel tempo. Il Moroi può essere lento finché la sanità è alta.",iEv:"Con le prove attive, il test degli orbi del Mimic non funziona più.",iFuse:"Senza corrente, i test delle luci e del Jinn sono impossibili.",iSolo:"Da solo, sei sempre il bersaglio della Banshee."},
+eq:{sel:"Sale",encens:"Incenso",crucifix:"Crocifisso",bougie:"Candela e accendino",photo:"Macchina fotografica",micro:"Microfono parabolico",detect:"Sensori di movimento",camera:"Videocamera"},
+fam:{P:["Prove","Le prove classiche, quando la tua partita ne dà."],H:["Fuori caccia","Quello che noti durante l'indagine, senza caccia in corso."],C:["Durante la caccia","Velocità, aspetto, quello che senti. Più rischioso."],D:["Nel tempo","Da confermare su più minuti o più cacce."]},
+cat:["Prove","Velocità e caccia","Luci e corrente","Eventi e aspetto","Sale, porte e spostamenti","Incenso, crocifisso e fiamme","Suoni ed elettronica","Oggetti e tempo","Il Mimic","Soglie di caccia"],
+s:{ev_emf:["EMF livello 5"],ev_sb:["Spirit Box"],ev_uv:["Impronte (UV)"],ev_orb:["Orbe fantasma","Il Mimic li mostra sempre, anche se non è una delle sue prove."],ev_wr:["Scrittura fantasma"],ev_fr:["Temperature gelide"],ev_dots:["D.O.T.S."],
+los:["Accelera pian piano quando mi vede","Aumento graduale in linea di vista."],norm:["Velocità normale senza vedermi, per tutta la caccia","Come la tua camminata, senza cambiamenti."],slow:["Nettamente più lenta del normale senza vedermi","Più lenta della tua camminata."],fast:["Nettamente più veloce del normale senza vedermi"],
+jump:["Passa di colpo da lentissima a velocissima","Salto istantaneo quando ti individua."],brake:["Rallenta nettamente quando si avvicina a me"],still:["La sua velocità cambia quando mi fermo o riparto","Entro 10 m da lei."],vary:["Velocità diversa da una caccia all'altra","Senza cambi di temperatura o di elettronica."],
+cold:["Più veloce nelle stanze fredde, lenta in quelle calde"],breath:["Respiro freddo visibile durante la caccia","Quadro elettrico spento."],jinn:["Scatta a 2,5 m/s vedendomi da lontano, corrente accesa"],ign:["Mi ha ignorato, fermo e visibile a più di 5 m"],steps:["Accelera verso il rumore dei miei passi o quando corro"],
+hide:["La caccia si è fermata di colpo quando mi ha raggiunto nascosto","Nascondiglio ufficiale. Barrato: mi ha ucciso nel nascondiglio."],nograce:["Caccia senza periodo di grazia, dritta al mio nascondiglio"],found:["Mi ha trovato subito mentre ero nascosto","Senza averti visto entrare."],losfast:["Accelera molto in fretta quando mi vede, più del solito"],
+lighton:["Ha acceso una luce","Lampada o interruttore, fuori caccia."],instoff:["Spegne una luce uno o due secondi dopo che l'ho accesa"],leave:["Lascia la sua stanza quando la luce è accesa"],fuse:["Ha spento il quadro elettrico da sola","Non un sovraccarico di luci."],
+mist:["Evento nebbia"],chase:["Evento inseguimento","Ti segue, le porte si chiudono."],photo:["Sparisce quando la fotografo durante un evento","Barrato: è rimasta visibile nella foto."],shape:["Cambia aspetto durante la caccia"],vis:["Molto visibile durante la caccia, lampeggia poco"],invis:["Quasi invisibile durante la caccia"],
+male:["Il diario indica un'entità maschile"],scream:["Urlo acuto al microfono parabolico"],target:["Punta sempre lo stesso giocatore","Barrato: se la prende con più giocatori."],
+salt:["Calpesta il sale","Barrato: passaggio sul sale provato, mucchio intatto."],salt3:["Il sale di livello III la rallenta durante la caccia"],tp:["EMF ai piedi di un giocatore lontano dalla sua stanza, senza interazione"],door:["Chiude la porta d'ingresso fuori caccia e fuori evento"],
+far:["Attiva un sensore a più di 4 m dalla sua stanza","Fuori caccia e fuori evento."],room:["Ha cambiato stanza preferita"],same:["Ha iniziato una caccia mentre ero nella sua stanza con lei"],shy:["Non si muove niente quando sono nella sua stanza"],two:["Due interazioni quasi insieme in due posti"],
+i60:["Caccia tra 60 e 90 s dopo l'incenso"],i90:["Caccia tra 90 e 180 s dopo l'incenso"],i180:["Nessuna caccia per 180 s dopo l'incenso, più volte"],iout:["Esce dalla sua stanza entro 90 s dall'incenso","Sale calpestato o sensore, fuori evento. Barrato: rimasta bloccata 90 s."],
+blind:["Accecata dall'incenso molto più a lungo del solito","Durante la caccia."],rage:["Più veloce dopo crocifisso, incenso o sale"],crux:["Crocifisso bruciato oltre la sua portata normale"],flame:["Spegne una fiamma invece di cacciare","Barrato: ha cacciato con una fiamma accesa lì vicino."],
+cruxfl:["Crocifisso bruciato mentre una fiamma era accesa lì vicino"],third:["Caccia subito dopo la 3ª fiamma spenta"],lamp:["La mia torcia lampeggia prima che senta i suoi passi","Barrato: passi sentiti prima."],elec:["Più veloce passando vicino a elettronica accesa"],voice:["Non ha reagito alla mia voce a 4 o 5 m durante la caccia"],
+multi:["Lancia più oggetti in una volta"],objslow:["Più lenta dopo che abbiamo spostato molti oggetti"],age:["Rallenta col passare della partita, senza spostare oggetti","Barrato: rimasto a lungo vicino, sempre veloce."],cycle:["Attività e velocità che si alternano ogni 2 min","Contato dalla prima apertura della porta."],
+orb:["Orbe visibile in videocamera (partita a 0 prove)","Barrato: nessun orbe dopo una lunga osservazione."],th50:["Ha cacciato sopra il 50% di sanità media"],th35:["Nessuna caccia prima del 35% di sanità media"]},
+g:{0:["Incenso, poi cronometro: nessuna caccia prima di 180 s (90 s per le altre, 60 s per il Demon). Ripeti 2 o 3 volte.","Nessun altro segno: velocità e comportamento normali.","Shade (test di presenza), Demon (60 s)."],
+1:["Passa sul sale senza toccarlo. Prova il passaggio: caccia, evento o sensore subito dietro la linea. Niente crocifisso né incenso prima del test.","Teletrasporto: EMF ai piedi di un giocatore, lontano dalla sua stanza, senza interazione.","Gallu infuriata (calpesta sempre il primo mucchio), Mimic."],
+2:["Foto durante un evento: sparisce subito e non appare nella foto.","Quasi sempre invisibile durante la caccia.","Obake (resta nella foto)."],
+3:["Fai un mucchio di una decina di oggetti nella sua stanza: ne lancia diversi in una volta.","Lancia oggetti quasi senza sosta durante la caccia.","The Twins (due interazioni in due posti), Deildegast."],
+4:["Microfono parabolico: urlo acuto tipico. In gruppo, durante la caccia, ignora un giocatore visibile che non è il suo bersaglio.","Sempre femminile. Non cambia mai stanza ma va lontano per seguire il bersaglio.","Kormos (ignora tutti i giocatori fermi), Goryo."],
+5:["Quadro acceso: se ti vede a più di 3 m, scatta a 2,5 m/s, poi rallenta vicino a te. Quadro spento: velocità normale.","Non spegne mai il quadro da solo.","Raiju: spegni il quadro e tieni accesa l'elettronica."],
+6:["Accendi una luce: a volte la spegne uno o due secondi dopo. Non accende mai una luce.","Lascia o cambia stanza quando la luce è accesa.","Goryo (resta nella sua stanza anche con la luce)."],
+7:["Nascosto, in silenzio, elettronica spenta: passi lentissimi (1 m/s), poi 3 m/s di colpo quando ti individua.","Quando ti perde, corre alla tua ultima posizione, poi torna lento.","Thaye vecchio, Hantu al caldo, Kormos, Deildegast."],
+8:["Resta nella sua stessa stanza: non può iniziare una caccia e interagisce pochissimo.","Molto timida, più attiva quando siete lontani.","Spirit (incenso 180 s), Obambo calmo, Goryo."],
+9:["Incenso, poi cronometro: caccia possibile già da 60 s (90 s per le altre).","Il crocifisso agisce su di lui il 50% più lontano.","Onryo (fiamme), Thaye giovane, Gallu, Obambo aggressivo."],
+10:["Incenso nella sua stanza: resta bloccato lì 90 s. Metti sale e sensori alle uscite.","Unico a chiudere la porta d'ingresso fuori caccia E fuori evento.","Goryo (può uscire nei 90 s), Shade."],
+11:["Non fa mai l'evento nebbia.","Molto visibile durante la caccia, molto attivo vicino ai giocatori.","Kormos (niente nebbia neanche lui, ma mai un inseguimento)."],
+12:["In caccia sente la tua voce solo a circa 2,5 m: nascosto a 4 o 5 m, parla, non viene verso di te.","Fuori caccia, parlargli vicino lo rende più aggressivo.","Kormos (reagisce ai passi, non alla voce)."],
+13:["Velocità legata alla temperatura: lento al caldo (circa 1,4 m/s), veloce al freddo (circa 2,7 m/s). Non accelera quando ti vede.","Quadro spento: respiro freddo visibile in caccia.","Revenant, Obambo calmo."],
+14:["Fa solo brevi giri: i sensori a più di 4 m dalla sua stanza non scattano mai fuori caccia o evento. Non cambia mai stanza.","Nessun test al 100% senza prove: tienilo quando tutto il resto è escluso.","Banshee, Yurei, Shade."],
+15:["Torcia accesa in caccia: lampeggia prima che tu senta i suoi passi (udibili a circa 12 m invece di 20 m).","Fa più rumori al microfono parabolico.","Raiju (accelera vicino all'elettronica), Revenant."],
+16:["Candela accesa e crocifisso affiancati: spegne la candela invece di cacciare, il crocifisso non brucia. Dopo la 3ª fiamma spenta, caccia.","Riaccendi la candela ogni volta per tenere il conto.","Demon (caccia spesso, la fiamma non lo ferma)."],
+17:["Velocità diversa da una caccia all'altra (circa 1,5 o 1,9 m/s), a caso.","Due interazioni quasi insieme in due posti.","Obambo (velocità a cronometro), Poltergeist."],
+18:["Elettronica accesa sul suo percorso: lì va a 2,5 m/s, anche senza vederti.","Fa lampeggiare l'elettronica da più lontano delle altre.","Jinn (dipende dal quadro), Myling, Dayan."],
+19:["Cambia aspetto durante la caccia.","Impronte a 6 dita che svaniscono prima (se l'UV è attivo).","Phantom (sparisce in foto)."],
+20:["Mostra sempre orbi in videocamera, anche a 0 prove. Metti una videocamera nella sua stanza.","Copia le abilità delle altre entità e cambia modello durante la partita.","Tutte le entità."],
+21:["A 0%: veloce senza vederti (circa 2,3 m/s), poi fino a circa 3,7 m/s quando ti vede.","Incenso in caccia: accecato 7,5, 9 o 10,5 s invece di 5, 6 o 7 s (livelli I, II, III).","Dayan, Thaye giovane, Kormos, Deildegast, Aswang."],
+22:["Velocissimo da lontano (3 m/s), quasi fermo vicino a te (0,4 m/s).","Sa sempre dove sono i giocatori: nascondersi non serve.","Revenant (l'opposto), Dayan."],
+23:["Veloce a inizio partita (circa 2,75 m/s), poi rallenta invecchiando fino a 1 m/s. Non accelera mai quando ti vede.","Invecchia quando restate vicino a lui. La Ouija costa sanità: a 0% rischi una caccia maledetta.","Deildegast (oggetti), Obambo, Deogen."],
+25:["Senza crocifisso, incenso o sale: velocità normale. Dopo una protezione: infuriata e più veloce (circa 1,96 m/s, fino a 3,2 m/s). Dopo una caccia infuriata: indebolita e più lenta (circa 1,36 m/s).","Infuriata, può passare sul sale senza toccarlo.","Wraith, Obambo, Demon."],
+26:["Entro 10 m in caccia: se resti fermo scende a 1,2 m/s; se ti muovi sale a 2,25 m/s.","Sempre femminile.","Kormos, Deogen, Revenant."],
+27:["Cronometro dalla prima apertura di una porta d'uscita: calmo da 0 a 1 min, aggressivo da 1 a 3, poi cambia ogni 2 min. Calmo circa 1,45 m/s, aggressivo circa 1,96 m/s.","Le cacce iniziate da aggressivo durano il 20% in meno.","The Twins, Gallu, Hantu."],
+28:["Quasi cieco in caccia: fermo e visibile a più di 5 m, ti ignora. Accelera verso i tuoi passi (fino a circa 3,7 m/s).","Non fa mai l'evento nebbia né un inseguimento.","Dayan, Yokai, Oni, Banshee."],
+29:["Velocità di base lenta (circa 1,53 m/s). Quando ti vede accelera più di ogni altra entità (circa 2,53 m/s in 9 s). Se ti raggiunge in un nascondiglio ufficiale, la caccia si ferma di colpo.","La caccia successiva parte senza periodo di grazia, dritta al tuo nascondiglio.","The Twins (velocità lenta), Moroi."],
+30:["3 m/s all'inizio di ogni caccia, meno 0,1 m/s per ogni oggetto diverso della casa spostato prima della caccia (minimo 0,4). Non accelera quando ti vede.","Il conteggio si azzera dopo ogni caccia o crocifisso bruciato.","Revenant, Deogen, Thaye, Moroi."]}},
+
+ro:{u:{tag:"Jurnalul fără dovezi.",intro:"Ca în joc: bifează ce face, taie ce nu face. Entitățile imposibile sunt tăiate. Testele simple sunt sub jurnal. Apasă pe o entitate ca s-o tai de mână.",
+mim:"Mimic copiază tot",reset:"Joc nou",settings:"Setările jocului",searchLbl:"Caută un semn",searchPh:"lumină, ceață, viteză, sare…",
+poss1:"entitate posibilă",possN:"entități posibile",findPh:"Găsește un nume: Twins, Esprit…",findHelp:"Scrie un nume în engleză sau franceză.",noMatch:"Nicio entitate nu se potrivește.",none24:"None, nu e o entitate.",
+simpleH:"Teste simple",simpleP:"Un obiect de pus sau de folosit. Răspunde Da sau Nu; apasă din nou ca să ștergi. Testele devenite inutile sunt gri, la baza fiecărui grup.",
+greyed:n=>n+" test"+(n>1?"e":"")+" gri: inutil"+(n>1?"e":"")+" sau imposibil"+(n>1?"e":"")+" cu setările tale.",
+testsH:"Teste pentru departajare",testsN:n=>"Teste pentru departajarea celor "+n+" rămase",testLb:"Test: ",confuse:"A nu se confunda cu:",empty:"Debifează o căsuță ca să recuperezi entități.",
+note:"Valori la zi din noiembrie 2026 (inclusiv Deildegast). Viteza normală: 1,7 m/s, până la circa 2,8 m/s când entitatea te vede. „Păstrează” = rămân doar aceste entități, toate celelalte sunt tăiate; „Exclude” = taie entitățile enumerate.",
+v1:x=>"A rămas doar: "+x+". Verific-o cu testul ei înainte să confirmi.",v0:"Nicio entitate posibilă: probabil un răspuns e greșit.",
+leg1:"1 clic: face asta",leg2:"2 clicuri: nu face asta",leg3:"3 clicuri: șterge",yes:"Da",no:"Nu",chk:"Bifat:",strk:"Tăiat:",keep:"păstrează",excl:"exclude",
+useless:"Inutil: privește doar entități deja tăiate.",evfull:n=>"Ai deja "+n+" din "+n+" dovezi.",answers:n=>n+" răspuns"+(n>1?"uri":""),signs:n=>n+" semne",
+manual:"Tăiată de mână",notdo:"Nu face: ",clickStrike:"Apasă ca s-o tai",rFuse:"Imposibil: tablou electric stricat.",rSolo:"Imposibil singur.",rEv:"Inutilizabil când se dau dovezi.",rMiss:"Îți lipsește: ",or:" sau ",and:" și ",
+lang:"Limba",lStart:"Sănătate mintală inițială",lPills:"Pastile de sănătate",oNone:"Deloc",oYes:"Da",lDrain:"Pierdere de sănătate",oSlow:"Lentă",oNormal:"Normală",oFast:"Rapidă",lEv:"Dovezi date",lFuse:"Tablou electric",oFuseOk:"Funcționează",oFuseBroken:"Stricat, fără curent",lPl:"Jucători",oSolo:"Singur",oGroup:"În grup",eqTitle:"Echipament disponibil",
+sum:s=>(s.pl==="solo"?"Singur":"În grup")+" · "+s.ev+(+s.ev===1?" dovadă":" dovezi")+" · sănătate "+s.start+"%"+(+s.pills?" cu pastile":"")+" · tablou "+(s.fuse==="broken"?"stricat":"OK"),
+iZero:"Sănătate blocată la 0%: pragurile de vânătoare sunt ascunse, iar Moroi e mereu rapid.",iDrain0:"Sănătatea nu scade: entitatea va vâna puțin sau deloc. Pragurile de vânătoare (În timp) rămân utile.",iNorm:"Pragurile de vânătoare sunt incluse la În timp. Moroi poate fi lent cât timp sănătatea e mare.",iEv:"Cu dovezi activate, testul orbilor pentru Mimic nu mai merge.",iFuse:"Fără curent, testele cu lumini și testul Jinn sunt imposibile.",iSolo:"Singur, ești mereu ținta Banshee."},
+eq:{sel:"Sare",encens:"Tămâie",crucifix:"Crucifix",bougie:"Lumânare și brichetă",photo:"Aparat foto",micro:"Microfon parabolic",detect:"Senzori de mișcare",camera:"Cameră video"},
+fam:{P:["Dovezi","Dovezile clasice, când jocul tău le oferă."],H:["În afara vânătorii","Ce observi în timpul anchetei, fără vânătoare în curs."],C:["În timpul vânătorii","Viteza, aspectul, ce auzi. Mai riscant."],D:["În timp","De confirmat pe parcursul mai multor minute sau vânători."]},
+cat:["Dovezi","Viteză și vânătoare","Lumini și curent","Evenimente și aspect","Sare, uși și deplasări","Tămâie, crucifix și flăcări","Sunete și electronice","Obiecte și timp","Mimic","Praguri de vânătoare"],
+s:{ev_emf:["EMF nivel 5"],ev_sb:["Spirit Box"],ev_uv:["Amprente (UV)"],ev_orb:["Orb fantomatic","Mimic le arată mereu, chiar dacă nu e una dintre dovezile lui."],ev_wr:["Scris fantomatic"],ev_fr:["Temperaturi înghețate"],ev_dots:["D.O.T.S."],
+los:["Accelerează treptat când mă vede","Creștere treptată în linia vizuală."],norm:["Viteză normală fără să mă vadă, toată vânătoarea","Ca mersul tău, fără schimbare."],slow:["Mult mai lentă decât normal fără să mă vadă","Mai lentă decât mersul tău."],fast:["Mult mai rapidă decât normal fără să mă vadă"],
+jump:["Trece brusc de la foarte lentă la foarte rapidă","Salt instantaneu când te reperează."],brake:["Încetinește clar când se apropie de mine"],still:["Viteza i se schimbă când mă opresc sau pornesc","La mai puțin de 10 m de ea."],vary:["Viteză diferită de la o vânătoare la alta","Fără schimbări de temperatură sau electronice."],
+cold:["Mai rapidă în camerele reci, lentă la cald"],breath:["Respirație rece vizibilă la vânătoare","Tablou electric oprit."],jinn:["Pornește cu 2,5 m/s când mă vede de departe, curent pornit"],ign:["M-a ignorat, nemișcat și vizibil la peste 5 m"],steps:["Accelerează spre zgomotul pașilor mei sau când alerg"],
+hide:["Vânătoarea s-a oprit brusc când m-a ajuns ascuns","Ascunzătoare oficială. Tăiat: m-a ucis în ascunzătoare."],nograce:["Vânătoare fără perioadă de grație, direct la ascunzătoarea mea"],found:["M-a găsit imediat deși eram ascuns","Fără să te fi văzut intrând."],losfast:["Accelerează foarte repede când mă vede, mai mult ca de obicei"],
+lighton:["A aprins o lumină","Lampă sau întrerupător, în afara vânătorii."],instoff:["Stinge o lumină la o secundă-două după ce am aprins-o"],leave:["Își părăsește camera când lumina e aprinsă acolo"],fuse:["A oprit singură tabloul electric","Nu o suprasarcină de lumini."],
+mist:["Eveniment ceață"],chase:["Eveniment de urmărire","Te urmărește, ușile se închid."],photo:["Dispare când o fotografiez în timpul unui eveniment","Tăiat: a rămas vizibilă în poză."],shape:["Își schimbă aspectul la vânătoare"],vis:["Foarte vizibilă la vânătoare, clipește puțin"],invis:["Aproape invizibilă la vânătoare"],
+male:["Jurnalul arată o entitate masculină"],scream:["Țipăt ascuțit la microfonul parabolic"],target:["Țintește mereu același jucător","Tăiat: atacă mai mulți jucători."],
+salt:["Calcă în sare","Tăiat: trecere peste sare dovedită, grămadă neatinsă."],salt3:["Sarea de nivel III o încetinește la vânătoare"],tp:["EMF la picioarele unui jucător departe de camera ei, fără interacțiune"],door:["Închide ușa de la intrare în afara vânătorii și a evenimentelor"],
+far:["Declanșează un senzor la peste 4 m de camera ei","În afara vânătorii și a evenimentelor."],room:["Și-a schimbat camera preferată"],same:["A început o vânătoare cât eram cu ea în camera ei"],shy:["Nimic nu se mișcă când sunt în camera ei"],two:["Două interacțiuni aproape simultan în două locuri"],
+i60:["Vânătoare la 60–90 s după tămâie"],i90:["Vânătoare la 90–180 s după tămâie"],i180:["Nicio vânătoare 180 s după tămâie, de mai multe ori"],iout:["Iese din cameră în 90 s după tămâie","Sare călcată sau senzor, în afara evenimentelor. Tăiat: a rămas blocată 90 s."],
+blind:["Orbită de tămâie mult mai mult ca de obicei","La vânătoare."],rage:["Mai rapidă după crucifix, tămâie sau sare"],crux:["Crucifix ars mai departe decât raza normală"],flame:["Suflă o flacără în loc să vâneze","Tăiat: a vânat cu o flacără aprinsă chiar lângă ea."],
+cruxfl:["Crucifix ars deși o flacără ardea chiar lângă"],third:["Vânătoare imediat după a 3-a flacără stinsă"],lamp:["Lanterna clipește înainte să-i aud pașii la vânătoare","Tăiat: pașii auziți mai întâi."],elec:["Mai rapidă când trece pe lângă electronice pornite"],voice:["N-a reacționat la vocea mea de la 4–5 m la vânătoare"],
+multi:["Aruncă mai multe obiecte deodată"],objslow:["Mai lentă după ce am mutat multe obiecte"],age:["Încetinește pe parcursul jocului, fără să mutăm obiecte","Tăiat: am stat mult lângă ea, la fel de rapidă."],cycle:["Activitate și viteză care alternează la fiecare 2 min","Socotit de la prima deschidere a ușii."],
+orb:["Orb vizibil pe cameră (joc cu 0 dovezi)","Tăiat: niciun orb după o observare lungă."],th50:["A vânat peste 50% sănătate medie"],th35:["Nicio vânătoare înainte de 35% sănătate medie"]},
+g:{0:["Tămâie, apoi cronometru: nicio vânătoare înainte de 180 s (90 s pentru celelalte, 60 s pentru Demon). Repetă de 2–3 ori.","Niciun alt semn: viteză și comportament normale.","Shade (testul prezenței), Demon (60 s)."],
+1:["Trece peste sare fără s-o deranjeze. Dovedește trecerea: vânătoare, eveniment sau senzor chiar după linie. Fără crucifix sau tămâie înainte de test.","Teleportare: EMF la picioarele unui jucător, departe de camera lui, fără interacțiune.","Gallu înfuriată (calcă mereu prima grămadă), Mimic."],
+2:["Poză în timpul unui eveniment: dispare imediat și nu apare în poză.","Aproape mereu invizibilă la vânătoare.","Obake (rămâne în poză)."],
+3:["Fă o grămadă de vreo zece obiecte în camera lui: aruncă mai multe deodată.","Aruncă obiecte aproape fără oprire la vânătoare.","The Twins (două interacțiuni în două locuri), Deildegast."],
+4:["Microfon parabolic: țipăt ascuțit tipic. În grup, la vânătoare, ignoră un jucător vizibil care nu e ținta ei.","Mereu feminină. Nu schimbă niciodată camera, dar merge departe după țintă.","Kormos (ignoră toți jucătorii nemișcați), Goryo."],
+5:["Tablou pornit: când te vede la peste 3 m, sare la 2,5 m/s, apoi încetinește lângă tine. Tablou oprit: viteză normală.","Nu oprește niciodată singur tabloul.","Raiju: oprește tabloul și lasă electronicele pornite."],
+6:["Aprinde o lumină: uneori o stinge la o secundă-două după. Nu aprinde niciodată o lumină.","Pleacă sau schimbă camera când lumina e aprinsă acolo.","Goryo (rămâne în cameră și cu lumina aprinsă)."],
+7:["Ascuns, în liniște, electronice oprite: pași foarte lenți (1 m/s), apoi brusc 3 m/s când te reperează.","Când te pierde, fuge la ultima ta poziție, apoi încetinește din nou.","Thaye bătrân, Hantu la cald, Kormos, Deildegast."],
+8:["Stai în aceeași cameră cu ea: nu poate porni o vânătoare și interacționează foarte puțin.","Foarte timidă, mai activă când sunteți departe.","Spirit (tămâie 180 s), Obambo calm, Goryo."],
+9:["Tămâie, apoi cronometru: vânătoarea e posibilă de la 60 s (90 s pentru celelalte).","Crucifixul acționează asupra lui cu 50% mai departe.","Onryo (flăcări), Thaye tânăr, Gallu, Obambo agresiv."],
+10:["Tămâie în camera lui: rămâne blocat acolo 90 s. Pune sare și senzori la ieșiri.","Singurul care închide ușa de la intrare în afara vânătorii ȘI a evenimentelor.","Goryo (poate ieși în cele 90 s), Shade."],
+11:["Nu face niciodată evenimentul ceață.","Foarte vizibil la vânătoare, foarte activ lângă jucători.","Kormos (nici el nu face ceață, dar niciodată urmărire)."],
+12:["La vânătoare îți aude vocea doar de la circa 2,5 m: ascuns la 4–5 m, vorbește, nu vine spre tine.","În afara vânătorii, vorbitul lângă el îl face mai agresiv.","Kormos (reacționează la pași, nu la voce)."],
+13:["Viteza depinde de temperatură: lent la cald (circa 1,4 m/s), rapid la rece (circa 2,7 m/s). Nu accelerează când te vede.","Tablou oprit: respirație rece vizibilă la vânătoare.","Revenant, Obambo calm."],
+14:["Face doar plimbări scurte: senzorii la peste 4 m de camera lui nu se declanșează niciodată în afara vânătorii sau a evenimentelor. Nu schimbă niciodată camera.","Fără dovezi nu există test 100%: păstrează-l când tot restul e exclus.","Banshee, Yurei, Shade."],
+15:["Lanterna pornită la vânătoare: clipește înainte să-i auzi pașii (auziți la circa 12 m în loc de 20 m).","Face mai multe sunete la microfonul parabolic.","Raiju (accelerează lângă electronice), Revenant."],
+16:["Lumânare aprinsă și crucifix alăturate: suflă lumânarea în loc să vâneze, crucifixul nu arde. După a 3-a flacără stinsă, vânează.","Reaprinde lumânarea de fiecare dată ca să ții socoteala.","Demon (vânează des, flacăra nu-l oprește)."],
+17:["Viteză diferită de la o vânătoare la alta (circa 1,5 sau 1,9 m/s), la întâmplare.","Două interacțiuni aproape simultan în două locuri.","Obambo (viteza lui urmează un cronometru), Poltergeist."],
+18:["Electronice pornite puse pe traseul lui: acolo merge cu 2,5 m/s, chiar fără să te vadă.","Face electronicele să clipească de mai departe decât celelalte.","Jinn (depinde de tablou), Myling, Dayan."],
+19:["Își schimbă aspectul la vânătoare.","Amprente cu 6 degete care dispar mai repede (dacă UV e activ).","Phantom (dispare în poză)."],
+20:["Arată mereu orbi pe cameră, chiar la 0 dovezi. Pune o cameră în camera lui.","Copiază abilitățile altor entități și își schimbă modelul în timpul jocului.","Toate entitățile."],
+21:["La 0%: rapid fără să te vadă (circa 2,3 m/s), apoi până la circa 3,7 m/s când te vede.","Tămâie la vânătoare: orbit 7,5, 9 sau 10,5 s în loc de 5, 6 sau 7 s (nivel I, II, III).","Dayan, Thaye tânăr, Kormos, Deildegast, Aswang."],
+22:["Foarte rapid de departe (3 m/s), aproape oprit lângă tine (0,4 m/s).","Știe mereu unde sunt jucătorii: ascunsul nu ajută.","Revenant (opusul), Dayan."],
+23:["Rapid la începutul jocului (circa 2,75 m/s), apoi încetinește îmbătrânind, până la 1 m/s. Nu accelerează niciodată când te vede.","Îmbătrânește când stați lângă el. Ouija costă sănătate: la 0% riști o vânătoare blestemată.","Deildegast (obiecte), Obambo, Deogen."],
+25:["Fără crucifix, tămâie sau sare: viteză normală. După o protecție: înfuriată și mai rapidă (circa 1,96 m/s, până la 3,2 m/s). După o vânătoare înfuriată: slăbită și mai lentă (circa 1,36 m/s).","Înfuriată, poate trece peste sare fără s-o deranjeze.","Wraith, Obambo, Demon."],
+26:["La mai puțin de 10 m la vânătoare: dacă stai pe loc coboară la 1,2 m/s; dacă te miști urcă la 2,25 m/s.","Mereu feminină.","Kormos, Deogen, Revenant."],
+27:["Cronometru de la prima deschidere a unei uși de ieșire: calm de la 0 la 1 min, agresiv de la 1 la 3, apoi schimbă la fiecare 2 min. Calm circa 1,45 m/s, agresiv circa 1,96 m/s.","Vânătorile pornite în starea agresivă sunt cu 20% mai scurte.","The Twins, Gallu, Hantu."],
+28:["Aproape orb la vânătoare: nemișcat și vizibil la peste 5 m, te ignoră. Accelerează spre pașii tăi (până la circa 3,7 m/s).","Nu face niciodată evenimentul ceață sau urmărire.","Dayan, Yokai, Oni, Banshee."],
+29:["Viteză de bază lentă (circa 1,53 m/s). Când te vede, accelerează mai repede decât orice altă entitate (circa 2,53 m/s în 9 s). Dacă te ajunge într-o ascunzătoare oficială, vânătoarea se oprește brusc.","Următoarea vânătoare pornește fără perioadă de grație, direct la ascunzătoarea ta.","The Twins (viteză lentă), Moroi."],
+30:["3 m/s la începutul fiecărei vânători, minus 0,1 m/s pentru fiecare obiect diferit din casă mutat înainte de vânătoare (minim 0,4). Nu accelerează când te vede.","Numărătoarea se resetează după fiecare vânătoare sau crucifix ars.","Revenant, Deogen, Thaye, Moroi."]}}
+};
+
+const LANGS=[["fr","Français"],["en","English"],["de","Deutsch"],["it","Italiano"],["ro","Română"]];
 const F=[
 {k:"P",t:"Preuves",s:"Les preuves classiques, quand ta partie en donne."},
 {k:"H",t:"Hors chasse",s:"Ce que tu remarques pendant l'enquête, sans chasse en cours."},
@@ -319,8 +598,20 @@ const DEF={start:0,pills:0,drain:0,ev:0,fuse:"ok",pl:"group",eq:Object.fromEntri
 const REQ={lighton:{fuse:1},instoff:{fuse:1},leave:{fuse:1},fuse:{fuse:1},jinn:{fuse:1},target:{group:1},
 salt:{eq:["sel"]},salt3:{eq:["sel"]},photo:{eq:["photo"]},i60:{eq:["encens"]},i90:{eq:["encens"]},i180:{eq:["encens"]},iout:{eq:["encens"]},blind:{eq:["encens"]},
 rage:{eq:["sel","encens","crucifix"]},crux:{eq:["crucifix"]},cruxfl:{all:["crucifix","bougie"]},flame:{eq:["bougie"]},third:{eq:["bougie"]},far:{eq:["detect"]},scream:{eq:["micro"]},orb:{eq:["camera"],ev0:1}};
-let st={on:{},man:{},zero:true,mim:true,set:null};
+let st={on:{},man:{},zero:true,mim:true,set:null,lang:null};
 try{const s=JSON.parse(localStorage.getItem("phj3")||"null");if(s)st=Object.assign(st,s)}catch(e){}
+if(!st.lang||!I[st.lang]){const n=((navigator.language||"fr").slice(0,2)).toLowerCase();st.lang=I[n]?n:"fr"}
+const L=()=>I[st.lang]||I.fr;
+const U=k=>(L().u[k]!==undefined?L().u[k]:I.fr.u[k]);
+const FR=()=>st.lang==="fr";
+const gname=g=>FR()?g.fr:g.en;const gsub=g=>FR()?g.en:g.fr;
+const NM=i=>gname(GB[i]);
+const ST=o=>{if(FR())return [o.t,o.s||""];const s=L().s&&L().s[o.k];return s?[s[0],s[1]||""]:[o.t,o.s||""]};
+const GT=g=>FR()?[g.t,g.b,g.c]:((L().g||{})[g.id]||[g.t,g.b,g.c]);
+const CATN=c=>{if(FR())return c;const i=C.findIndex(x=>x.c===c);return (L().cat||[])[i]||c};
+const FAMT=f=>(L().fam||I.fr.fam)[f.k];
+const EQT=e=>(L().eq||I.fr.eq)[e];
+const colon=()=>FR()?" :":":";
 const qv=()=>{const e=document.getElementById("fs");return e&&e.value?e.value.trim().toLowerCase():""};
 const fixSet=()=>{st.set=Object.assign({},DEF,st.set||{});st.set.eq=Object.assign({},DEF.eq,(st.set&&st.set.eq)||{});st.zero=+st.set.start===0&&+st.set.pills===0};fixSet();
 const save=()=>{try{localStorage.setItem("phj3",JSON.stringify(st))}catch(e){}};
@@ -328,65 +619,67 @@ const $=s=>document.querySelector(s);
 const val=k=>st.on[k]||0;
 const vis=o=>!(o.sane&&st.zero)&&!(o.evc&&!+st.set.ev);
 function na(o){const r=REQ[o.k];if(!r)return "";const s=st.set;
-  if(r.fuse&&s.fuse==="broken")return "Impossible : disjoncteur cassé.";
-  if(r.group&&s.pl==="solo")return "Impossible en solo.";
-  if(r.ev0&&+s.ev>0)return "Inutilisable quand des preuves sont données.";
-  if(r.eq&&!r.eq.some(e=>s.eq[e]))return "Il te manque : "+r.eq.map(e=>EQN[e]).join(" ou ")+".";
-  if(r.all&&!r.all.every(e=>s.eq[e]))return "Il te manque : "+r.all.filter(e=>!s.eq[e]).map(e=>EQN[e]).join(" et ")+".";
+  if(r.fuse&&s.fuse==="broken")return U("rFuse");
+  if(r.group&&s.pl==="solo")return U("rSolo");
+  if(r.ev0&&+s.ev>0)return U("rEv");
+  if(r.eq&&!r.eq.some(e=>s.eq[e]))return U("rMiss")+r.eq.map(EQT).join(U("or"))+".";
+  if(r.all&&!r.all.every(e=>s.eq[e]))return U("rMiss")+r.all.filter(e=>!s.eq[e]).map(EQT).join(U("and"))+".";
   return ""}
 const keepOf=x=>{let a=x.o?x.o.slice():x.h?x.h.slice():null;if(a&&x.nz&&!st.zero)a=a.concat(x.nz);return a};
 const elimOf=x=>{let a=x.e?x.e.slice():null;if(a&&x.z&&st.zero)a=a.concat(x.z);return a};
-const eff=x=>{const k=keepOf(x);return k?'garde '+(k.length>6?k.length:k.map(i=>N[i]).join(", ")):'exclut '+elimOf(x).map(i=>N[i]).join(", ")};
-const tag=o=>'<span class="tag '+(o.e?"t-elim":"t-only")+'">Coché : '+eff(o)+'</span>'+(o.n?'<span class="tag t-no">Barré : '+eff(o.n)+'</span>':'');
+const eff=x=>{const k=keepOf(x);return k?U("keep")+' '+(k.length>6?k.length:k.map(NM).join(", ")):U("excl")+' '+elimOf(x).map(NM).join(", ")};
+const tag=(o,a,b)=>'<span class="tag '+(o.e?"t-elim":"t-only")+'">'+(a||U("chk"))+' '+eff(o)+'</span>'+(o.n?'<span class="tag t-no">'+(b||U("strk"))+' '+eff(o.n)+'</span>':'');
 const targets=o=>{const s=new Set();[o,o.n].forEach(x=>{if(!x)return;["o","e","h","z","nz"].forEach(f=>(x[f]||[]).forEach(i=>s.add(i)))});return [...s]};
 function calc(){
-  const act=ALL.filter(o=>val(o.k)&&vis(o)).map(o=>val(o.k)>0?{o,x:o,lb:o.t}:o.n?{o,x:o.n,lb:"Ne le fait pas : "+o.t}:null).filter(Boolean);
+  const act=ALL.filter(o=>val(o.k)&&vis(o)).map(o=>val(o.k)>0?{o,x:o,lb:ST(o)[0]}:o.n?{o,x:o.n,lb:U("notdo")+ST(o)[0]}:null).filter(Boolean);
   return G.map(g=>{const why=[];
     act.forEach(a=>{if(st.mim&&g.id===20&&!a.o.m)return;
       const k=keepOf(a.x),e=elimOf(a.x);
       if(k&&!k.includes(g.id))why.push(a.lb);
       if(e&&e.includes(g.id))why.push(a.lb)});
-    if(st.man[g.id])why.unshift("Barrée à la main");
+    if(st.man[g.id])why.unshift(U("manual"));
     return {g,why}});
 }
-const obH=o=>{const v=val(o.k),w=v?"":na(o);return '<button type="button" class="ob'+(v>0?" yes":v<0?" no":"")+(w?" na":"")+'" data-k="'+o.k+'"'+(w?" disabled":"")+'><span class="bx">'+(v>0?"✓":v<0?"✗":"")+'</span><span><b>'+o.t+'</b>'+tag(o)+(o.s?'<small>'+o.s+'</small>':'')+(w?'<small class="why2">'+w+'</small>':'')+'</span></button>'};
-const obYN=(o,off)=>{const v=val(o.k),w=v?"":na(o);if(w)off=true;const d=off?" disabled":"";return '<div class="row'+(v>0?" yes":v<0?" no":"")+(off?" off":"")+'"><div><b>'+o.t+'</b>'+tag(o).replace('Coché :','Oui :').replace('Barré :','Non :')+(o.s?'<small>'+o.s+'</small>':'')+(off?'<small class="why2">'+(w||"Inutile : ne concerne que des entités déjà barrées.")+'</small>':'')+'</div><div class="seg" role="group" aria-label="'+o.t.replace(/"/g,"")+'"><button type="button" class="y" data-k="'+o.k+'" data-v="1" aria-pressed="'+(v>0)+'"'+d+'>Oui</button><button type="button" class="n" data-k="'+o.k+'" data-v="-1" aria-pressed="'+(v<0)+'"'+d+'>Non</button></div></div>'};
+let REM=new Set();
+const useful=o=>val(o.k)!==0||targets(o).some(i=>REM.has(i)&&!(i===20&&st.mim&&!o.m));
+const evFull=o=>{const n=+st.set.ev;if(!o.evc||!n)return "";const got=ALL.filter(x=>x.evc&&val(x.k)>0).length;return got>=n?U("evfull")(n):""};
+const obH=o=>{const v=val(o.k),w=v?"":(na(o)||evFull(o)||(useful(o)?"":U("useless")));const tx=ST(o);return '<button type="button" class="ob'+(v>0?" yes":v<0?" no":"")+(w?" na":"")+'" data-k="'+o.k+'"'+(w?" disabled":"")+'><span class="bx">'+(v>0?"✓":v<0?"✗":"")+'</span><span><b>'+tx[0]+'</b>'+tag(o)+(tx[1]?'<small>'+tx[1]+'</small>':'')+(w?'<small class="why2">'+w+'</small>':'')+'</span></button>'};
+const obYN=(o,off)=>{const v=val(o.k),w=v?"":na(o);if(w)off=true;const d=off?" disabled":"";const tx=ST(o);return '<div class="row'+(v>0?" yes":v<0?" no":"")+(off?" off":"")+'"><div><b>'+tx[0]+'</b>'+tag(o,U("yes")+colon(),U("no")+colon())+(tx[1]?'<small>'+tx[1]+'</small>':'')+(off?'<small class="why2">'+(w||U("useless"))+'</small>':'')+'</div><div class="seg" role="group" aria-label="'+tx[0].replace(/"/g,"")+'"><button type="button" class="y" data-k="'+o.k+'" data-v="1" aria-pressed="'+(v>0)+'"'+d+'>'+U("yes")+'</button><button type="button" class="n" data-k="'+o.k+'" data-v="-1" aria-pressed="'+(v<0)+'"'+d+'>'+U("no")+'</button></div></div>'};
 function drawObs(left){
   const open={};document.querySelectorAll("#obs details[data-id]").forEach(d=>open[d.dataset.id]=d.open);
   const isOpen=(id,def)=>id in open?open[id]:def;
-  const R=new Set(left.map(x=>x.g.id));
-  const useful=o=>val(o.k)!==0||targets(o).some(i=>R.has(i)&&!(i===20&&st.mim&&!o.m));
-  $("#obs").innerHTML='<div class="leg"><span><span class="bx y">✓</span>1 clic : il le fait</span><span><span class="bx x">✗</span>2 clics : il ne le fait pas</span><span><span class="bx"></span>3 clics : effacer</span></div>'+
+  REM=new Set(left.map(x=>x.g.id));
+  $("#obs").innerHTML='<div class="leg"><span><span class="bx y">✓</span>'+U("leg1")+'</span><span><span class="bx x">✗</span>'+U("leg2")+'</span><span><span class="bx"></span>'+U("leg3")+'</span></div>'+
   F.map((f,fi)=>{
-    const q=qv();const subs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]===f.k&&vis(o)&&(!q||(o.t+" "+(o.s||"")+" "+x.c).toLowerCase().includes(q)))})).filter(y=>y.l.length);
+    const q=qv();const subs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]===f.k&&vis(o)&&(!q||(ST(o).join(" ")+" "+CATN(x.c)+" "+o.t).toLowerCase().includes(q)))})).filter(y=>y.l.length);
     if(!subs.length)return "";
     const fid="f"+f.k;
     const cnt=ALL.filter(o=>FAM[o.k]===f.k&&vis(o)&&val(o.k)).length;
-    return '<details class="fam" data-id="'+fid+'"'+(q||isOpen(fid,f.k==="P"||f.k==="H")?" open":"")+'><summary><span><h3>'+f.t+'</h3><small class="fs">'+f.s+'</small></span><span class="n">'+(cnt?cnt+" réponse"+(cnt>1?"s":""):subs.reduce((a,y)=>a+y.l.length,0)+" signes")+'</span></summary>'+
-      subs.map(y=>{const sid=fid+"-"+y.x.c;return '<details class="sub" data-id="'+sid+'"'+(q||isOpen(sid,true)?" open":"")+'><summary><h4>'+y.x.c+'</h4></summary>'+y.l.map(obH).join("")+'</details>'}).join("")+'</details>'}).join("");
+    return '<details class="fam" data-id="'+fid+'"'+(q||isOpen(fid,f.k==="P"||f.k==="H")?" open":"")+'><summary><span><h3>'+FAMT(f)[0]+'</h3><small class="fs">'+FAMT(f)[1]+'</small></span><span class="n">'+(cnt?U("answers")(cnt):U("signs")(subs.reduce((a,y)=>a+y.l.length,0)))+'</span></summary>'+
+      subs.map(y=>{const sid=fid+"-"+y.x.c;return '<details class="sub" data-id="'+sid+'"'+(q||isOpen(sid,true)?" open":"")+'><summary><h4>'+CATN(y.x.c)+'</h4></summary>'+y.l.map(obH).join("")+'</details>'}).join("")+'</details>'}).join("");
   let hidden=0;
   const bs=C.map(x=>({x,l:x.l.filter(o=>FAM[o.k]==="B"&&vis(o))})).filter(y=>y.l.length).map(y=>{const ok=o=>useful(o)&&!(na(o)&&!val(o.k));const u=y.l.filter(ok),off=y.l.filter(o=>!ok(o));hidden+=off.length;return {x:y.x,u,off}});
-  $("#sb").innerHTML=bs.map(y=>'<div class="sbox'+(y.u.length?"":" alloff")+'"><h4>'+y.x.c+'</h4>'+y.u.map(o=>obYN(o,false)).join("")+y.off.map(o=>obYN(o,true)).join("")+'</div>').join("");
-  $("#sh").textContent=hidden?hidden+" test"+(hidden>1?"s":"")+" grisé"+(hidden>1?"s":"")+" : inutile"+(hidden>1?"s":"")+" ou impossible"+(hidden>1?"s":"")+" avec tes paramètres.":"";
+  $("#sb").innerHTML=bs.map(y=>'<div class="sbox'+(y.u.length?"":" alloff")+'"><h4>'+CATN(y.x.c)+'</h4>'+y.u.map(o=>obYN(o,false)).join("")+y.off.map(o=>obYN(o,true)).join("")+'</div>').join("");
+  $("#sh").textContent=hidden?U("greyed")(hidden):"";
 }
 function draw(){
   const r=calc(),left=r.filter(x=>!x.why.length);
   drawObs(left);
-  $("#nb").textContent=left.length;$("#nbt").textContent=left.length===1?"entité possible":"entités possibles";
-  $("#gl").innerHTML=r.map(x=>'<button class="g'+(x.why.length?" out":"")+'" data-g="'+x.g.id+'" title="'+(x.why.length?x.why.join(" · ").replace(/"/g,""):"Clique pour barrer")+'"><span><span class="gn">'+x.g.fr+'</span><span class="en">'+(x.why.length?'':x.g.en)+'</span>'+(x.why.length?'<span class="why">'+x.why[0]+'</span>':'')+'</span></button>').join("");
+  $("#nb").textContent=left.length;$("#nbt").textContent=left.length===1?U("poss1"):U("possN");
+  $("#gl").innerHTML=r.map(x=>'<button class="g'+(x.why.length?" out":"")+'" data-g="'+x.g.id+'" title="'+(x.why.length?x.why.join(" · ").replace(/"/g,""):U("clickStrike"))+'"><span><span class="gn">'+gname(x.g)+'</span><span class="en">'+(x.why.length?'':gsub(x.g))+'</span>'+(x.why.length?'<span class="why">'+x.why[0]+'</span>':'')+'</span></button>').join("");
   const vd=$("#vd");
-  if(left.length===1){vd.style.display="block";vd.textContent="Il ne reste que : "+left[0].g.fr+". Vérifie avec son test avant de valider."}
-  else if(!left.length){vd.style.display="block";vd.textContent="Plus aucune entité possible : une case est sans doute fausse."}
+  if(left.length===1){vd.style.display="block";vd.textContent=U("v1")(gname(left[0].g))}
+  else if(!left.length){vd.style.display="block";vd.textContent=U("v0")}
   else vd.style.display="none";
-  $("#tt").textContent=left.length?"Tests pour départager les "+left.length+" restantes":"Tests pour départager";
-  $("#cards").innerHTML=left.length?left.map(x=>'<article class="card"><h3>'+x.g.fr+'<span class="en">'+x.g.en+'</span></h3><p><span class="lb">Test : </span>'+x.g.t+'</p><p class="sp">'+x.g.b+'</p><p class="sp"><b>À ne pas confondre avec :</b> '+x.g.c+'</p></article>').join(""):'<p class="empty">Décoche une case pour retrouver des entités.</p>';
+  $("#tt").textContent=left.length?U("testsN")(left.length):U("testsH");
+  $("#cards").innerHTML=left.length?left.map(x=>{const tx=GT(x.g);return '<article class="card"><h3>'+gname(x.g)+'<span class="en">'+gsub(x.g)+'</span></h3><p><span class="lb">'+U("testLb")+'</span>'+tx[0]+'</p><p class="sp">'+tx[1]+'</p><p class="sp"><b>'+U("confuse")+'</b> '+tx[2]+'</p></article>'}).join(""):'<p class="empty">'+U("empty")+'</p>';
 }
 function idFind(){const v=$("#q").value.trim(),out=$("#qr");
-  if(!v){out.textContent="Tape un nom en français ou en anglais.";return}
-  if(v==="24"){out.innerHTML="<b>24</b> : None, ce n'est pas une entité.";return}
+  if(!v){out.textContent=U("findHelp");return}
+  if(v==="24"){out.innerHTML="<b>24</b> : "+U("none24");return}
   const nrm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
   const m=G.filter(g=>String(g.id)===v||nrm(g.fr).includes(nrm(v))||nrm(g.en).includes(nrm(v)));
-  out.innerHTML=m.length?m.slice(0,4).map(g=>"<b>"+g.fr+"</b> = "+g.en+" (ID "+g.id+")").join(" · "):"Aucune entité ne correspond."}
+  out.innerHTML=m.length?m.slice(0,4).map(g=>"<b>"+gname(g)+"</b> = "+gsub(g)+" (ID "+g.id+")").join(" · "):U("noMatch")}
 const onOb=e=>{const b=e.target.closest(".ob");if(!b)return;const k=b.dataset.k,v=val(k);
   if(v===0){st.on[k]=1;EXCL.forEach(g=>{if(g.includes(k))g.forEach(x=>{if(x!==k)st.on[x]=-1})})}else if(v>0)st.on[k]=-1;else delete st.on[k];
   save();draw();const nb=document.querySelector('.ob[data-k="'+k+'"]');if(nb)nb.focus()};
@@ -396,28 +689,35 @@ $("#obs").addEventListener("click",onOb);$("#sb").addEventListener("click",e=>{c
 $("#gl").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;const id=b.dataset.g;if(st.man[id])delete st.man[id];else st.man[id]=1;save();draw()});
 $("#mim").checked=st.mim;
 $("#fs").addEventListener("input",()=>drawObs(calc().filter(x=>!x.why.length)));
-const SEL=[["start","Santé mentale de départ",[[0,"0 %"],[25,"25 %"],[50,"50 %"],[75,"75 %"],[100,"100 %"]]],
-["pills","Pilules de santé mentale",[[0,"Aucune"],[1,"Oui"]]],
-["drain","Perte de santé mentale",[[0,"Aucune"],[0.5,"Lente"],[1,"Normale"],[2,"Rapide"]]],
-["ev","Preuves données",[[0,"0"],[1,"1"],[2,"2"],[3,"3"]]],
-["fuse","Disjoncteur",[["ok","Fonctionne"],["broken","Cassé, pas de courant"]]],
-["pl","Joueurs",[["solo","Solo"],["group","À plusieurs"]]]];
+const SEL=()=>[["start",U("lStart"),[[0,"0 %"],[25,"25 %"],[50,"50 %"],[75,"75 %"],[100,"100 %"]]],
+["pills",U("lPills"),[[0,U("oNone")],[1,U("oYes")]]],
+["drain",U("lDrain"),[[0,U("oNone")],[0.5,U("oSlow")],[1,U("oNormal")],[2,U("oFast")]]],
+["ev",U("lEv"),[[0,"0"],[1,"1"],[2,"2"],[3,"3"]]],
+["fuse",U("lFuse"),[["ok",U("oFuseOk")],["broken",U("oFuseBroken")]]],
+["pl",U("lPl"),[["solo",U("oSolo")],["group",U("oGroup")]]]];
 function drawSets(){const s=st.set;
-  $("#sets").innerHTML='<div class="sgr">'+SEL.map(f=>'<label class="fld"><span>'+f[1]+'</span><select data-s="'+f[0]+'">'+f[2].map(o=>'<option value="'+o[0]+'"'+(String(s[f[0]])===String(o[0])?" selected":"")+'>'+o[1]+'</option>').join("")+'</select></label>').join("")+'</div>'+
-  '<div class="eqt">Équipement disponible</div><div class="eqs">'+EQ.map(e=>'<label class="eqc"><input type="checkbox" data-eq="'+e[0]+'"'+(s.eq[e[0]]?" checked":"")+'> '+e[1]+'</label>').join("")+'</div><p class="sinfo">'+info()+'</p>';
-  $("#setsum").textContent=(s.pl==="solo"?"Solo":"À plusieurs")+" · "+s.ev+" preuve"+(+s.ev>1?"s":"")+" · santé "+s.start+" %"+(+s.pills?" avec pilules":"")+" · disjoncteur "+(s.fuse==="broken"?"cassé":"OK")}
+  $("#sets").innerHTML='<div class="sgr">'+SEL().map(f=>'<label class="fld"><span>'+f[1]+'</span><select data-s="'+f[0]+'">'+f[2].map(o=>'<option value="'+o[0]+'"'+(String(s[f[0]])===String(o[0])?" selected":"")+'>'+o[1]+'</option>').join("")+'</select></label>').join("")+'</div>'+
+  '<div class="eqt">'+U("eqTitle")+'</div><div class="eqs">'+EQ.map(e=>'<label class="eqc"><input type="checkbox" data-eq="'+e[0]+'"'+(s.eq[e[0]]?" checked":"")+'> '+EQT(e[0])+'</label>').join("")+'</div><p class="sinfo">'+info()+'</p>';
+  $("#setsum").textContent=U("sum")(s)}
 function info(){const s=st.set,m=[];
-  if(st.zero)m.push("Santé mentale bloquée à 0 % : les seuils de chasse sont masqués, et le Moroï est toujours rapide.");
-  else if(+s.drain===0)m.push("La santé mentale ne baisse pas : l'entité chassera peu ou pas. Les seuils de chasse (onglet Sur la durée) restent utiles.");
-  else m.push("Les seuils de chasse sont pris en compte dans l'onglet Sur la durée. Le Moroï peut être lent tant que la santé mentale est haute.");
-  if(+s.ev>0)m.push("Avec des preuves, le test des orbes du Mimic ne marche plus.");
-  if(s.fuse==="broken")m.push("Sans courant : les tests de lumière et du Djinn sont impossibles.");
-  if(s.pl==="solo")m.push("En solo, tu es toujours la cible de la Banshee.");
+  if(st.zero)m.push(U("iZero"));
+  else if(+s.drain===0)m.push(U("iDrain0"));
+  else m.push(U("iNorm"));
+  if(+s.ev>0)m.push(U("iEv"));
+  if(s.fuse==="broken")m.push(U("iFuse"));
+  if(s.pl==="solo")m.push(U("iSolo"));
   return m.join(" ")}
 $("#sets").addEventListener("change",e=>{const el=e.target;
   if(el.dataset.s){const v=el.value;st.set[el.dataset.s]=isNaN(+v)?v:+v}
   if(el.dataset.eq)st.set.eq[el.dataset.eq]=el.checked?1:0;
   fixSet();save();drawSets();draw()});
+function applyStatic(){document.documentElement.lang=st.lang;
+  document.querySelectorAll("[data-i]").forEach(el=>{const v=U(el.dataset.i);if(typeof v==="string")el.textContent=v});
+  document.querySelectorAll("[data-ip]").forEach(el=>{el.placeholder=U(el.dataset.ip)});
+  $("#lng").innerHTML=LANGS.map(l=>'<option value="'+l[0]+'"'+(l[0]===st.lang?" selected":"")+'>'+l[1]+'</option>').join("");
+  idFind()}
+$("#lng").addEventListener("change",e=>{st.lang=e.target.value;save();applyStatic();drawSets();draw()});
+applyStatic();
 drawSets();
 $("#mim").addEventListener("change",e=>{st.mim=e.target.checked;save();draw()});
 $("#reset").addEventListener("click",()=>{st.on={};st.man={};save();draw()});
